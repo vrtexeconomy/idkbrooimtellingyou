@@ -545,6 +545,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   .serif { white-space: normal; }
   .admin-form { grid-template-columns: 1fr; }
   .attendance-card { padding: 20px; }
+  .dashboard-grid > .dash-card { grid-column: auto !important; }
 }
 </style>
 </head>
@@ -634,22 +635,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
             <span id="freezeCount">0</span>
             <span>Streak Freeze</span>
           </div>
-        </div>
-
-        <div class="dash-card">
-          <h3>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-            My Speeches
-          </h3>
-          <p>Track your progress through the Toastmasters pathways. Your next speech slot is waiting for you.</p>
-        </div>
-
-        <div class="dash-card">
-          <h3>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
-            Table Topics
-          </h3>
-          <p>Ready to think on your feet? Prepare for impromptu speaking at our next session.</p>
         </div>
       </section>
     </div>
@@ -745,6 +730,10 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         <button class="btn btn-present" onclick="selectPresent()">Present</button>
         <button class="btn btn-absent" onclick="selectAbsent()">Absent</button>
       </div>
+
+      <p style="font-size:0.8rem; color:var(--muted); margin-top:16px; font-style:italic; line-height:1.5;">
+        ⚠️ You can change your RSVP <strong>once</strong> after confirming. Choose carefully.
+      </p>
     </div>
 
     <div id="rsvpStep2" class="rsvp-step" style="display:none;">
@@ -773,7 +762,11 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       </svg>
       <h3 style="font-size:1.6rem; color:#fff; margin:0 0 10px;">RSVP Confirmed!</h3>
       <p id="rsvpSuccessMsg" style="color:var(--muted); font-size:1rem;"></p>
-      <span class="change-link" onclick="changeRsvp()">Change RSVP</span>
+      <span class="change-link" id="changeRsvpLink" onclick="changeRsvp()">Change RSVP</span>
+      <p id="rsvpLockNote" style="display:none; font-size:0.82rem; color:var(--muted); margin-top:16px; font-style:italic; line-height:1.5;">
+        🔒 You've used your one allowed RSVP change for this meeting.<br>
+        Please contact an ExCom if you need to update again.
+      </p>
     </div>
 
   </div>
@@ -1043,6 +1036,44 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   // --- RSVP MODAL LOGIC ---
   const rsvpModal = document.getElementById('rsvpModal');
 
+  // Shared save logic — enforces the one-change limit
+  async function saveRsvp(status, extraData = {}) {
+    const ref = doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission);
+    const existingSnap = await getDoc(ref);
+
+    let editCount = 0;
+    if (existingSnap.exists()) {
+      const prevEditCount = existingSnap.data().editCount || 0;
+      if (prevEditCount >= 1) {
+        throw new Error("You've already changed your RSVP once for this meeting.");
+      }
+      editCount = prevEditCount + 1;
+    }
+
+    await setDoc(ref, {
+      name: currentUserName,
+      admissionNo: currentUserAdmission,
+      rsvpStatus: status,
+      ...extraData,
+      editCount,
+      timestamp: new Date()
+    }, { merge: true });
+
+    return editCount;
+  }
+
+  function updateRsvpChangeState(editCount) {
+    const changeLink = document.getElementById('changeRsvpLink');
+    const lockNote = document.getElementById('rsvpLockNote');
+    if (editCount >= 1) {
+      changeLink.style.display = 'none';
+      lockNote.style.display = 'block';
+    } else {
+      changeLink.style.display = 'inline-block';
+      lockNote.style.display = 'none';
+    }
+  }
+
   window.openRsvpModal = async function(id, theme, dateStr, timeStr) {
     activeMeetingId = id;
     
@@ -1061,6 +1092,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       if (rsvpSnap.exists()) {
         const data = rsvpSnap.data();
         const status = data.rsvpStatus || data.status;
+        const editCount = data.editCount || 0;
         
         document.getElementById('rsvpStep1').style.display = 'none';
         document.getElementById('rsvpStep3').style.display = 'block';
@@ -1070,6 +1102,8 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         } else {
           document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Absent</strong>.`;
         }
+
+        updateRsvpChangeState(editCount);
       }
     } catch (err) {
       console.error("Error checking RSVP status:", err);
@@ -1095,19 +1129,15 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     btn.disabled = true;
 
     try {
-      await setDoc(doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission), {
-        name: currentUserName,
-        admissionNo: currentUserAdmission,
-        rsvpStatus: "Absent",
-        timestamp: new Date()
-      }, { merge: true });
+      const editCount = await saveRsvp("Absent");
 
       document.getElementById('rsvpStep1').style.display = 'none';
       document.getElementById('rsvpStep3').style.display = 'block';
       document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Absent</strong>.`;
+      updateRsvpChangeState(editCount);
       
     } catch (err) {
-      alert("Failed to save RSVP.");
+      alert(err.message || "Failed to save RSVP.");
       btn.textContent = original;
       btn.disabled = false;
     }
@@ -1117,28 +1147,22 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     const foodRadio = document.querySelector('input[name="food"]:checked');
     const food = foodRadio ? foodRadio.value : "Veg";
     const additional = document.getElementById('rsvpAdditional').value;
-    
+
     const btn = event.target;
     const original = btn.textContent;
     btn.textContent = 'Confirming...';
     btn.disabled = true;
 
     try {
-      await setDoc(doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission), {
-        name: currentUserName,
-        admissionNo: currentUserAdmission,
-        rsvpStatus: "Present",
-        food: food,
-        additional: additional,
-        timestamp: new Date()
-      }, { merge: true });
+      const editCount = await saveRsvp("Present", { food, additional });
 
       document.getElementById('rsvpStep2').style.display = 'none';
       document.getElementById('rsvpStep3').style.display = 'block';
       document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Present</strong>.<br>Food: ${food} ${additional ? '('+additional+')' : ''}`;
+      updateRsvpChangeState(editCount);
 
     } catch (err) {
-      alert("Failed to save RSVP.");
+      alert(err.message || "Failed to save RSVP.");
       btn.textContent = original;
       btn.disabled = false;
     }
