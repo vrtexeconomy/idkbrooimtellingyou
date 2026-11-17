@@ -402,6 +402,16 @@ header, main, footer { position: relative; z-index: 1; }
 }
 @keyframes stroke { 100% { stroke-dashoffset: 0; } }
 
+.change-link {
+  color: #7fe0f5;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-top: 20px;
+  display: inline-block;
+}
+.change-link:hover { color: #fff; }
+
 /* ============================================================
    FOOTER & LOADER
    ============================================================ */
@@ -643,14 +653,15 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       <button class="btn btn-schedule" onclick="submitPresent()">Confirm RSVP</button>
     </div>
 
-    <!-- Step 3: Success Tick (Hidden by default) -->
+    <!-- Step 3: Success / Status Tick (Hidden by default) -->
     <div id="rsvpStep3" class="rsvp-step" style="display:none; padding: 20px 0;">
       <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
         <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
         <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
       </svg>
-      <h3 style="font-size:1.8rem; color:#fff; margin:0 0 10px;">RSVP Confirmed!</h3>
-      <p id="rsvpSuccessMsg" style="color:var(--muted); font-size:1rem;">See you there!</p>
+      <h3 style="font-size:1.6rem; color:#fff; margin:0 0 10px;">RSVP Confirmed!</h3>
+      <p id="rsvpSuccessMsg" style="color:var(--muted); font-size:1rem;"></p>
+      <span class="change-link" onclick="changeRsvp()">Change RSVP</span>
     </div>
 
   </div>
@@ -660,7 +671,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDduauqRyaR-G2QZYok3YZRypC_8VHUffk",
@@ -683,7 +694,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   
   // RSVP Modal State
   let activeMeetingId = "";
-  let activeMeetingTheme = "";
 
   // ==========================================
   // 1. TAB SWITCHING LOGIC
@@ -818,9 +828,8 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   // --- RSVP MODAL LOGIC ---
   const rsvpModal = document.getElementById('rsvpModal');
 
-  window.openRsvpModal = function(id, theme, dateStr, timeStr) {
+  window.openRsvpModal = async function(id, theme, dateStr, timeStr) {
     activeMeetingId = id;
-    activeMeetingTheme = theme;
     
     // Populate details
     document.getElementById('rsvpTheme').textContent = theme;
@@ -832,12 +841,39 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     document.getElementById('rsvpStep3').style.display = 'none';
     document.getElementById('rsvpAdditional').value = '';
     
+    // Check if user has already RSVP'd
+    try {
+      const rsvpRef = doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission);
+      const rsvpSnap = await getDoc(rsvpRef);
+
+      if (rsvpSnap.exists()) {
+        const data = rsvpSnap.data();
+        // They already RSVP'd! Show them the success screen.
+        document.getElementById('rsvpStep1').style.display = 'none';
+        document.getElementById('rsvpStep3').style.display = 'block';
+        
+        if (data.status === "Present") {
+          document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Present</strong>.<br>Food: ${data.food} ${data.additional ? '('+data.additional+')' : ''}`;
+        } else {
+          document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Absent</strong>.`;
+        }
+      }
+    } catch (err) {
+      console.error("Error checking RSVP status:", err);
+    }
+    
     // Show modal
     rsvpModal.classList.add('open');
   }
 
   window.closeRsvpModal = function() {
     rsvpModal.classList.remove('open');
+  }
+
+  window.changeRsvp = function() {
+    // Hide status, show step 1 again
+    document.getElementById('rsvpStep3').style.display = 'none';
+    document.getElementById('rsvpStep1').style.display = 'block';
   }
 
   window.selectPresent = function() {
@@ -852,7 +888,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     btn.disabled = true;
 
     try {
-      // Save absent status to Firestore
       await setDoc(doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission), {
         name: currentUserName,
         admissionNo: currentUserAdmission,
@@ -864,7 +899,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 
       document.getElementById('rsvpStep1').style.display = 'none';
       document.getElementById('rsvpStep3').style.display = 'block';
-      document.getElementById('rsvpSuccessMsg').textContent = "We'll miss you, but thanks for letting us know!";
+      document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Absent</strong>.`;
       
     } catch (err) {
       console.error("Error saving RSVP:", err);
@@ -885,7 +920,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     btn.disabled = true;
 
     try {
-      // Save present status to Firestore
       await setDoc(doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission), {
         name: currentUserName,
         admissionNo: currentUserAdmission,
@@ -897,7 +931,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 
       document.getElementById('rsvpStep2').style.display = 'none';
       document.getElementById('rsvpStep3').style.display = 'block';
-      document.getElementById('rsvpSuccessMsg').textContent = "See you at the meeting! Your food preference is noted.";
+      document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Present</strong>.<br>Food: ${food} ${additional ? '('+additional+')' : ''}`;
 
     } catch (err) {
       console.error("Error saving RSVP:", err);
