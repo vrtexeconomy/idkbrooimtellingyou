@@ -157,21 +157,14 @@ header, main, footer { position: relative; z-index: 1; }
 }
 .btn-attendance:hover { background: rgba(127, 232, 207, 0.25); }
 
-/* Admin Form */
 .admin-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-top: 24px;
 }
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.form-group.full-width {
-  grid-column: 1 / -1;
-}
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full-width { grid-column: 1 / -1; }
 .form-group label {
   font-size: 0.8rem;
   text-transform: uppercase;
@@ -285,7 +278,15 @@ header, main, footer { position: relative; z-index: 1; }
   align-items: center;
   justify-content: center;
   text-align: center;
+  cursor: pointer;
+  transition: transform .4s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);
 }
+.streak-card:hover {
+  border-color: rgba(160,235,255,.4);
+  box-shadow: 0 10px 30px -12px rgba(127,232,207,.35);
+  transform: translateY(-2px);
+}
+.streak-card:active { transform: scale(0.98); }
 .streak-number {
   font-size: 4rem;
   font-weight: 600;
@@ -503,6 +504,270 @@ input:checked + .slider:before {
 }
 
 /* ============================================================
+   STREAK CALENDAR MODAL
+   ============================================================ */
+.streak-modal .modal-card {
+  width: min(480px, 92%);
+  height: 560px;
+  max-height: 92vh;
+  padding: 24px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  --start-x: 0px;
+  --start-y: 0px;
+  transform: translate(var(--start-x), var(--start-y)) scale(0.15);
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.streak-modal.open .modal-card {
+  transform: translate(0, 0) scale(1);
+}
+.streak-modal .modal-close {
+  top: 14px; right: 14px;
+  width: 34px; height: 34px;
+}
+
+.streak-views {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+.streak-views::-webkit-scrollbar { width: 6px; }
+.streak-views::-webkit-scrollbar-track { background: transparent; }
+.streak-views::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.15); border-radius: 6px;
+}
+
+.streak-view { transition: opacity 0.22s ease, transform 0.22s ease; }
+.streak-view.hidden { display: none; }
+.streak-view.fade-in { animation: streakViewIn 0.35s var(--ease) both; }
+@keyframes streakViewIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Calendar title */
+.streak-modal-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.streak-modal-title h2 {
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: #fff;
+  margin: 0 0 4px;
+  letter-spacing: -0.02em;
+}
+.streak-modal-title p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* Calendar header */
+.streak-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 0 4px;
+}
+.streak-cal-month {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.streak-nav-btn {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  color: var(--ink);
+  display: grid; place-items: center;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s, opacity 0.25s;
+}
+.streak-nav-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,.12);
+  transform: scale(1.08);
+}
+.streak-nav-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+/* Calendar grid */
+.streak-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 6px;
+  gap: 4px;
+}
+.streak-weekday {
+  text-align: center;
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 4px 0;
+  font-weight: 500;
+}
+
+.streak-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  justify-items: center;
+  gap: 4px;
+}
+.streak-cal-grid.fade-in { animation: calGridIn 0.35s var(--ease) both; }
+@keyframes calGridIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cal-cell {
+  width: clamp(32px, 8vw, 44px);
+  height: clamp(32px, 8vw, 44px);
+  display: grid;
+  place-items: center;
+  position: relative;
+  font-size: 0.82rem;
+  color: rgba(234,246,251,.85);
+}
+.cal-cell.empty { visibility: hidden; }
+.cal-day-num {
+  position: relative;
+  z-index: 1;
+  transition: color 0.25s;
+  font-weight: 400;
+}
+.cal-cell.has-meeting { cursor: pointer; }
+.cal-cell.has-meeting::before {
+  content: '';
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+}
+.cal-cell.present::before {
+  background: rgba(127,232,207,0.18);
+  border: 1.5px solid #7fe8cf;
+  box-shadow: 0 0 10px rgba(127,232,207,0.22);
+}
+.cal-cell.absent::before {
+  background: rgba(255,138,138,0.14);
+  border: 1.5px solid #ff8a8a;
+}
+.cal-cell.unmarked::before {
+  background: rgba(255,255,255,0.04);
+  border: 1.5px dashed rgba(255,255,255,0.28);
+}
+.cal-cell.has-meeting:hover::before { transform: scale(1.14); }
+.cal-cell.present:hover .cal-day-num { color: #7fe8cf; }
+.cal-cell.absent:hover .cal-day-num { color: #ff8a8a; }
+
+/* Legend */
+.streak-legend {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+.streak-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.streak-legend .dot {
+  width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+}
+.streak-legend .dot.present {
+  background: rgba(127,232,207,0.5);
+  border: 1.5px solid #7fe8cf;
+  box-shadow: 0 0 6px rgba(127,232,207,0.4);
+}
+.streak-legend .dot.absent {
+  background: rgba(255,138,138,0.4);
+  border: 1.5px solid #ff8a8a;
+}
+.streak-legend .dot.unmarked {
+  background: transparent;
+  border: 1.5px dashed rgba(255,255,255,0.3);
+}
+
+/* Detail view */
+.streak-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 6px 0;
+  margin-bottom: 20px;
+  transition: color 0.25s, transform 0.25s;
+}
+.streak-back:hover { color: #fff; transform: translateX(-2px); }
+
+.streak-detail-status {
+  display: inline-block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 100px;
+  margin-bottom: 14px;
+}
+.streak-detail-status.present {
+  background: rgba(127,232,207,0.15);
+  color: #7fe8cf;
+  border: 1px solid rgba(127,232,207,0.4);
+}
+.streak-detail-status.absent {
+  background: rgba(255,138,138,0.14);
+  color: #ff8a8a;
+  border: 1px solid rgba(255,138,138,0.35);
+}
+.streak-detail-status.unmarked {
+  background: rgba(255,255,255,0.05);
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.streak-detail-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #fff;
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+.streak-detail-date {
+  color: #7fe0f5;
+  font-size: 0.88rem;
+  margin: 0 0 24px;
+}
+.streak-detail-section { margin-bottom: 18px; }
+.streak-detail-section h4 {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  margin: 0 0 6px;
+  font-weight: 500;
+}
+.streak-detail-section p {
+  margin: 0;
+  color: rgba(234,246,251,0.82);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+/* ============================================================
    FOOTER & LOADER
    ============================================================ */
 footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4vw,40px) 52px; }
@@ -608,7 +873,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
           </div>
         </div>
 
-        <div class="dash-card streak-card">
+        <div class="dash-card streak-card" onclick="openStreakModal()">
           <h3 style="justify-content:center;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
             Meeting Streak
@@ -621,6 +886,8 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
             <span id="freezeCount">0</span>
             <span>Streak Freeze</span>
           </div>
+
+          <p style="font-size:0.72rem; color:var(--muted); margin-top:16px; letter-spacing:0.05em;">Click to see your history →</p>
         </div>
       </section>
     </div>
@@ -774,6 +1041,84 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     </div>
 
     <button class="btn btn-schedule" onclick="saveAttendance()">Save Attendance</button>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- STREAK CALENDAR MODAL                      -->
+<!-- ========================================== -->
+<div class="modal streak-modal" id="streakModal">
+  <div class="modal-backdrop" onclick="closeStreakModal()"></div>
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeStreakModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+
+    <div class="streak-views">
+      <!-- Calendar view -->
+      <div id="streakCalView" class="streak-view">
+        <div class="streak-modal-title">
+          <h2>Your Meeting History</h2>
+          <p>Tap any highlighted day to see details</p>
+        </div>
+
+        <div class="streak-cal-header">
+          <button class="streak-nav-btn" id="calPrevBtn" onclick="changeMonth(-1)" aria-label="Previous month">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </button>
+          <div class="streak-cal-month" id="calMonthLabel">Month Year</div>
+          <button class="streak-nav-btn" id="calNextBtn" onclick="changeMonth(1)" aria-label="Next month">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="streak-weekdays">
+          <div class="streak-weekday">Sun</div>
+          <div class="streak-weekday">Mon</div>
+          <div class="streak-weekday">Tue</div>
+          <div class="streak-weekday">Wed</div>
+          <div class="streak-weekday">Thu</div>
+          <div class="streak-weekday">Fri</div>
+          <div class="streak-weekday">Sat</div>
+        </div>
+
+        <div class="streak-cal-grid" id="calGrid"></div>
+
+        <div class="streak-legend">
+          <span><i class="dot present"></i>Attended</span>
+          <span><i class="dot absent"></i>Missed</span>
+          <span><i class="dot unmarked"></i>Not marked</span>
+        </div>
+      </div>
+
+      <!-- Detail view -->
+      <div id="streakDetailView" class="streak-view hidden">
+        <button class="streak-back" onclick="backToCalendar()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+          Back to calendar
+        </button>
+
+        <div class="streak-detail-status" id="detailStatus">Status</div>
+        <h2 class="streak-detail-title" id="detailTheme">Theme</h2>
+        <p class="streak-detail-date" id="detailDate">Date & Time</p>
+
+        <div class="streak-detail-section">
+          <h4>About</h4>
+          <p id="detailAbout"></p>
+        </div>
+
+        <div class="streak-detail-section">
+          <h4>Rules</h4>
+          <p id="detailRules"></p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -981,9 +1326,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
           streak++;
           freezeProgress++;
           if (freezeProgress >= 2) {
-            if (freezes < 1) {
-              freezes = 1;
-            }
+            if (freezes < 1) freezes = 1;
             freezeProgress = 0;
           }
         } else {
@@ -1257,7 +1600,215 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   };
 
   // ==========================================
-  // 7. LOGOUT
+  // 7. STREAK CALENDAR MODAL
+  // ==========================================
+  const streakModal = document.getElementById('streakModal');
+  let meetingHistory = {};
+  let calMonth = new Date().getMonth();
+  let calYear = new Date().getFullYear();
+
+  window.openStreakModal = async function() {
+    if (streakModal.classList.contains('open')) return;
+    if (!currentUserAdmission) return;
+    
+    // Fetch data
+    meetingHistory = await buildMeetingHistory();
+    
+    // Start on the most recent month with meetings, else current month
+    const dates = Object.keys(meetingHistory).sort();
+    if (dates.length > 0) {
+      const latest = new Date(dates[dates.length - 1]);
+      calMonth = latest.getMonth();
+      calYear = latest.getFullYear();
+    } else {
+      const now = new Date();
+      calMonth = now.getMonth();
+      calYear = now.getFullYear();
+    }
+    
+    // Reset to calendar view
+    document.getElementById('streakCalView').classList.remove('hidden');
+    document.getElementById('streakDetailView').classList.add('hidden');
+    
+    renderCalendar(false);
+    
+    // Compute the "start" transform so the modal appears to grow out of the streak card
+    const modalCard = streakModal.querySelector('.modal-card');
+    const card = document.querySelector('.streak-card');
+    
+    if (modalCard && card) {
+      const cardRect = card.getBoundingClientRect();
+      const cardCx = cardRect.left + cardRect.width / 2;
+      const cardCy = cardRect.top + cardRect.height / 2;
+      const vw = window.innerWidth, vh = window.innerHeight;
+      
+      if (cardCx > 0 && cardCx < vw && cardCy > 0 && cardCy < vh) {
+        // Measure modal's layout center (zero translation)
+        modalCard.style.setProperty('--start-x', '0px');
+        modalCard.style.setProperty('--start-y', '0px');
+        const mr = modalCard.getBoundingClientRect();
+        const modalCx = mr.left + mr.width / 2;
+        const modalCy = mr.top + mr.height / 2;
+        
+        const dx = cardCx - modalCx;
+        const dy = cardCy - modalCy;
+        modalCard.style.setProperty('--start-x', dx + 'px');
+        modalCard.style.setProperty('--start-y', dy + 'px');
+      } else {
+        modalCard.style.setProperty('--start-x', '0px');
+        modalCard.style.setProperty('--start-y', '0px');
+      }
+      
+      // Force reflow so the transition sees the start state
+      void modalCard.offsetWidth;
+    }
+    
+    streakModal.classList.add('open');
+  }
+
+  window.closeStreakModal = function() {
+    streakModal.classList.remove('open');
+  }
+
+  async function buildMeetingHistory() {
+    const today = new Date().toISOString().split('T')[0];
+    const snap = await getDocs(query(collection(db, "meetings"), orderBy("date", "asc")));
+    
+    const past = [];
+    snap.forEach(d => {
+      if (d.data().date < today) past.push(d);
+    });
+    
+    const rsvps = await Promise.all(
+      past.map(m => getDoc(doc(db, "meetings", m.id, "rsvps", currentUserAdmission)))
+    );
+    
+    const map = {};
+    past.forEach((m, i) => {
+      const data = m.data();
+      const rs = rsvps[i];
+      const rsvpData = rs.exists() ? rs.data() : null;
+      
+      const rsvpStatus = rsvpData?.rsvpStatus || rsvpData?.status || 'None';
+      const attStatus = rsvpData?.attendanceStatus || 'None';
+      
+      let status;
+      if (attStatus === 'None') status = 'unmarked';
+      else if (rsvpStatus === 'Present' && attStatus === 'Present') status = 'present';
+      else status = 'absent';
+      
+      map[data.date] = { status, meeting: data, meetingId: m.id, rsvp: rsvpData };
+    });
+    
+    return map;
+  }
+
+  function renderCalendar(animate = true) {
+    const firstDay = new Date(calYear, calMonth, 1);
+    const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+    const startWeekday = firstDay.getDay();
+    
+    document.getElementById('calMonthLabel').textContent = 
+      firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    
+    // Disable "next" if we're at the current month
+    const now = new Date();
+    const isAtCurrent = (calYear > now.getFullYear()) || 
+      (calYear === now.getFullYear() && calMonth >= now.getMonth());
+    document.getElementById('calNextBtn').disabled = isAtCurrent;
+    
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+    
+    for (let i = 0; i < startWeekday; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell empty';
+      grid.appendChild(cell);
+    }
+    
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const entry = meetingHistory[dateStr];
+      
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell';
+      
+      const num = document.createElement('span');
+      num.className = 'cal-day-num';
+      num.textContent = d;
+      
+      if (entry) {
+        cell.classList.add('has-meeting', entry.status);
+        cell.onclick = () => showMeetingDetail(dateStr);
+      }
+      
+      cell.appendChild(num);
+      grid.appendChild(cell);
+    }
+    
+    if (animate) {
+      grid.classList.remove('fade-in');
+      void grid.offsetWidth;
+      grid.classList.add('fade-in');
+    }
+  }
+
+  window.changeMonth = function(delta) {
+    calMonth += delta;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderCalendar(true);
+  }
+
+  window.showMeetingDetail = function(dateStr) {
+    const entry = meetingHistory[dateStr];
+    if (!entry) return;
+    
+    const m = entry.meeting;
+    const statusEl = document.getElementById('detailStatus');
+    
+    statusEl.className = 'streak-detail-status ' + entry.status;
+    statusEl.textContent = 
+      entry.status === 'present' ? '✓ Attended' :
+      entry.status === 'absent' ? '✕ Missed' : 'Pending';
+    
+    document.getElementById('detailTheme').textContent = m.theme;
+    
+    const dateObj = new Date(m.date + 'T' + m.time);
+    const dateText = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    const timeText = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    document.getElementById('detailDate').textContent = `${dateText} at ${timeText}`;
+    
+    document.getElementById('detailAbout').textContent = m.about || 'No description provided.';
+    document.getElementById('detailRules').textContent = m.rules || 'No rules listed.';
+    
+    // Switch views
+    document.getElementById('streakCalView').classList.add('hidden');
+    const detail = document.getElementById('streakDetailView');
+    detail.classList.remove('hidden');
+    detail.classList.remove('fade-in');
+    void detail.offsetWidth;
+    detail.classList.add('fade-in');
+  }
+
+  window.backToCalendar = function() {
+    document.getElementById('streakDetailView').classList.add('hidden');
+    const cal = document.getElementById('streakCalView');
+    cal.classList.remove('hidden');
+    cal.classList.remove('fade-in');
+    void cal.offsetWidth;
+    cal.classList.add('fade-in');
+  }
+
+  // Close streak modal on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && streakModal.classList.contains('open')) {
+      closeStreakModal();
+    }
+  });
+
+  // ==========================================
+  // 8. LOGOUT
   // ==========================================
   document.getElementById('logoutBtn').addEventListener('click', () => {
     signOut(auth).then(() => {
