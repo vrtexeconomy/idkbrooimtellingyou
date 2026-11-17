@@ -487,7 +487,7 @@ h2.title{
 }
 
 /* ============================================================
-   GAVELIERS SECTION (New)
+   GAVELIERS SECTION
    ============================================================ */
 .gaveliers-grid {
   display: grid;
@@ -831,4 +831,236 @@ footer{
 
       <!-- The database will inject the cards here -->
       <div class="gaveliers-grid reveal" id="gaveliersGrid">
-        <p style="color:var(--muted);">Loading members...</
+        <p style="color:var(--muted);">Loading members...</p>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="section wrap" id="stats" style="padding-top:0">
+      <div class="stats reveal">
+        <div class="stat"><b>48+</b><span>Active members</span></div>
+        <div class="stat"><b>24</b><span>Meetings a year</span></div>
+        <div class="stat"><b>120+</b><span>Speeches delivered</span></div>
+        <div class="stat"><b>100%</b><span>Supportive room</span></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="foot-inner">
+      <div style="display:flex;align-items:center;gap:11px">
+        <span class="pearl-mark" style="width:22px;height:22px" aria-hidden="true"></span>
+        <span>© <span id="year"></span> Pearl Gavel Club</span>
+      </div>
+      <div class="foot-links">
+        <a href="#about">About</a>
+        <a href="#program">Program</a>
+        <a href="#gaveliers">Gaveliers</a>
+        <a href="mailto:hello@pearlgavelclub.org">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card">
+    <button class="modal-close" type="button" data-close aria-label="Close login">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+        <path d="M18 6 6 18M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <h3 id="loginTitle">Welcome back</h3>
+    <p class="modal-sub">Log in with your admission number.</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="admission">Admission number (only numbers)</label>
+        <input id="admission" name="admission" type="text" inputmode="numeric" pattern="[0-9]+" placeholder="e.g. 20240123" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+      <button class="btn btn-primary" type="submit">Log in</button>
+    </form>
+
+    <p class="modal-note">
+      New member?
+      <a href="mailto:hello@pearlgavelclub.org?subject=Joining%20Pearl%20Gavel%20Club">Ask about joining</a>
+    </p>
+  </div>
+</div>
+
+<script type="module">
+  // 1. Import Firebase functions
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+
+  // 2. Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDduauqRyaR-G2QZYok3YZRypC_8VHUffk",
+    authDomain: "pearlgavelclub.firebaseapp.com",
+    projectId: "pearlgavelclub",
+    storageBucket: "pearlgavelclub.firebasestorage.app",
+    messagingSenderId: "1004163489261",
+    appId: "1:1004163489261:web:1980c6c44a24f693e65be4",
+    measurementId: "G-6ZRKC8TWSP"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  // ==========================================
+  // FETCH AND DISPLAY GAVELIERS
+  // ==========================================
+  async function loadGaveliers() {
+    const grid = document.getElementById('gaveliersGrid');
+    
+    try {
+      const querySnapshot = await getDocs(collection(db, "gaveliers"));
+      
+      if (querySnapshot.empty) {
+        grid.innerHTML = '<p style="color:var(--muted);">No members found in the database yet.</p>';
+        return;
+      }
+
+      grid.innerHTML = ""; // Clear loading text
+      
+      querySnapshot.forEach((doc) => {
+        const person = doc.data();
+        
+        // Build the card HTML
+        grid.innerHTML += `
+          <div class="gavelier-card">
+            <img src="${person.imageUrl || 'https://via.placeholder.com/120?text=No+Photo'}" alt="${person.name}" class="gavelier-img">
+            <h4 class="gavelier-name">${person.name}</h4>
+            <div class="gavelier-role">${person.role} <span style="opacity:0.5;">|</span> ${person.class || ''}</div>
+            <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 12px;">
+              ${person.food || ''}
+            </div>
+            <div class="gavelier-phone">
+              ${person.phone}
+            </div>
+          </div>
+        `;
+      });
+    } catch (err) {
+      console.error("Error loading gaveliers:", err);
+      grid.innerHTML = '<p style="color:#ff6b6b;">Failed to connect to Firebase.</p>';
+    }
+  }
+  
+  // Call the function to load data
+  loadGaveliers();
+
+  // ==========================================
+  // LOGIN LOGIC
+  // ==========================================
+  const modal = document.getElementById('loginModal');
+  const loginForm = document.getElementById('loginForm');
+  const admissionInput = document.getElementById('admission');
+  let lastFocused = null;
+
+  admissionInput.addEventListener('input', () => {
+    const digitsOnly = admissionInput.value.replace(/\D/g, '');
+    if (admissionInput.value !== digitsOnly) admissionInput.value = digitsOnly;
+  });
+
+  function openModal() {
+    lastFocused = document.activeElement;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => admissionInput.focus(), 220);
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    if (lastFocused) lastFocused.focus();
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', openModal);
+  modal.querySelectorAll('[data-close]').forEach((el) => {
+    el.addEventListener('click', () => closeModal());
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const admissionNumber = admissionInput.value;
+    // We append a fake domain so Firebase accepts it as an email
+    const fakeEmail = `${admissionNumber}@pearlgavelclub.com`; 
+    const password = document.getElementById('password').value;
+
+    const btn = loginForm.querySelector('button[type="submit"]');
+    const original = btn.textContent;
+    btn.textContent = 'Logging in…';
+    btn.style.opacity = '.75';
+
+    try {
+      await signInWithEmailAndPassword(auth, fakeEmail, password);
+      alert("Login successful! Welcome back.");
+      closeModal();
+      // window.location.href = '/dashboard.html'; // Add redirect later
+    } catch (err) {
+      console.error(err);
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found') {
+        alert("Invalid admission number or password.");
+      } else {
+        alert("Login failed: " + err.message);
+      }
+    } finally {
+      btn.textContent = original;
+      btn.style.opacity = '';
+    }
+  });
+
+  // ==========================================
+  // SCROLL ANIMATIONS & NAV
+  // ==========================================
+  const nav = document.getElementById('nav');
+  let navTicking = false;
+  function updateNav(){
+    nav.classList.toggle('scrolled', window.scrollY > 24);
+    navTicking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!navTicking){
+      navTicking = true;
+      requestAnimationFrame(updateNav);
+    }
+  }, { passive: true });
+  updateNav();
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+    revealEls.forEach((el) => io.observe(el));
+  } else {
+    revealEls.forEach((el) => el.classList.add('in'));
+  }
+</script>
+
+</body>
+</html>
