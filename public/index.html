@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pearl Gavel Club — Find Your Voice</title>
+<meta name="description" content="Pearl Gavel Club is a student-led public speaking and leadership club. Practice speeches, sharpen feedback, and grow confident." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --bg:#014165;
+  --panel:#023a56;
+  --panel-deep:#012e45;
+  --panel-soft:#03455f;
+  --ink:#eaf6fb;
+  --muted:#9cc3d7;
+  --brd:rgba(255,255,255,.09);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --maxw:1180px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+
+html{
+  scroll-behavior:smooth; 
+  background-color:var(--bg);
+}
+
+body{
+  margin:0;
+  background-color:var(--bg);
+  color:var(--ink);
+  font-family:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-weight:300;
+  line-height:1.65;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+
+::selection{background:rgba(120,225,255,.32);color:#fff}
+
+/* ============================================================
+   PAGE WRAPPER (Fixes the scrolling line glitch)
+   ============================================================ */
+.page {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   BACKGROUND — Absolute (scrolls with page, zero glitches)
+   ============================================================ */
+.bg{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(900px 640px at 8% -12%, #06658f 0%, rgba(6,101,143,0) 62%),
+    radial-gradient(780px 620px at 97% -2%, #01787e 0%, rgba(1,120,126,0) 58%),
+    radial-gradient(1100px 820px at 50% 118%, #012a41 0%, rgba(1,42,65,0) 66%);
+}
+
+.glow{
+  position:absolute;
+  width:90vw;
+  height:90vw;
+  max-width:900px;
+  max-height:900px;
+  left:-20vw;
+  top:-20vw;
+  background:radial-gradient(circle at center, rgba(40,175,230,.35), rgba(40,175,230,0) 62%);
+  animation:drift 34s ease-in-out infinite alternate;
+}
+
+@keyframes drift{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(12vw,9vh,0)}
+}
+
+/* Push content above the background */
+header, main, footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   NAVBAR — smooth shadow fade
+   ============================================================ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:60;
+  padding:16px clamp(14px,4vw,40px);
+  animation:navIn .8s var(--ease) both .1s;
+}
+@keyframes navIn{
+  from{opacity:0;transform:translate3d(0,-20px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+
+.nav-inner{
+  position:relative;
+  max-width:var(--maxw);
+  margin:0 auto;
+  display:flex;align-items:center;gap:clamp(14px,3vw,34px);
+  padding:9px 10px 9px 18px;
+  border-radius:100px;
+  background:var(--panel-deep);
+  border:1px solid rgba(255,255,255,.07);
+  transition:border-color .4s var(--ease);
+}
+
+.nav-inner::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  z-index: -1;
+  box-shadow: 0 14px 40px rgba(0,10,20,.6);
+  opacity: 0;
+  transition: opacity .4s var(--ease);
+  pointer-events: none;
+}
+
+.nav.scrolled .nav-inner {
+  border-color: rgba(255,255,255,.12);
+}
+.nav.scrolled .nav-inner::after {
+  opacity: 1;
+}
+
+/* brand */
+.brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.pearl-mark{
+  width:30px;height:30px;border-radius:50%;
+  background:radial-gradient(circle at 32% 28%, #ffffff 0%, #dcf5ff 26%, #8ad9f2 58%, #2d9fc4 100%);
+  box-shadow:0 0 0 1px rgba(255,255,255,.45) inset, 0 0 18px rgba(140,225,255,.5);
+  position:relative;
+  flex-shrink:0;
+}
+.pearl-mark::after{
+  content:'';position:absolute;
+  width:8px;height:6px;border-radius:50%;
+  top:6px;left:7px;
+  background:rgba(255,255,255,.95);
+  filter:blur(1px);
+}
+
+.brand-text{display:flex;flex-direction:column;line-height:1.05}
+.brand-text strong{font-size:.92rem;font-weight:600;letter-spacing:.22em}
+.brand-text span{
+  font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--muted);font-weight:400;
+}
+
+/* links */
+.nav-links{display:flex;align-items:center;gap:clamp(14px,2.2vw,30px);margin-left:auto}
+.nav-links a{
+  font-size:.87rem;letter-spacing:.03em;color:rgba(234,246,251,.75);
+  position:relative;padding:6px 0;
+  transition:color .3s var(--ease);
+}
+.nav-links a::after{
+  content:'';position:absolute;left:0;bottom:0;
+  width:100%;height:1px;background:linear-gradient(90deg,#7fe0f5,#8ef0d8);
+  transform:scaleX(0);transform-origin:right;
+  transition:transform .4s var(--ease);
+}
+.nav-links a:hover{color:#fff}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  position:relative;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:13px 26px;border-radius:100px;
+  font-size:.92rem;font-weight:500;letter-spacing:.015em;
+  cursor:pointer;overflow:hidden;white-space:nowrap;
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease),
+             background-color .3s var(--ease), border-color .3s var(--ease), color .3s var(--ease);
+}
+.btn:hover{transform:translate3d(0,-2px,0)}
+.btn:active{transform:translate3d(0,0,0) scale(.985)}
+
+.btn-primary{
+  background:linear-gradient(180deg,#ffffff 0%,#ddf1fa 100%);
+  color:#013a58;
+  font-weight:600;
+  box-shadow:0 10px 24px -12px rgba(120,220,255,.6);
+}
+.btn-primary:hover{box-shadow:0 16px 34px -14px rgba(120,220,255,.85)}
+
+/* shine sweep */
+.btn-primary::before,
+.btn-login::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 32%,rgba(255,255,255,.75) 48%,transparent 64%);
+  transform:translate3d(-130%,0,0);
+  transition:transform .8s var(--ease);
+  pointer-events:none;
+}
+.btn-primary:hover::before,
+.btn-login:hover::before{transform:translate3d(130%,0,0)}
+
+.btn-login{
+  padding:11px 22px;
+  background:linear-gradient(180deg,#ffffff,#ddf1fa);
+  color:#013a58;font-weight:600;font-size:.87rem;
+  box-shadow:0 8px 20px -12px rgba(120,220,255,.7);
+  margin-left:6px;
+}
+.btn-login svg{width:14px;height:14px;transition:transform .35s var(--ease)}
+.btn-login:hover svg{transform:translate3d(3px,0,0)}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.wrap{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding-inline:clamp(16px,4vw,40px);
+}
+section{scroll-margin-top:110px}
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:7px 15px 7px 12px;border-radius:100px;
+  background:var(--panel-deep);
+  border:1px solid rgba(255,255,255,.09);
+  font-size:.73rem;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(234,246,251,.85);font-weight:400;
+}
+.eyebrow .dot{
+  width:6px;height:6px;border-radius:50%;background:#7fe8cf;
+  box-shadow:0 0 8px rgba(127,232,207,.9);
+  animation:blink 2.8s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ============================================================
+   HERO — 2 column layout for desktop
+   ============================================================ */
+.hero{
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(30px, 5vw, 70px);
+  align-items: center;
+  padding-top:clamp(126px,17vh,180px);
+  padding-bottom:clamp(46px,7vh,80px);
+}
+
+.hero-copy {
+  max-width: 700px;
+}
+
+.hero h1{
+  font-size:clamp(2.5rem,5.5vw,4.6rem);
+  line-height:1.04;
+  font-weight:400;
+  letter-spacing:-.035em;
+  margin:22px 0 0;
+}
+.line{display:block}
+
+.word{
+  display:inline-block;
+  opacity:0;
+  transform:translate3d(0,.7em,0);
+  animation:wordUp .75s var(--ease) forwards;
+  animation-delay:calc(.22s + var(--i) * .055s);
+}
+@keyframes wordUp{
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+
+.serif{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-style:italic;font-weight:400;letter-spacing:-.01em;
+  background:linear-gradient(115deg,#ffffff 0%,#a9e9ff 45%,#8df0d6 100%);
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;
+  padding-right:.04em;
+}
+
+.hero p.lead{
+  max-width:54ch;
+  margin:26px 0 0;
+  font-size:clamp(1rem,1.25vw,1.12rem);
+  color:rgba(234,246,251,.75);
+  font-weight:300;
+  animation:fadeUp .9s var(--ease) both .8s;
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translate3d(0,18px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+
+.cta-row{
+  display:flex;flex-wrap:wrap;gap:13px;
+  margin-top:36px;
+  animation:fadeUp .9s var(--ease) both .95s;
+}
+
+/* --- Right side visual (Quote Card) --- */
+.hero-visual {
+  display: flex;
+  justify-content: flex-end;
+  animation: cardIn .9s var(--ease) both .5s,
+             floaty 10s ease-in-out 1.4s infinite alternate;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translate3d(0, 30px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes floaty {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -12px, 0); }
+}
+
+.quote-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 38px 34px;
+  border-radius: 26px;
+  background: var(--panel);
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 30px 60px -30px rgba(0,10,20,.85);
+}
+
+.quote-mark {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 5rem;
+  line-height: 0.8;
+  color: rgba(140, 235, 255, 0.25);
+  display: block;
+  margin-bottom: -10px;
+}
+
+.quote-text {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-size: 1.6rem;
+  line-height: 1.35;
+  color: #fff;
+  margin: 0 0 24px;
+}
+
+.quote-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.quote-author::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--muted);
+}
+
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+.marquee{
+  position:relative;
+  padding:16px 0;
+  border-top:1px solid rgba(255,255,255,.07);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.02);
+  overflow:hidden;
+}
+
+.marquee::before {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 12%;
+  z-index: 2; pointer-events: none;
+  background: linear-gradient(90deg, var(--bg) 0%, transparent 100%);
+}
+.marquee::after {
+  content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 12%;
+  z-index: 2; pointer-events: none;
+  background: linear-gradient(-90deg, var(--bg) 0%, transparent 100%);
+}
+
+.marquee-track{
+  display:flex;width:max-content;
+  animation:scrollX 38s linear infinite;
+  will-change:transform;
+}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes scrollX{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-50%,0,0)}
+}
+.marquee-track span{
+  display:inline-flex;align-items:center;gap:26px;
+  padding-right:26px;
+  font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(157,194,214,.85);white-space:nowrap;
+}
+.marquee-track span::after{
+  content:'✦';color:rgba(127,232,207,.55);font-size:.75rem;
+}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.section{padding-block:clamp(64px,10vh,110px)}
+
+.about-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(28px,5vw,70px);
+  align-items:start;
+}
+h2.title{
+  font-size:clamp(1.9rem,3.6vw,3rem);
+  line-height:1.1;
+  letter-spacing:-.03em;
+  font-weight:400;
+  margin:18px 0 0;
+}
+.about-grid p{
+  margin:0 0 18px;
+  color:rgba(234,246,251,.72);
+  font-size:1.02rem;
+  max-width:56ch;
+}
+.about-grid p strong{color:#fff;font-weight:500}
+
+/* cards */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(228px,1fr));
+  gap:16px;
+  margin-top:clamp(34px,5vh,52px);
+}
+.card{
+  position:relative;
+  padding:26px 24px 30px;
+  border-radius:22px;
+  background:var(--panel);
+  border:1px solid var(--brd);
+  transition:transform .4s var(--ease), border-color .4s var(--ease),
+             box-shadow .4s var(--ease);
+}
+.card:hover{
+  transform:translate3d(0,-7px,0);
+  border-color:rgba(160,235,255,.28);
+  box-shadow:0 24px 46px -24px rgba(0,10,20,.85);
+}
+.card .num{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:1.45rem;
+  color:rgba(127,224,245,.85);
+  line-height:1;
+  display:block;
+  margin-bottom:18px;
+}
+.card h4{margin:0 0 9px;font-size:1.06rem;font-weight:500;letter-spacing:-.01em}
+.card p{margin:0;font-size:.9rem;color:rgba(234,246,251,.6);line-height:1.6}
+
+/* stats */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:22px;
+  margin-top:clamp(38px,6vh,60px);
+  padding:clamp(26px,4vw,38px) clamp(20px,3vw,34px);
+  border-radius:26px;
+  background:var(--panel);
+  border:1px solid var(--brd);
+}
+.stat b{
+  display:block;
+  font-size:clamp(1.65rem,3.2vw,2.4rem);
+  font-weight:600;
+  letter-spacing:-.03em;
+  line-height:1.1;
+  background:linear-gradient(120deg,#ffffff,#9fe9ff);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.stat span{
+  display:block;margin-top:7px;
+  font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(157,194,214,.9);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{
+  border-top:1px solid rgba(255,255,255,.07);
+  padding:38px clamp(16px,4vw,40px) 52px;
+  margin-top:clamp(30px,5vh,60px);
+}
+.foot-inner{
+  max-width:var(--maxw);margin:0 auto;
+  display:flex;flex-wrap:wrap;gap:20px;
+  justify-content:space-between;align-items:center;
+  font-size:.86rem;color:rgba(157,194,214,.85);
+}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{transition:color .3s var(--ease)}
+.foot-links a:hover{color:#fff}
+
+/* ============================================================
+   LOGIN MODAL
+   ============================================================ */
+.modal{
+  position:fixed;inset:0;z-index:120;
+  display:grid;place-items:center;
+  padding:20px;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s var(--ease);
+}
+.modal.open{opacity:1;pointer-events:auto}
+
+.modal-backdrop{
+  position:absolute;inset:0;
+  background:rgba(0,18,31,.75);
+}
+
+.modal-card{
+  position:relative;
+  width:min(420px,100%);
+  padding:clamp(26px,4vw,36px);
+  border-radius:26px;
+  background:var(--panel-soft);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.9);
+  transform:translate3d(0,20px,0) scale(.97);
+  transition:transform .4s var(--ease);
+}
+.modal.open .modal-card{transform:translate3d(0,0,0) scale(1)}
+
+.modal-close{
+  position:absolute;top:14px;right:14px;
+  width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.13);
+  color:rgba(234,246,251,.8);
+  transition:background-color .3s var(--ease),transform .3s var(--ease);
+}
+.modal-close:hover{background:rgba(255,255,255,.15);transform:rotate(90deg)}
+
+.modal-card h3{margin:0 0 6px;font-size:1.45rem;font-weight:500;letter-spacing:-.02em}
+.modal-card .modal-sub{margin:0 0 24px;font-size:.9rem;color:rgba(234,246,251,.6)}
+
+.field{margin-bottom:14px}
+.field label{
+  display:block;margin-bottom:7px;
+  font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(157,194,214,.9);
+}
+.field input{
+  width:100%;
+  padding:13px 16px;
+  border-radius:14px;
+  background:#023a56;
+  border:1px solid rgba(255,255,255,.14);
+  color:#fff;
+  font-family:inherit;font-size:.94rem;
+  outline:none;
+  transition:border-color .3s var(--ease), background-color .3s var(--ease), box-shadow .3s var(--ease);
+}
+.field input::placeholder{color:rgba(234,246,251,.3)}
+.field input:focus{
+  border-color:rgba(140,235,255,.55);
+  background:#024260;
+  box-shadow:0 0 0 3px rgba(120,220,255,.12);
+}
+
+.modal-card .btn{width:100%;margin-top:10px}
+.modal-note{
+  margin:16px 0 0;text-align:center;
+  font-size:.78rem;color:rgba(157,194,214,.85);
+}
+.modal-note a{color:#9fe9ff;border-bottom:1px solid rgba(159,233,255,.3)}
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.reveal{
+  opacity:0;
+  transform:translate3d(0,24px,0);
+  transition:opacity .6s var(--ease), transform .6s var(--ease);
+  transition-delay:var(--d,0s);
+}
+.reveal.in{opacity:1;transform:translate3d(0,0,0)}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:960px){
+  .hero { grid-template-columns: 1fr; }
+  .hero-visual { display: none; } /* Hides quote card on tablets/mobile to keep clean */
+  .about-grid{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .btn-login{margin-left:auto}
+}
+@media (max-width:760px){
+  .stats{grid-template-columns:repeat(2,1fr);gap:26px 18px}
+  .brand-text span{display:none}
+}
+@media (max-width:420px){
+  .brand-text strong{letter-spacing:.14em;font-size:.82rem}
+  .btn-login{padding:10px 16px;font-size:.82rem}
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  html{scroll-behavior:auto}
+  .reveal,.word{opacity:1 !important;transform:none !important}
+  .glow,.hero-visual{animation:none}
+}
+</style>
+</head>
+
+<body>
+
+<!-- THE PAGE WRAPPER -->
+<div class="page">
+
+  <!-- ===================== BACKGROUND ===================== -->
+  <div class="bg" aria-hidden="true">
+    <div class="glow"></div>
+  </div>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#top" class="brand" aria-label="Pearl Gavel Club home">
+        <span class="pearl-mark" aria-hidden="true"></span>
+        <span class="brand-text">
+          <strong>PEARL</strong>
+          <span>Gavel Club</span>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#program">Program</a>
+        <a href="#stats">Community</a>
+        <a href="#excoms">ExComs</a>
+      </nav>
+
+      <button class="btn btn-login" id="loginBtn" type="button">
+        Log in
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ===================== HERO ===================== -->
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <span class="eyebrow"><i class="dot"></i> Gavel Club · Toastmasters Tradition</span>
+
+        <h1>
+          <span class="line">
+            <span class="word" style="--i:0">Find</span>
+            <span class="word" style="--i:1">your</span>
+            <span class="word serif" style="--i:2">voice.</span>
+          </span>
+          <span class="line">
+            <span class="word" style="--i:3">Own</span>
+            <span class="word" style="--i:4">the</span>
+            <span class="word serif" style="--i:5">room.</span>
+          </span>
+        </h1>
+
+        <p class="lead">
+          Pearl Gavel Club is a student-led public speaking and leadership community.
+          We meet to craft speeches, give honest feedback, and grow confident —
+          one speech at a time.
+        </p>
+
+        <div class="cta-row">
+          <a href="mailto:hello@pearlgavelclub.org?subject=Joining%20Pearl%20Gavel%20Club"
+             class="btn btn-primary">How to join the club</a>
+        </div>
+      </div>
+
+      <!-- Floating Quote Card to fill the space -->
+      <div class="hero-visual">
+        <div class="quote-card">
+          <span class="quote-mark">“</span>
+          <p class="quote-text">The spoken word is the most powerful tool we possess. Use it to build, to inspire, and to lead.</p>
+          <div class="quote-author">Gavel Club Mantra</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== MARQUEE ===================== -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Prepared Speeches</span><span>Table Topics</span><span>Evaluations</span>
+        <span>Leadership Roles</span><span>Icebreakers</span><span>Speech Contests</span>
+        <span>Prepared Speeches</span><span>Table Topics</span><span>Evaluations</span>
+        <span>Leadership Roles</span><span>Icebreakers</span><span>Speech Contests</span>
+      </div>
+    </div>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section class="section wrap" id="about">
+      <div class="about-grid">
+        <div class="reveal">
+          <span class="eyebrow"><i class="dot"></i> About us</span>
+          <h2 class="title">A club built for<br><span class="serif">brave beginners.</span></h2>
+        </div>
+
+        <div class="reveal" style="--d:.08s">
+          <p>
+            <strong>Pearl Gavel Club</strong> is a student chapter in the Toastmasters
+            tradition — a place where nervous first-timers and seasoned speakers share
+            the same stage.
+          </p>
+          <p>
+            Every meeting runs like a real programme: a Toastmaster of the Day, prepared
+            speeches, impromptu Table Topics, and constructive evaluations. You don't just
+            learn to speak. You learn to listen, lead, and lift others up.
+          </p>
+          <p>
+            No experience needed. No judgement given. Just show up, and grow.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROGRAM CARDS ===================== -->
+    <section class="section wrap" id="program" style="padding-top:0">
+      <div class="reveal">
+        <span class="eyebrow"><i class="dot"></i> What we do</span>
+        <h2 class="title">Four ways you'll grow.</h2>
+      </div>
+
+      <div class="cards">
+        <article class="card reveal" style="--d:.04s">
+          <span class="num">01</span>
+          <h4>Prepared Speeches</h4>
+          <p>Craft a message, structure it, and deliver it to a room that's rooting for you.</p>
+        </article>
+
+        <article class="card reveal" style="--d:.1s">
+          <span class="num">02</span>
+          <h4>Table Topics</h4>
+          <p>Think on your feet. Two minutes of impromptu speaking builds real composure.</p>
+        </article>
+
+        <article class="card reveal" style="--d:.16s">
+          <span class="num">03</span>
+          <h4>Evaluations</h4>
+          <p>Give and receive feedback that's specific, kind, and genuinely useful.</p>
+        </article>
+
+        <article class="card reveal" style="--d:.22s">
+          <span class="num">04</span>
+          <h4>Leadership Roles</h4>
+          <p>Run the meeting as Toastmaster, Timer, Grammarian, or General Evaluator.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================== STATS ===================== -->
+    <section class="section wrap" id="stats" style="padding-top:0">
+      <div class="stats reveal">
+        <div class="stat"><b>48+</b><span>Active members</span></div>
+        <div class="stat"><b>24</b><span>Meetings a year</span></div>
+        <div class="stat"><b>120+</b><span>Speeches delivered</span></div>
+        <div class="stat"><b>100%</b><span>Supportive room</span></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer>
+    <div class="foot-inner">
+      <div style="display:flex;align-items:center;gap:11px">
+        <span class="pearl-mark" style="width:22px;height:22px" aria-hidden="true"></span>
+        <span>© <span id="year"></span> Pearl Gavel Club</span>
+      </div>
+      <div class="foot-links">
+        <a href="#about">About</a>
+        <a href="#program">Program</a>
+        <a href="#excoms">ExComs</a>
+        <a href="mailto:hello@pearlgavelclub.org">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</div> <!-- END PAGE WRAPPER -->
+
+<!-- ===================== LOGIN MODAL ===================== -->
+<div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <div class="modal-backdrop" data-close></div>
+
+  <div class="modal-card">
+    <button class="modal-close" type="button" data-close aria-label="Close login">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+        <path d="M18 6 6 18M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <h3 id="loginTitle">Welcome back</h3>
+    <p class="modal-sub">Log in with your admission number.</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="admission">Admission number (only numbers)</label>
+        <input
+          id="admission"
+          name="admission"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]+"
+          placeholder="e.g. 20240123"
+          autocomplete="username"
+          required
+        >
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+      <button class="btn btn-primary" type="submit">Log in</button>
+    </form>
+
+    <p class="modal-note">
+      New member?
+      <a href="mailto:hello@pearlgavelclub.org?subject=Joining%20Pearl%20Gavel%20Club">Ask about joining</a>
+    </p>
+  </div>
+</div>
+
+<script>
+/* ---------- current year ---------- */
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ---------- sticky nav state ---------- */
+const nav = document.getElementById('nav');
+let navTicking = false;
+function updateNav(){
+  nav.classList.toggle('scrolled', window.scrollY > 24);
+  navTicking = false;
+}
+window.addEventListener('scroll', () => {
+  if (!navTicking){
+    navTicking = true;
+    requestAnimationFrame(updateNav);
+  }
+}, { passive: true });
+updateNav();
+
+/* ---------- scroll reveal ---------- */
+const revealEls = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+
+  revealEls.forEach((el) => io.observe(el));
+} else {
+  revealEls.forEach((el) => el.classList.add('in'));
+}
+
+/* ---------- login modal ---------- */
+const modal = document.getElementById('loginModal');
+const loginForm = document.getElementById('loginForm');
+const admissionInput = document.getElementById('admission');
+let lastFocused = null;
+
+/* keep admission number numeric only */
+admissionInput.addEventListener('input', () => {
+  const digitsOnly = admissionInput.value.replace(/\D/g, '');
+  if (admissionInput.value !== digitsOnly) {
+    admissionInput.value = digitsOnly;
+  }
+});
+
+function openModal() {
+  lastFocused = document.activeElement;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => admissionInput.focus(), 220);
+}
+
+function closeModal() {
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+  if (lastFocused) lastFocused.focus();
+}
+
+document.getElementById('loginBtn').addEventListener('click', openModal);
+
+modal.querySelectorAll('[data-close]').forEach((el) => {
+  el.addEventListener('click', () => closeModal());
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+});
+
+/* demo submit */
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  if (!/^\d+$/.test(admissionInput.value)) {
+    admissionInput.focus();
+    return;
+  }
+
+  const btn = loginForm.querySelector('button[type="submit"]');
+  const original = btn.textContent;
+  btn.textContent = 'Logging in…';
+  btn.style.opacity = '.75';
+  setTimeout(() => {
+    btn.textContent = original;
+    btn.style.opacity = '';
+    closeModal();
+  }, 1200);
+});
+
+/* ---------- smooth anchor scrolling ---------- */
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener('click', (e) => {
+    const id = link.getAttribute('href');
+    if (id.length < 2) return;
+    const target = document.querySelector(id);
+    if (!target) return;
+    e.preventDefault();
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  });
+});
+</script>
+
+</body>
+</html>
