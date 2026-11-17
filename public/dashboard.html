@@ -401,7 +401,7 @@ footer {
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
-  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
   // Firebase Config
   const firebaseConfig = {
@@ -421,43 +421,50 @@ footer {
   document.getElementById('year').textContent = new Date().getFullYear();
 
   // ==========================================
-  // 1. CHECK AUTHENTICATION
+  // 1. CHECK AUTHENTICATION & FETCH DATA
   // ==========================================
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       // User is logged in
       const email = user.email; 
-      const admissionNo = email.split('@')[0]; // Gets "P4671"
+      // Extract "P4671" from "P4671@pearlgavelclub.com"
+      const admissionNo = email.split('@')[0].toUpperCase(); 
 
       try {
-        // Query Firestore for their specific record
-        const q = query(collection(db, "gaveliers"), where("admissionNo", "==", admissionNo));
-        const querySnapshot = await getDocs(q);
+        // We fetch ALL documents (safe since it's only 70) and match them manually.
+        // This prevents any weird database index or case-sensitivity issues.
+        const querySnapshot = await getDocs(collection(db, "gaveliers"));
+        
+        let foundUser = null;
 
-        let displayName = "Gavelier"; 
-        let fullName = ""; 
-        let imageUrl = "https://cdn.phototourl.com/anon/2026-11-17-5f32addc-00d9-4b3c-b6c1-8a2fc1aecbc0.png"; // Fallback logo
-
-        if (!querySnapshot.empty) {
-          const userData = querySnapshot.docs[0].data();
-          
-          // Get the first name for the greeting (e.g., "Aysha Zarine" -> "Aysha")
-          const firstName = userData.name.split(' ')[0];
-          displayName = `Gav. ${firstName}`;
-          
-          // Get full name
-          fullName = userData.name;
-
-          // Check if they have a custom image in the database
-          if (userData.imageUrl && userData.imageUrl.trim() !== "") {
-            imageUrl = userData.imageUrl;
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          // Check if this document belongs to the logged-in user
+          if (data.admissionNo && data.admissionNo.toUpperCase() === admissionNo) {
+            foundUser = data;
           }
-        }
+        });
 
-        // Update the HTML
-        document.getElementById('welcomeMessage').innerHTML = `Welcome back, <span class="serif">${displayName}.</span>`;
-        document.getElementById('fullNameDisplay').textContent = fullName;
-        document.getElementById('userProfilePic').src = imageUrl;
+        if (foundUser) {
+          // We found the user in the database!
+          const firstName = foundUser.name.split(' ')[0];
+          
+          // Update Greeting
+          document.getElementById('welcomeMessage').innerHTML = `Welcome back, <span class="serif">Gav. ${firstName}.</span>`;
+          
+          // Update Full Name
+          document.getElementById('fullNameDisplay').textContent = foundUser.name;
+
+          // Update Image (If they have one in the database, use it. If not, keep the default logo)
+          if (foundUser.imageUrl && foundUser.imageUrl.trim() !== "") {
+            document.getElementById('userProfilePic').src = foundUser.imageUrl;
+          }
+
+        } else {
+          // Logged in, but couldn't find their record (maybe they created an account manually)
+          console.warn("Logged in user not found in Firestore database:", admissionNo);
+          document.getElementById('welcomeMessage').innerHTML = `Welcome back, <span class="serif">Gavelier.</span>`;
+        }
         
         // Fade out the loading screen
         const loader = document.getElementById('loader');
