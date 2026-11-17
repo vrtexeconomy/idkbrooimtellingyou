@@ -487,13 +487,21 @@ h2.title{
 }
 
 /* ============================================================
-   EXCOMS SECTION
+   EXCOMS SECTION (Centered Hierarchy)
    ============================================================ */
-.excom-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px;
+.excoms-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
   margin-top: 40px;
+}
+.excom-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  width: 100%;
 }
 .excom-card {
   background: var(--panel);
@@ -501,6 +509,8 @@ h2.title{
   border-radius: 20px;
   padding: 30px 20px;
   text-align: center;
+  width: 100%;
+  max-width: 280px; /* Keeps cards uniform */
   transition: transform .4s var(--ease), border-color .4s var(--ease);
 }
 .excom-card:hover {
@@ -814,61 +824,61 @@ footer{
 
     <!-- EXCOMS SECTION -->
     <section class="section wrap" id="excoms" style="padding-top:0">
-      <div class="reveal">
+      <div class="reveal" style="text-align: center; margin-bottom: 40px;">
         <span class="eyebrow"><i class="dot"></i> Leadership</span>
         <h2 class="title">Executive Committee.</h2>
-        <p style="color:var(--muted); margin-top:12px; max-width:50ch;">The dedicated team leading the Pearl Gavel Club this term.</p>
+        <p style="color:var(--muted); margin: 12px auto 0; max-width:50ch;">The dedicated team leading the Pearl Gavel Club this term.</p>
       </div>
 
-      <div class="excom-grid reveal">
-        <!-- 1. President -->
-        <div class="excom-card">
-          <img src="https://cdn.phototourl.com/anon/2026-11-17-4b9af167-2cbc-4f43-922b-f8394c1cd982.jpg" alt="Aysha Zarine" class="excom-img">
-          <h4 class="excom-name">Aysha Zarine</h4>
-          <div class="excom-role">President</div>
+      <div class="excoms-container reveal">
+        
+        <!-- Row 1: President -->
+        <div class="excom-row">
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-4b9af167-2cbc-4f43-922b-f8394c1cd982.jpg" alt="Aysha Zarine" class="excom-img">
+            <h4 class="excom-name">Aysha Zarine</h4>
+            <div class="excom-role">President</div>
+          </div>
         </div>
 
-        <!-- 2. Vice President of Education -->
-        <div class="excom-card">
-          <img src="https://cdn.phototourl.com/anon/2026-11-17-0d44286e-82c8-4269-a723-f4c4ce504565.jpg" alt="Nibushna Jotheeswar Dheeban" class="excom-img">
-          <h4 class="excom-name">Nibushna Jotheeswar Dheeban</h4>
-          <div class="excom-role">VP of Education</div>
+        <!-- Row 2: Vice Presidents -->
+        <div class="excom-row">
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-0d44286e-82c8-4269-a723-f4c4ce504565.jpg" alt="Nibushna Jotheeswar Dheeban" class="excom-img">
+            <h4 class="excom-name">Nibushna Jotheeswar Dheeban</h4>
+            <div class="excom-role">VP of Education</div>
+          </div>
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-0104b83d-a525-407d-a0f3-642e950d07a6.jpg" alt="Aahil Ali Anwar" class="excom-img">
+            <h4 class="excom-name">Aahil Ali Anwar</h4>
+            <div class="excom-role">VP of Membership</div>
+          </div>
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-256323de-7338-4608-a9a6-955bee23ec05.jpg" alt="Rushil Bhavsar" class="excom-img">
+            <h4 class="excom-name">Rushil Bhavsar</h4>
+            <div class="excom-role">VP of Public Relations</div>
+          </div>
         </div>
 
-        <!-- 3. Vice President of Membership -->
-        <div class="excom-card">
-          <img src="https://cdn.phototourl.com/anon/2026-11-17-0104b83d-a525-407d-a0f3-642e950d07a6.jpg" alt="Aahil Ali Anwar" class="excom-img">
-          <h4 class="excom-name">Aahil Ali Anwar</h4>
-          <div class="excom-role">VP of Membership</div>
+        <!-- Row 3: Other Roles -->
+        <div class="excom-row">
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-ed53de37-8b53-4807-ba0b-b4f76ed38905.jpg" alt="Ritika Nair" class="excom-img">
+            <h4 class="excom-name">Ritika Nair</h4>
+            <div class="excom-role">Secretary</div>
+          </div>
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-8dc6841c-fcc9-422e-8a86-86fc994c2b7a.jpg" alt="Eleanor Louisa Carasco" class="excom-img">
+            <h4 class="excom-name">Eleanor Louisa Carasco</h4>
+            <div class="excom-role">Treasurer</div>
+          </div>
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-9a31c0b7-d1da-458f-ab25-7de147abb4d1.jpg" alt="Aleesha Nasrin" class="excom-img">
+            <h4 class="excom-name">Aleesha Nasrin</h4>
+            <div class="excom-role">Sergeant at Arms</div>
+          </div>
         </div>
 
-        <!-- 4. Vice President of Public Relations -->
-        <div class="excom-card">
-          <img src="https://cdn.phototourl.com/anon/2026-11-17-256323de-7338-4608-a9a6-955bee23ec05.jpg" alt="Rushil Bhavsar" class="excom-img">
-          <h4 class="excom-name">Rushil Bhavsar</h4>
-          <div class="excom-role">VP of Public Relations</div>
-        </div>
-
-        <!-- 5. Secretary -->
-        <div class="excom-card">
-          <img src="https://cdn.phototourl.com/anon/2026-11-17-ed53de37-8b53-4807-ba0b-b4f76ed38905.jpg" alt="Ritika Nair" class="excom-img">
-          <h4 class="excom-name">Ritika Nair</h4>
-          <div class="excom-role">Secretary</div>
-        </div>
-
-        <!-- 6. Treasurer -->
-        <div class="excom-card">
-          <img src="https://cdn.phototourl.com/anon/2026-11-17-8dc6841c-fcc9-422e-8a86-86fc994c2b7a.jpg" alt="Eleanor Louisa Carasco" class="excom-img">
-          <h4 class="excom-name">Eleanor Louisa Carasco</h4>
-          <div class="excom-role">Treasurer</div>
-        </div>
-
-        <!-- 7. Sergeant at Arms -->
-        <div class="excom-card">
-          <img src="https://cdn.phototourl.com/anon/2026-11-17-9a31c0b7-d1da-458f-ab25-7de147abb4d1.jpg" alt="Aleesha Nasrin" class="excom-img">
-          <h4 class="excom-name">Aleesha Nasrin</h4>
-          <div class="excom-role">Sergeant at Arms</div>
-        </div>
       </div>
     </section>
 
@@ -918,7 +928,7 @@ footer{
     <form id="loginForm">
       <div class="field">
         <label for="admission">Admission number</label>
-        <input id="admission" name="admission" type="text" inputmode="numeric" pattern="[0-9]+" placeholder="e.g. 4671" autocomplete="username" required>
+        <input id="admission" name="admission" type="text" placeholder="e.g. P1234" autocomplete="username" required>
       </div>
       <div class="field">
         <label for="password">Password</label>
@@ -961,10 +971,16 @@ footer{
   const admissionInput = document.getElementById('admission');
   let lastFocused = null;
 
-  // Strip any letters so the user only types numbers
+  // Allow typing P, p, and numbers. Auto-capitalize P.
   admissionInput.addEventListener('input', () => {
-    const digitsOnly = admissionInput.value.replace(/\D/g, '');
-    if (admissionInput.value !== digitsOnly) admissionInput.value = digitsOnly;
+    let val = admissionInput.value.toUpperCase();
+    // Remove anything that is not a number or the letter P
+    val = val.replace(/[^P0-9]/g, '');
+    // Prevent multiple P's at the start
+    if (val.length > 0) {
+      val = val.charAt(0) === 'P' ? 'P' + val.slice(1).replace(/P/g, '') : val.replace(/P/g, '');
+    }
+    admissionInput.value = val;
   });
 
   function openModal() {
@@ -992,10 +1008,17 @@ footer{
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const admissionNumber = admissionInput.value; // e.g., "4671"
+    // Extract just the numbers. If they typed "P4671" or "p4671" or "4671", this becomes "4671"
+    const digits = admissionInput.value.replace(/\D/g, ''); 
     
-    // Add the Capital 'P' and the domain to match Firebase Auth
-    const fakeEmail = `P${admissionNumber}@pearlgavelclub.com`; 
+    // If they entered no numbers, stop.
+    if (!digits) {
+      alert("Please enter a valid admission number.");
+      return;
+    }
+
+    // Construct the email Firebase expects
+    const fakeEmail = `P${digits}@pearlgavelclub.com`; 
     const password = document.getElementById('password').value;
 
     const btn = loginForm.querySelector('button[type="submit"]');
@@ -1005,9 +1028,11 @@ footer{
 
     try {
       await signInWithEmailAndPassword(auth, fakeEmail, password);
-      alert("Login successful! Welcome back.");
+      
       closeModal();
-      // window.location.href = '/dashboard.html'; // Add redirect later
+      // Redirect to the member page after successful login
+      window.location.href = '/dashboard.html'; 
+      
     } catch (err) {
       console.error(err);
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
