@@ -138,19 +138,13 @@ header, main, footer {
 
 /* brand */
 .brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
-.pearl-mark{
-  width:30px;height:30px;border-radius:50%;
-  background:radial-gradient(circle at 32% 28%, #ffffff 0%, #dcf5ff 26%, #8ad9f2 58%, #2d9fc4 100%);
-  box-shadow:0 0 0 1px rgba(255,255,255,.45) inset, 0 0 18px rgba(140,225,255,.5);
-  position:relative;
-  flex-shrink:0;
-}
-.pearl-mark::after{
-  content:'';position:absolute;
-  width:8px;height:6px;border-radius:50%;
-  top:6px;left:7px;
-  background:rgba(255,255,255,.95);
-  filter:blur(1px);
+.brand-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(140,225,255,.3);
 }
 
 .brand-text{display:flex;flex-direction:column;line-height:1.05}
@@ -657,6 +651,7 @@ footer{
 @media (max-width:760px){
   .stats{grid-template-columns:repeat(2,1fr);gap:26px 18px}
   .brand-text span{display:none}
+  .brand-logo{width:30px;height:30px}
 }
 @media (max-width:420px){
   .brand-text strong{letter-spacing:.14em;font-size:.82rem}
@@ -690,7 +685,8 @@ footer{
   <header class="nav" id="nav">
     <div class="nav-inner">
       <a href="#top" class="brand" aria-label="Pearl Gavel Club home">
-        <span class="pearl-mark" aria-hidden="true"></span>
+        <!-- Replaced pearl mark with actual logo image -->
+        <img src="https://cdn.phototourl.com/anon/2026-11-17-5f32addc-00d9-4b3c-b6c1-8a2fc1aecbc0.png" alt="Pearl Gavel Club Logo" class="brand-logo">
         <span class="brand-text">
           <strong>PEARL</strong>
           <span>Gavel Club</span>
@@ -897,7 +893,8 @@ footer{
   <footer>
     <div class="foot-inner">
       <div style="display:flex;align-items:center;gap:11px">
-        <span class="pearl-mark" style="width:22px;height:22px" aria-hidden="true"></span>
+        <!-- Replaced footer pearl mark with actual logo image -->
+        <img src="https://cdn.phototourl.com/anon/2026-11-17-5f32addc-00d9-4b3c-b6c1-8a2fc1aecbc0.png" alt="Pearl Gavel Club Logo" class="brand-logo" style="width:24px;height:24px;box-shadow:none;">
         <span>© <span id="year"></span> Pearl Gavel Club</span>
       </div>
       <div class="foot-links">
