@@ -131,7 +131,7 @@ header, main, footer { position: relative; z-index: 1; }
 .wrap{ max-width:var(--maxw); margin:0 auto; padding-inline:clamp(16px,4vw,40px); }
 
 /* ============================================================
-   DASHBOARD HEADER (Flex layout with image on right)
+   DASHBOARD HEADER
    ============================================================ */
 .dashboard-header {
   padding-top: clamp(140px, 20vh, 200px);
@@ -144,15 +144,17 @@ header, main, footer { position: relative; z-index: 1; }
 
 .header-text {
   flex: 1;
-  max-width: 650px;
+  max-width: 700px;
+  min-width: 0; /* Prevents flexbox overflow issues */
 }
 
 .header-text h1 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(2rem, 4vw, 3.5rem);
   line-height: 1.1;
   font-weight: 400;
   letter-spacing: -.03em;
   margin: 0 0 16px;
+  text-wrap: balance;
 }
 .serif {
   font-family: 'Instrument Serif', Georgia, serif;
@@ -160,15 +162,7 @@ header, main, footer { position: relative; z-index: 1; }
   background: linear-gradient(115deg, #ffffff 0%, #a9e9ff 45%, #8df0d6 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
   padding-right: .04em;
-}
-
-/* The Full Name Display */
-.full-name {
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: #7fe0f5;
-  margin: -5px 0 20px;
-  letter-spacing: 0.02em;
+  white-space: nowrap; /* Keeps the full name on one line if possible */
 }
 
 .header-text p {
@@ -276,14 +270,15 @@ footer {
    ============================================================ */
 @media (max-width: 860px) {
   .dashboard-header {
-    flex-direction: column-reverse; /* Image on top on mobile, text below */
+    flex-direction: column-reverse;
     align-items: flex-start;
     gap: 30px;
   }
   .header-profile {
-    margin: 0 auto; /* Center image on mobile */
+    margin: 0 auto;
   }
   .nav-links { display: none; }
+  .serif { white-space: normal; } /* Allow wrapping on small screens if name is too long */
 }
 </style>
 </head>
@@ -337,17 +332,15 @@ footer {
           <i style="width:6px;height:6px;border-radius:50%;background:#7fe8cf;box-shadow:0 0 8px rgba(127,232,207,.9);animation:blink 2.8s infinite;"></i> Member Portal
         </span>
         
+        <!-- Full Name injected directly into H1 -->
         <h1 id="welcomeMessage">Welcome back, <span class="serif">Gavelier.</span></h1>
-        
-        <!-- Full Name will be injected here -->
-        <div id="fullNameDisplay" class="full-name"></div>
 
         <p>This is your personal dashboard. Stay tuned for upcoming meeting schedules, speech sign-ups, and club resources.</p>
       </div>
 
       <!-- Right side: Picture -->
       <div class="header-profile">
-        <!-- Default to club logo, script will replace with their actual image if found -->
+        <!-- Default to club logo, script will replace with their actual image -->
         <img src="https://cdn.phototourl.com/anon/2026-11-17-5f32addc-00d9-4b3c-b6c1-8a2fc1aecbc0.png" alt="Profile Picture" class="profile-pic" id="userProfilePic">
       </div>
 
@@ -425,43 +418,33 @@ footer {
   // ==========================================
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      // User is logged in
       const email = user.email; 
       // Extract "P4671" from "P4671@pearlgavelclub.com"
       const admissionNo = email.split('@')[0].toUpperCase(); 
 
       try {
-        // We fetch ALL documents (safe since it's only 70) and match them manually.
-        // This prevents any weird database index or case-sensitivity issues.
+        // Fetch all documents and match manually to avoid query/index errors
         const querySnapshot = await getDocs(collection(db, "gaveliers"));
         
         let foundUser = null;
 
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          // Check if this document belongs to the logged-in user
           if (data.admissionNo && data.admissionNo.toUpperCase() === admissionNo) {
             foundUser = data;
           }
         });
 
         if (foundUser) {
-          // We found the user in the database!
-          const firstName = foundUser.name.split(' ')[0];
+          // Update Greeting with FULL NAME
+          document.getElementById('welcomeMessage').innerHTML = `Welcome back, <span class="serif">Gav. ${foundUser.name}.</span>`;
           
-          // Update Greeting
-          document.getElementById('welcomeMessage').innerHTML = `Welcome back, <span class="serif">Gav. ${firstName}.</span>`;
-          
-          // Update Full Name
-          document.getElementById('fullNameDisplay').textContent = foundUser.name;
-
           // Update Image (If they have one in the database, use it. If not, keep the default logo)
           if (foundUser.imageUrl && foundUser.imageUrl.trim() !== "") {
             document.getElementById('userProfilePic').src = foundUser.imageUrl;
           }
 
         } else {
-          // Logged in, but couldn't find their record (maybe they created an account manually)
           console.warn("Logged in user not found in Firestore database:", admissionNo);
           document.getElementById('welcomeMessage').innerHTML = `Welcome back, <span class="serif">Gavelier.</span>`;
         }
