@@ -147,6 +147,16 @@ header, main, footer { position: relative; z-index: 1; }
 }
 .btn-cancel:hover { background: rgba(255, 100, 100, 0.25); }
 
+.btn-attendance {
+  background: rgba(127, 232, 207, 0.15);
+  border: 1px solid rgba(127, 232, 207, 0.4);
+  color: #7fe8cf;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  margin-right: 8px;
+}
+.btn-attendance:hover { background: rgba(127, 232, 207, 0.25); }
+
 /* Admin Form */
 .admin-form {
   display: grid;
@@ -312,7 +322,7 @@ header, main, footer { position: relative; z-index: 1; }
 }
 
 /* ============================================================
-   RSVP MODAL
+   MODALS (General)
    ============================================================ */
 .modal {
   position: fixed; inset: 0; z-index: 200;
@@ -322,7 +332,7 @@ header, main, footer { position: relative; z-index: 1; }
 .modal.open { opacity: 1; pointer-events: auto; }
 .modal-backdrop { position: absolute; inset: 0; background: rgba(0,18,31,.85); backdrop-filter: blur(5px); }
 
-.rsvp-card {
+.modal-card {
   position: relative;
   width: min(440px, 100%);
   background: var(--panel-soft);
@@ -334,25 +344,25 @@ header, main, footer { position: relative; z-index: 1; }
   transition: transform .4s var(--ease);
   text-align: center;
 }
-.modal.open .rsvp-card { transform: translateY(0) scale(1); }
+.modal.open .modal-card { transform: translateY(0) scale(1); }
 
-.rsvp-close {
+.modal-close {
   position: absolute; top: 16px; right: 16px;
   width: 30px; height: 30px; border-radius: 50%;
   background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
   color: var(--muted); display: grid; place-items: center; cursor: pointer;
   transition: background .3s, color .3s;
 }
-.rsvp-close:hover { background: rgba(255,255,255,.15); color: #fff; }
+.modal-close:hover { background: rgba(255,255,255,.15); color: #fff; }
 
+/* ============================================================
+   RSVP MODAL SPECIFIC
+   ============================================================ */
 .rsvp-step h2 { font-size: 1.6rem; font-weight: 500; color: #fff; margin: 0 0 10px; }
 .rsvp-step p { color: var(--muted); margin: 0 0 24px; font-size: 0.95rem; }
 .rsvp-info-box {
-  background: rgba(0,0,0,.2);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 24px;
-  text-align: left;
+  background: rgba(0,0,0,.2); border-radius: 12px; padding: 16px;
+  margin-bottom: 24px; text-align: left;
 }
 .rsvp-info-box p { margin: 0 0 8px; color: #fff; font-size: 1rem; font-weight: 500;}
 .rsvp-info-box p:last-child { margin: 0; color: #7fe0f5; font-size: 0.9rem; }
@@ -361,16 +371,12 @@ header, main, footer { position: relative; z-index: 1; }
 .rsvp-actions .btn { flex: 1; padding: 14px; font-size: 1rem; }
 
 .btn-present { background: #7fe8cf; color: #013a58; }
-.btn-present:hover { background: #a7f0df; box-shadow: 0 8px 20px -8px rgba(127,232,207,.6); }
+.btn-present:hover { background: #a7f0df; }
 .btn-absent { background: rgba(255,100,100,0.15); color: #ff8a8a; border: 1px solid rgba(255,100,100,0.3); }
 .btn-absent:hover { background: rgba(255,100,100,0.25); }
 
-.food-options {
-  display: flex; gap: 12px; margin-bottom: 16px;
-}
-.food-label {
-  flex: 1; cursor: pointer;
-}
+.food-options { display: flex; gap: 12px; margin-bottom: 16px; }
+.food-label { flex: 1; cursor: pointer; }
 .food-label input { display: none; }
 .food-label span {
   display: block; padding: 14px; border-radius: 12px;
@@ -386,7 +392,6 @@ header, main, footer { position: relative; z-index: 1; }
 }
 #rsvpAdditional:focus { border-color: rgba(140,235,255,.55); }
 
-/* Tick Animation */
 .checkmark {
   width: 80px; height: 80px; border-radius: 50%; display: block; stroke-width: 4;
   stroke: #7fe8cf; stroke-miterlimit: 10; margin: 0 auto 24px;
@@ -403,14 +408,77 @@ header, main, footer { position: relative; z-index: 1; }
 @keyframes stroke { 100% { stroke-dashoffset: 0; } }
 
 .change-link {
-  color: #7fe0f5;
-  text-decoration: underline;
-  cursor: pointer;
-  font-size: 0.85rem;
-  margin-top: 20px;
-  display: inline-block;
+  color: #7fe0f5; text-decoration: underline; cursor: pointer;
+  font-size: 0.85rem; margin-top: 20px; display: inline-block;
 }
 .change-link:hover { color: #fff; }
+
+/* ============================================================
+   ATTENDANCE MODAL SPECIFIC
+   ============================================================ */
+.attendance-card {
+  position: relative;
+  width: min(800px, 95vw); /* Wider for list */
+  max-height: 85vh;
+  background: var(--panel-soft);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 40px 80px -30px rgba(0,0,0,.9);
+  transform: translateY(20px) scale(.97);
+  transition: transform .4s var(--ease);
+  display: flex;
+  flex-direction: column;
+}
+.modal.open .attendance-card { transform: translateY(0) scale(1); }
+
+.attendance-header { text-align: center; margin-bottom: 20px; }
+.attendance-header h2 { margin: 0 0 6px; color: #fff; font-size: 1.8rem; }
+.attendance-header p { margin: 0; color: #7fe0f5; font-size: 0.95rem; }
+
+.attendance-list {
+  flex: 1;
+  overflow-y: auto;
+  background: rgba(0,0,0,.2);
+  border-radius: 16px;
+  padding: 8px;
+  margin-bottom: 20px;
+}
+/* Custom Scrollbar */
+.attendance-list::-webkit-scrollbar { width: 8px; }
+.attendance-list::-webkit-scrollbar-track { background: rgba(0,0,0,.2); border-radius: 8px; }
+.attendance-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 8px; }
+
+.att-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,.05);
+  transition: background 0.2s;
+}
+.att-row:hover { background: rgba(255,255,255,.03); }
+.att-row:last-child { border-bottom: none; }
+
+.att-name { color: #fff; font-weight: 500; }
+.att-rsvp { font-size: 0.75rem; color: var(--muted); margin-left: 10px; }
+
+/* Toggle Switch */
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.4);
+  transition: .4s; border-radius: 24px;
+}
+.slider:before {
+  position: absolute; content: ""; height: 16px; width: 16px;
+  left: 3px; bottom: 3px; background-color: #ff8a8a;
+  transition: .4s; border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: rgba(127,232,207,0.2); border-color: #7fe8cf;
+}
+input:checked + .slider:before {
+  transform: translateX(20px); background-color: #7fe8cf;
+}
 
 /* ============================================================
    FOOTER & LOADER
@@ -446,6 +514,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   .header-profile { margin: 0 auto; }
   .serif { white-space: normal; }
   .admin-form { grid-template-columns: 1fr; }
+  .attendance-card { padding: 20px; }
 }
 </style>
 </head>
@@ -510,7 +579,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       </section>
 
       <section class="dashboard-grid">
-        <!-- Meetings Card -->
         <div class="dash-card" style="grid-column: 1 / -1;">
           <h3>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -612,12 +680,11 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 <!-- ========================================== -->
 <div class="modal" id="rsvpModal">
   <div class="modal-backdrop" onclick="closeRsvpModal()"></div>
-  <div class="rsvp-card">
-    <button class="rsvp-close" onclick="closeRsvpModal()">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeRsvpModal()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
 
-    <!-- Step 1: Attendance -->
     <div id="rsvpStep1" class="rsvp-step">
       <h2>Are you attending?</h2>
       <p>Please let us know if you can make it.</p>
@@ -633,7 +700,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       </div>
     </div>
 
-    <!-- Step 2: Food Preference (Hidden by default) -->
     <div id="rsvpStep2" class="rsvp-step" style="display:none;">
       <h2>Food Preference</h2>
       <p>Will you be eating with us?</p>
@@ -653,7 +719,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       <button class="btn btn-schedule" onclick="submitPresent()">Confirm RSVP</button>
     </div>
 
-    <!-- Step 3: Success / Status Tick (Hidden by default) -->
     <div id="rsvpStep3" class="rsvp-step" style="display:none; padding: 20px 0;">
       <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
         <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
@@ -667,11 +732,34 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   </div>
 </div>
 
+<!-- ========================================== -->
+<!-- ATTENDANCE MODAL (ExComs Only)             -->
+<!-- ========================================== -->
+<div class="modal" id="attendanceModal">
+  <div class="modal-backdrop" onclick="closeAttendanceModal()"></div>
+  <div class="attendance-card">
+    <button class="modal-close" onclick="closeAttendanceModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    
+    <div class="attendance-header">
+      <h2>Take Attendance</h2>
+      <p id="attendanceMeetingTitle">Meeting Theme</p>
+    </div>
+
+    <div class="attendance-list" id="attendanceList">
+      <!-- Loaded via JS -->
+    </div>
+
+    <button class="btn btn-schedule" onclick="saveAttendance()">Save Attendance</button>
+  </div>
+</div>
+
 <!-- ===================== FIREBASE & LOGIC ===================== -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc, getDoc, writeBatch } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDduauqRyaR-G2QZYok3YZRypC_8VHUffk",
@@ -691,9 +779,11 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   let currentUserIsExCom = false;
   let currentUserAdmission = "";
   let currentUserName = "";
-  
-  // RSVP Modal State
+  let allGaveliers = []; // Store list of all students
+
+  // Modal State
   let activeMeetingId = "";
+  let activeAttendanceMeetingId = "";
 
   // ==========================================
   // 1. TAB SWITCHING LOGIC
@@ -726,8 +816,13 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 
       try {
         const querySnapshot = await getDocs(collection(db, "gaveliers"));
-        let foundUser = null;
+        
+        // Store all students for attendance marking
+        querySnapshot.forEach((doc) => {
+          allGaveliers.push(doc.data());
+        });
 
+        let foundUser = null;
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           if (data.admissionNo && data.admissionNo.toUpperCase() === currentUserAdmission) {
@@ -790,7 +885,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         const dateObj = new Date(data.date + 'T' + data.time);
         const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
         
-        // --- HTML for the Overview Tab (Clickable RSVP) ---
+        // --- Overview Tab ---
         const overviewHtml = `
           <div class="meeting-item" onclick="openRsvpModal('${docId}', '${data.theme}', '${formattedDate}', '${data.time}')">
             <div class="meeting-header">
@@ -808,7 +903,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         `;
         meetingsList.innerHTML += overviewHtml;
 
-        // --- HTML for Admin Tab (With Cancel Button) ---
+        // --- Admin Tab ---
         if (currentUserIsExCom && adminMeetingsList) {
           const adminHtml = `
             <div class="meeting-item" style="display:flex; justify-content:space-between; align-items:center; padding: 16px; cursor: default;">
@@ -816,7 +911,10 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
                 <h4>${data.theme}</h4>
                 <p>${formattedDate} at ${data.time}</p>
               </div>
-              <button class="btn btn-cancel" onclick="window.cancelMeeting('${docId}')">Cancel</button>
+              <div style="display:flex; gap: 8px;">
+                <button class="btn btn-attendance" onclick="openAttendanceModal('${docId}', '${data.theme}')">Take Attendance</button>
+                <button class="btn btn-cancel" onclick="window.cancelMeeting('${docId}')">Cancel</button>
+              </div>
             </div>
           `;
           adminMeetingsList.innerHTML += adminHtml;
@@ -831,24 +929,20 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   window.openRsvpModal = async function(id, theme, dateStr, timeStr) {
     activeMeetingId = id;
     
-    // Populate details
     document.getElementById('rsvpTheme').textContent = theme;
     document.getElementById('rsvpDate').textContent = `${dateStr} at ${timeStr}`;
     
-    // Reset steps
     document.getElementById('rsvpStep1').style.display = 'block';
     document.getElementById('rsvpStep2').style.display = 'none';
     document.getElementById('rsvpStep3').style.display = 'none';
     document.getElementById('rsvpAdditional').value = '';
     
-    // Check if user has already RSVP'd
     try {
       const rsvpRef = doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission);
       const rsvpSnap = await getDoc(rsvpRef);
 
       if (rsvpSnap.exists()) {
         const data = rsvpSnap.data();
-        // They already RSVP'd! Show them the success screen.
         document.getElementById('rsvpStep1').style.display = 'none';
         document.getElementById('rsvpStep3').style.display = 'block';
         
@@ -862,20 +956,14 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       console.error("Error checking RSVP status:", err);
     }
     
-    // Show modal
     rsvpModal.classList.add('open');
   }
 
-  window.closeRsvpModal = function() {
-    rsvpModal.classList.remove('open');
-  }
-
+  window.closeRsvpModal = function() { rsvpModal.classList.remove('open'); }
   window.changeRsvp = function() {
-    // Hide status, show step 1 again
     document.getElementById('rsvpStep3').style.display = 'none';
     document.getElementById('rsvpStep1').style.display = 'block';
   }
-
   window.selectPresent = function() {
     document.getElementById('rsvpStep1').style.display = 'none';
     document.getElementById('rsvpStep2').style.display = 'block';
@@ -902,8 +990,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Absent</strong>.`;
       
     } catch (err) {
-      console.error("Error saving RSVP:", err);
-      alert("Failed to save RSVP. Please try again.");
+      alert("Failed to save RSVP.");
       btn.textContent = original;
       btn.disabled = false;
     }
@@ -934,8 +1021,112 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Present</strong>.<br>Food: ${food} ${additional ? '('+additional+')' : ''}`;
 
     } catch (err) {
-      console.error("Error saving RSVP:", err);
-      alert("Failed to save RSVP. Please try again.");
+      alert("Failed to save RSVP.");
+      btn.textContent = original;
+      btn.disabled = false;
+    }
+  }
+
+  // --- ATTENDANCE MODAL LOGIC ---
+  const attendanceModal = document.getElementById('attendanceModal');
+  const attendanceList = document.getElementById('attendanceList');
+
+  window.openAttendanceModal = async function(id, theme) {
+    activeAttendanceMeetingId = id;
+    document.getElementById('attendanceMeetingTitle').textContent = theme;
+    attendanceList.innerHTML = '<p style="text-align:center; color:var(--muted); padding: 20px;">Loading students...</p>';
+    
+    attendanceModal.classList.add('open');
+
+    try {
+      // 1. Get all RSVPs for this meeting
+      const rsvpSnapshot = await getDocs(collection(db, "meetings", activeAttendanceMeetingId, "rsvps"));
+      const rsvpData = {};
+      rsvpSnapshot.forEach(doc => {
+        rsvpData[doc.id] = doc.data();
+      });
+
+      // 2. Build the list
+      attendanceList.innerHTML = '';
+      
+      // Sort gaveliers alphabetically
+      const sortedGaveliers = [...allGaveliers].sort((a, b) => a.name.localeCompare(b.name));
+
+      sortedGaveliers.forEach(student => {
+        // Only show students, not ExComs (optional, but usually you want everyone)
+        // Let's show everyone for complete attendance
+        
+        const admNo = student.admissionNo;
+        const rsvp = rsvpData[admNo];
+        
+        // If they RSVP'd Present, default to checked. Otherwise, unchecked.
+        const isPresent = rsvp && rsvp.status === "Present";
+        const rsvpText = rsvp ? `(RSVP: ${rsvp.status})` : `(No RSVP)`;
+
+        const row = document.createElement('div');
+        row.className = 'att-row';
+        row.innerHTML = `
+          <div>
+            <span class="att-name">${student.name}</span>
+            <span class="att-rsvp">${rsvpText}</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" class="att-checkbox" data-adm="${admNo}" ${isPresent ? 'checked' : ''}>
+            <span class="slider"></span>
+          </label>
+        `;
+        attendanceList.appendChild(row);
+      });
+
+    } catch (err) {
+      console.error("Error loading attendance:", err);
+      attendanceList.innerHTML = '<p style="text-align:center; color:#ff8a8a; padding: 20px;">Failed to load students.</p>';
+    }
+  }
+
+  window.closeAttendanceModal = function() {
+    attendanceModal.classList.remove('open');
+  }
+
+  window.saveAttendance = async function() {
+    const btn = event.target;
+    const original = btn.textContent;
+    btn.textContent = 'Saving Attendance...';
+    btn.disabled = true;
+
+    try {
+      const batch = writeBatch(db);
+      const checkboxes = attendanceList.querySelectorAll('.att-checkbox');
+      
+      checkboxes.forEach(checkbox => {
+        const admNo = checkbox.getAttribute('data-adm');
+        const isPresent = checkbox.checked;
+        
+        // We update the existing RSVP doc, or create a new one if they didn't RSVP
+        const docRef = doc(db, "meetings", activeAttendanceMeetingId, "rsvps", admNo);
+        
+        // Find their name from the global list
+        const student = allGaveliers.find(s => s.admissionNo === admNo);
+        const name = student ? student.name : "Unknown";
+
+        batch.set(docRef, {
+          name: name,
+          admissionNo: admNo,
+          status: isPresent ? "Present" : "Absent",
+          markedByExCom: true, // Flag to show it was manually marked
+          timestamp: new Date()
+        }, { merge: true }); // Merge true so we don't delete their food preference if they RSVP'd!
+      });
+
+      await batch.commit();
+      
+      alert("Attendance saved successfully!");
+      closeAttendanceModal();
+
+    } catch (err) {
+      console.error("Error saving attendance:", err);
+      alert("Failed to save attendance.");
+    } finally {
       btn.textContent = original;
       btn.disabled = false;
     }
