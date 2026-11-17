@@ -22,6 +22,8 @@
   --muted:#9cc3d7;
   --brd:rgba(255,255,255,.09);
   --ease:cubic-bezier(.22,1,.36,1);
+  --ease-smooth:cubic-bezier(.4,0,.2,1);
+  --ease-out-expo:cubic-bezier(.16,1,.3,1);
   --maxw:1180px;
 }
 
@@ -76,7 +78,7 @@ header, main, footer { position: relative; z-index: 1; }
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:60;
   padding:16px clamp(14px,4vw,40px);
-  animation:navIn .8s var(--ease) both .1s;
+  animation:navIn .8s var(--ease-out-expo) both .1s;
 }
 @keyframes navIn{
   from{opacity:0;transform:translate3d(0,-20px,0)}
@@ -95,7 +97,9 @@ header, main, footer { position: relative; z-index: 1; }
 .brand-logo {
   width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
   box-shadow: 0 0 12px rgba(140,225,255,.3);
+  transition: transform .5s var(--ease-out-expo);
 }
+.brand:hover .brand-logo { transform: scale(1.08) rotate(-4deg); }
 .brand-text{display:flex;flex-direction:column;line-height:1.05}
 .brand-text strong{font-size:.92rem;font-weight:600;letter-spacing:.22em}
 .brand-text span{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);font-weight:400;}
@@ -103,13 +107,18 @@ header, main, footer { position: relative; z-index: 1; }
 .nav-links{display:flex;align-items:center;gap:clamp(14px,2.2vw,30px);margin-left:auto}
 .nav-links a{
   font-size:.87rem;letter-spacing:.03em;color:rgba(234,246,251,.75);
-  position:relative;padding:6px 0; transition:color .3s var(--ease); cursor: pointer;
+  position:relative;padding:6px 0;
+  transition:color .3s var(--ease-smooth);
+  cursor: pointer;
+}
+.nav-links a::after{
+  content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;
+  background:linear-gradient(90deg,#7fe0f5,#8ef0d8);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .45s var(--ease-out-expo);
 }
 .nav-links a:hover, .nav-links a.active { color:#fff; }
-.nav-links a.active::after {
-  content:''; position:absolute; left:0; bottom:0; width:100%; height:1px;
-  background:linear-gradient(90deg,#7fe0f5,#8ef0d8);
-}
+.nav-links a.active::after { transform: scaleX(1); }
 
 /* ============================================================
    BUTTONS & FORMS
@@ -117,9 +126,15 @@ header, main, footer { position: relative; z-index: 1; }
 .btn{
   position:relative; display:inline-flex; align-items:center; justify-content:center; gap:9px;
   padding:11px 22px; border-radius:100px; font-size:.87rem; font-weight:600;
-  cursor:pointer; overflow:hidden; white-space:nowrap; transition:transform .35s var(--ease), box-shadow .35s var(--ease);
+  cursor:pointer; overflow:hidden; white-space:nowrap;
+  transition:
+    transform .4s var(--ease-out-expo),
+    box-shadow .4s var(--ease-smooth),
+    background-color .3s var(--ease-smooth),
+    color .3s var(--ease-smooth);
 }
 .btn:hover{transform:translate3d(0,-2px,0)}
+.btn:active{transform:translate3d(0,0,0) scale(.97);transition-duration:.15s}
 
 .btn-logout{
   background:rgba(255,255,255,.1);
@@ -127,7 +142,7 @@ header, main, footer { position: relative; z-index: 1; }
   color:#fff;
   margin-left:6px;
 }
-.btn-logout:hover{background:rgba(255,255,255,.2);}
+.btn-logout:hover{background:rgba(255,255,255,.2);box-shadow:0 6px 16px -8px rgba(0,0,0,.4);}
 
 .btn-schedule {
   background: linear-gradient(180deg, #ffffff 0%, #ddf1fa 100%);
@@ -136,7 +151,7 @@ header, main, footer { position: relative; z-index: 1; }
   width: 100%;
   margin-top: 10px;
 }
-.btn-schedule:hover { box-shadow: 0 8px 20px -8px rgba(120,220,255,.7); }
+.btn-schedule:hover { box-shadow: 0 10px 24px -10px rgba(120,220,255,.7); }
 
 .btn-cancel {
   background: rgba(255, 100, 100, 0.15);
@@ -157,9 +172,10 @@ header, main, footer { position: relative; z-index: 1; }
 }
 .btn-attendance:hover { background: rgba(127, 232, 207, 0.25); }
 
+/* Admin Form */
 .admin-form {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 16px;
   margin-top: 24px;
 }
@@ -181,9 +197,18 @@ header, main, footer { position: relative; z-index: 1; }
   font-size: 0.95rem;
   outline: none;
   resize: vertical;
+  transition:
+    border-color .3s var(--ease-smooth),
+    box-shadow .3s var(--ease-smooth),
+    background-color .3s var(--ease-smooth);
+}
+.form-group input:hover, .form-group textarea:hover {
+  border-color: rgba(255,255,255,.22);
 }
 .form-group input:focus, .form-group textarea:focus {
   border-color: rgba(140,235,255,.55);
+  background: #024260;
+  box-shadow: 0 0 0 3px rgba(120,220,255,.1);
 }
 
 /* ============================================================
@@ -224,7 +249,7 @@ header, main, footer { position: relative; z-index: 1; }
   margin: 0;
 }
 
-.header-profile { flex-shrink: 0; animation: cardIn .9s var(--ease) both .2s; }
+.header-profile { flex-shrink: 0; animation: cardIn .9s var(--ease-out-expo) both .2s; }
 
 @keyframes cardIn {
   from { opacity: 0; transform: translate3d(0, 30px, 0); }
@@ -239,6 +264,11 @@ header, main, footer { position: relative; z-index: 1; }
   border: 4px solid var(--panel);
   box-shadow: 0 20px 40px -15px rgba(0,0,0,0.6), 0 0 20px rgba(140,225,255,.2);
   background: #012a41;
+  transition: transform .5s var(--ease-out-expo), box-shadow .5s var(--ease-smooth);
+}
+.profile-pic:hover {
+  transform: scale(1.03);
+  box-shadow: 0 24px 46px -15px rgba(0,0,0,0.65), 0 0 26px rgba(140,225,255,.32);
 }
 
 /* ============================================================
@@ -256,9 +286,20 @@ header, main, footer { position: relative; z-index: 1; }
   border: 1px solid var(--brd);
   border-radius: 24px;
   padding: 32px;
-  transition: transform .4s var(--ease), border-color .4s var(--ease);
+  transition:
+    transform .5s var(--ease-out-expo),
+    border-color .4s var(--ease-smooth),
+    box-shadow .4s var(--ease-smooth);
+  animation: dashFadeIn .7s var(--ease-out-expo) both;
 }
-.dash-card:hover { border-color: rgba(160,235,255,.3); }
+@keyframes dashFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.dash-card:hover {
+  border-color: rgba(160,235,255,.3);
+  box-shadow: 0 14px 40px -20px rgba(0,0,0,.55);
+}
 .dash-card h3 {
   font-size: 1.3rem;
   font-weight: 500;
@@ -279,14 +320,20 @@ header, main, footer { position: relative; z-index: 1; }
   justify-content: center;
   text-align: center;
   cursor: pointer;
-  transition: transform .4s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);
+  transition:
+    transform .5s var(--ease-out-expo),
+    border-color .4s var(--ease-smooth),
+    box-shadow .4s var(--ease-smooth);
 }
 .streak-card:hover {
   border-color: rgba(160,235,255,.4);
-  box-shadow: 0 10px 30px -12px rgba(127,232,207,.35);
-  transform: translateY(-2px);
+  box-shadow: 0 16px 44px -18px rgba(127,232,207,.4);
+  transform: translate3d(0,-3px,0);
 }
-.streak-card:active { transform: scale(0.98); }
+.streak-card:active {
+  transform: scale(.98);
+  transition-duration: .15s;
+}
 .streak-number {
   font-size: 4rem;
   font-weight: 600;
@@ -294,6 +341,10 @@ header, main, footer { position: relative; z-index: 1; }
   line-height: 1;
   margin-bottom: 8px;
   text-shadow: 0 0 20px rgba(127,224,245,.4);
+  transition: text-shadow .4s var(--ease-smooth);
+}
+.streak-card:hover .streak-number {
+  text-shadow: 0 0 26px rgba(127,224,245,.6);
 }
 .freeze-badge {
   background: rgba(255,255,255,0.05);
@@ -304,6 +355,7 @@ header, main, footer { position: relative; z-index: 1; }
   align-items: center;
   gap: 8px;
   margin-top: 16px;
+  transition: background-color .3s var(--ease-smooth), border-color .3s var(--ease-smooth);
 }
 .freeze-badge span:first-child { font-size: 1.2rem; }
 .freeze-badge span:nth-child(2) { font-weight: 600; color: #fff; font-size: 1.1rem; }
@@ -317,12 +369,17 @@ header, main, footer { position: relative; z-index: 1; }
   margin-bottom: 16px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform .3s var(--ease), border-color .3s var(--ease);
+  transition:
+    transform .4s var(--ease-out-expo),
+    border-color .3s var(--ease-smooth),
+    background-color .3s var(--ease-smooth),
+    box-shadow .4s var(--ease-smooth);
 }
 .meeting-item:hover {
-  transform: translateY(-3px);
+  transform: translate3d(0,-3px,0);
   border-color: rgba(160,235,255,.4);
   background: rgba(255,255,255,.05);
+  box-shadow: 0 14px 32px -18px rgba(0,0,0,.4);
 }
 .meeting-header {
   padding: 20px;
@@ -358,10 +415,15 @@ header, main, footer { position: relative; z-index: 1; }
 .modal {
   position: fixed; inset: 0; z-index: 200;
   display: grid; place-items: center; padding: 20px;
-  opacity: 0; pointer-events: none; transition: opacity .3s var(--ease);
+  opacity: 0; pointer-events: none;
+  transition: opacity .4s var(--ease-smooth);
 }
 .modal.open { opacity: 1; pointer-events: auto; }
-.modal-backdrop { position: absolute; inset: 0; background: rgba(0,18,31,.85); backdrop-filter: blur(5px); }
+.modal-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,18,31,.85);
+  backdrop-filter: blur(5px);
+}
 
 .modal-card {
   position: relative;
@@ -371,20 +433,27 @@ header, main, footer { position: relative; z-index: 1; }
   border-radius: 24px;
   padding: 32px;
   box-shadow: 0 40px 80px -30px rgba(0,0,0,.9);
-  transform: translateY(20px) scale(.97);
-  transition: transform .4s var(--ease);
+  transform: translate3d(0,20px,0) scale(.97);
+  transition: transform .55s var(--ease-out-expo);
   text-align: center;
 }
-.modal.open .modal-card { transform: translateY(0) scale(1); }
+.modal.open .modal-card { transform: translate3d(0,0,0) scale(1); }
 
 .modal-close {
   position: absolute; top: 16px; right: 16px;
   width: 30px; height: 30px; border-radius: 50%;
   background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
   color: var(--muted); display: grid; place-items: center; cursor: pointer;
-  transition: background .3s, color .3s;
+  transition:
+    background-color .3s var(--ease-smooth),
+    color .3s var(--ease-smooth),
+    transform .45s var(--ease-out-expo);
 }
-.modal-close:hover { background: rgba(255,255,255,.15); color: #fff; }
+.modal-close:hover {
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  transform: rotate(90deg);
+}
 
 /* ============================================================
    RSVP MODAL SPECIFIC
@@ -412,16 +481,27 @@ header, main, footer { position: relative; z-index: 1; }
 .food-label span {
   display: block; padding: 14px; border-radius: 12px;
   background: #023a56; border: 1px solid rgba(255,255,255,.14);
-  color: var(--muted); font-weight: 500; transition: all .3s;
+  color: var(--muted); font-weight: 500;
+  transition:
+    background-color .3s var(--ease-smooth),
+    border-color .3s var(--ease-smooth),
+    color .3s var(--ease-smooth),
+    transform .3s var(--ease-out-expo);
 }
+.food-label:hover span { transform: translateY(-1px); border-color: rgba(255,255,255,.25); }
 .food-label input:checked + span {
   background: rgba(127,232,207,0.15); border-color: #7fe8cf; color: #fff;
 }
 #rsvpAdditional {
   width: 100%; padding: 14px; border-radius: 12px; background: #023a56;
   border: 1px solid rgba(255,255,255,.14); color: #fff; margin-bottom: 24px; outline: none;
+  transition: border-color .3s var(--ease-smooth), box-shadow .3s var(--ease-smooth), background-color .3s var(--ease-smooth);
 }
-#rsvpAdditional:focus { border-color: rgba(140,235,255,.55); }
+#rsvpAdditional:focus {
+  border-color: rgba(140,235,255,.55);
+  background: #024260;
+  box-shadow: 0 0 0 3px rgba(120,220,255,.1);
+}
 
 .checkmark {
   width: 80px; height: 80px; border-radius: 50%; display: block; stroke-width: 4;
@@ -450,12 +530,12 @@ header, main, footer { position: relative; z-index: 1; }
   border-radius: 24px;
   padding: 32px;
   box-shadow: 0 40px 80px -30px rgba(0,0,0,.9);
-  transform: translateY(20px) scale(.97);
-  transition: transform .4s var(--ease);
+  transform: translate3d(0,20px,0) scale(.97);
+  transition: transform .55s var(--ease-out-expo);
   display: flex;
   flex-direction: column;
 }
-.modal.open .attendance-card { transform: translateY(0) scale(1); }
+.modal.open .attendance-card { transform: translate3d(0,0,0) scale(1); }
 
 .attendance-header { text-align: center; margin-bottom: 20px; }
 .attendance-header h2 { margin: 0 0 6px; color: #fff; font-size: 1.8rem; }
@@ -476,7 +556,7 @@ header, main, footer { position: relative; z-index: 1; }
 .att-row {
   display: flex; justify-content: space-between; align-items: center;
   padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,.05);
-  transition: background 0.2s;
+  transition: background-color .25s var(--ease-smooth);
 }
 .att-row:hover { background: rgba(255,255,255,.03); }
 .att-row:last-child { border-bottom: none; }
@@ -489,12 +569,18 @@ header, main, footer { position: relative; z-index: 1; }
 .slider {
   position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
   background-color: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.4);
-  transition: .4s; border-radius: 24px;
+  transition:
+    background-color .35s var(--ease-smooth),
+    border-color .35s var(--ease-smooth);
+  border-radius: 24px;
 }
 .slider:before {
   position: absolute; content: ""; height: 16px; width: 16px;
   left: 3px; bottom: 3px; background-color: #ff8a8a;
-  transition: .4s; border-radius: 50%;
+  transition:
+    transform .35s var(--ease-out-expo),
+    background-color .35s var(--ease-smooth);
+  border-radius: 50%;
 }
 input:checked + .slider {
   background-color: rgba(127,232,207,0.2); border-color: #7fe8cf;
@@ -518,7 +604,7 @@ input:checked + .slider:before {
   --start-x: 0px;
   --start-y: 0px;
   transform: translate(var(--start-x), var(--start-y)) scale(0.15);
-  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.6s var(--ease-out-expo);
 }
 .streak-modal.open .modal-card {
   transform: translate(0, 0) scale(1);
@@ -539,15 +625,14 @@ input:checked + .slider:before {
   background: rgba(255,255,255,.15); border-radius: 6px;
 }
 
-.streak-view { transition: opacity 0.22s ease, transform 0.22s ease; }
+.streak-view { transition: opacity 0.25s var(--ease-smooth), transform 0.25s var(--ease-smooth); }
 .streak-view.hidden { display: none; }
-.streak-view.fade-in { animation: streakViewIn 0.35s var(--ease) both; }
+.streak-view.fade-in { animation: streakViewIn 0.4s var(--ease-out-expo) both; }
 @keyframes streakViewIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0,8px,0); }
+  to { opacity: 1; transform: translate3d(0,0,0); }
 }
 
-/* Calendar title */
 .streak-modal-title {
   text-align: center;
   margin-bottom: 20px;
@@ -565,7 +650,6 @@ input:checked + .slider:before {
   color: var(--muted);
 }
 
-/* Calendar header */
 .streak-cal-header {
   display: flex;
   align-items: center;
@@ -587,18 +671,24 @@ input:checked + .slider:before {
   color: var(--ink);
   display: grid; place-items: center;
   cursor: pointer;
-  transition: background 0.25s, transform 0.25s, opacity 0.25s;
+  transition:
+    background-color .3s var(--ease-smooth),
+    transform .4s var(--ease-out-expo),
+    opacity .3s var(--ease-smooth);
 }
 .streak-nav-btn:hover:not(:disabled) {
-  background: rgba(255,255,255,.12);
-  transform: scale(1.08);
+  background: rgba(255,255,255,.14);
+  transform: scale(1.1);
+}
+.streak-nav-btn:active:not(:disabled) {
+  transform: scale(.95);
+  transition-duration: .1s;
 }
 .streak-nav-btn:disabled {
   opacity: 0.25;
   cursor: not-allowed;
 }
 
-/* Calendar grid */
 .streak-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -621,10 +711,10 @@ input:checked + .slider:before {
   justify-items: center;
   gap: 4px;
 }
-.streak-cal-grid.fade-in { animation: calGridIn 0.35s var(--ease) both; }
+.streak-cal-grid.fade-in { animation: calGridIn 0.4s var(--ease-out-expo) both; }
 @keyframes calGridIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0,4px,0); }
+  to { opacity: 1; transform: translate3d(0,0,0); }
 }
 
 .cal-cell {
@@ -640,7 +730,7 @@ input:checked + .slider:before {
 .cal-day-num {
   position: relative;
   z-index: 1;
-  transition: color 0.25s;
+  transition: color .3s var(--ease-smooth);
   font-weight: 400;
 }
 .cal-cell.has-meeting { cursor: pointer; }
@@ -649,7 +739,9 @@ input:checked + .slider:before {
   position: absolute;
   inset: 8%;
   border-radius: 50%;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+  transition:
+    transform .35s var(--ease-out-expo),
+    box-shadow .35s var(--ease-smooth);
 }
 .cal-cell.present::before {
   background: rgba(127,232,207,0.18);
@@ -664,11 +756,12 @@ input:checked + .slider:before {
   background: rgba(255,255,255,0.04);
   border: 1.5px dashed rgba(255,255,255,0.28);
 }
-.cal-cell.has-meeting:hover::before { transform: scale(1.14); }
+.cal-cell.has-meeting:hover::before { transform: scale(1.16); }
+.cal-cell.present:hover::before { box-shadow: 0 0 16px rgba(127,232,207,.4); }
+.cal-cell.absent:hover::before { box-shadow: 0 0 12px rgba(255,138,138,.3); }
 .cal-cell.present:hover .cal-day-num { color: #7fe8cf; }
 .cal-cell.absent:hover .cal-day-num { color: #ff8a8a; }
 
-/* Legend */
 .streak-legend {
   display: flex;
   gap: 16px;
@@ -696,7 +789,6 @@ input:checked + .slider:before {
   border: 1.5px dashed rgba(255,255,255,0.3);
 }
 
-/* Detail view */
 .streak-back {
   display: inline-flex;
   align-items: center;
@@ -708,9 +800,9 @@ input:checked + .slider:before {
   border: none;
   padding: 6px 0;
   margin-bottom: 20px;
-  transition: color 0.25s, transform 0.25s;
+  transition: color .25s var(--ease-smooth), transform .35s var(--ease-out-expo);
 }
-.streak-back:hover { color: #fff; transform: translateX(-2px); }
+.streak-back:hover { color: #fff; transform: translateX(-3px); }
 
 .streak-detail-status {
   display: inline-block;
@@ -777,14 +869,14 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   font-size: .86rem; color: rgba(157,194,214,.85);
 }
 .foot-links { display: flex; gap: 22px; flex-wrap: wrap; }
-.foot-links a { transition: color .3s var(--ease); }
+.foot-links a { transition: color .3s var(--ease-smooth); }
 .foot-links a:hover { color: #fff; }
 
 #loader {
   position: fixed; inset: 0; z-index: 250;
   background: var(--bg);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity 0.5s var(--ease);
+  transition: opacity 0.6s var(--ease-smooth);
 }
 .loader-spinner {
   width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1);
@@ -912,8 +1004,12 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
               <input type="date" id="meetingDate" required>
             </div>
             <div class="form-group">
-              <label>Time</label>
+              <label>Start Time</label>
               <input type="time" id="meetingTime" required>
+            </div>
+            <div class="form-group">
+              <label>End Time</label>
+              <input type="time" id="meetingEndTime" required>
             </div>
             <div class="form-group full-width">
               <label>Theme</label>
@@ -1055,7 +1151,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     </button>
 
     <div class="streak-views">
-      <!-- Calendar view -->
       <div id="streakCalView" class="streak-view">
         <div class="streak-modal-title">
           <h2>Your Meeting History</h2>
@@ -1095,7 +1190,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         </div>
       </div>
 
-      <!-- Detail view -->
       <div id="streakDetailView" class="streak-view hidden">
         <button class="streak-back" onclick="backToCalendar()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1150,6 +1244,23 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 
   let activeMeetingId = "";
   let activeAttendanceMeetingId = "";
+
+  // ==========================================
+  // HELPERS — Time formatting
+  // ==========================================
+  function formatTime(t) {
+    if (!t) return '';
+    const [h, m] = t.split(':').map(Number);
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  }
+
+  function formatTimeRange(start, end) {
+    if (!start) return '';
+    if (!end) return formatTime(start);
+    return `${formatTime(start)} – ${formatTime(end)}`;
+  }
 
   // ==========================================
   // 1. TAB SWITCHING
@@ -1210,7 +1321,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         
         const loader = document.getElementById('loader');
         loader.style.opacity = '0';
-        setTimeout(() => loader.style.display = 'none', 500);
+        setTimeout(() => loader.style.display = 'none', 600);
 
         loadMeetings();
 
@@ -1249,13 +1360,14 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         
         const dateObj = new Date(data.date + 'T' + data.time);
         const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+        const timeRange = formatTimeRange(data.time, data.endTime);
         
         const overviewHtml = `
-          <div class="meeting-item" onclick="openRsvpModal('${docId}', '${data.theme}', '${formattedDate}', '${data.time}')">
+          <div class="meeting-item" onclick="openRsvpModal('${docId}', '${data.theme.replace(/'/g, "\\'")}', '${formattedDate}', '${timeRange}')">
             <div class="meeting-header">
               <div class="meeting-title">
                 <h4>${data.theme}</h4>
-                <p>${formattedDate} at ${data.time}</p>
+                <p>${formattedDate} at ${timeRange}</p>
               </div>
             </div>
             <div class="meeting-details">
@@ -1272,10 +1384,10 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
             <div class="meeting-item" style="display:flex; justify-content:space-between; align-items:center; padding: 16px; cursor: default;">
               <div class="meeting-title">
                 <h4>${data.theme}</h4>
-                <p>${formattedDate} at ${data.time}</p>
+                <p>${formattedDate} at ${timeRange}</p>
               </div>
               <div style="display:flex; gap: 8px;">
-                <button class="btn btn-attendance" onclick="openAttendanceModal('${docId}', '${data.theme}')">Take Attendance</button>
+                <button class="btn btn-attendance" onclick="openAttendanceModal('${docId}', '${data.theme.replace(/'/g, "\\'")}')">Take Attendance</button>
                 <button class="btn btn-cancel" onclick="window.cancelMeeting('${docId}')">Cancel</button>
               </div>
             </div>
@@ -1568,13 +1680,19 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 
       const date = document.getElementById('meetingDate').value;
       const time = document.getElementById('meetingTime').value;
+      const endTime = document.getElementById('meetingEndTime').value;
       const theme = document.getElementById('meetingTheme').value;
       const about = document.getElementById('meetingAbout').value;
       const rules = document.getElementById('meetingRules').value;
 
+      if (!endTime || endTime <= time) {
+        alert("End time must be after the start time.");
+        return;
+      }
+
       try {
         await addDoc(collection(db, "meetings"), {
-          date: date, time: time, theme: theme, about: about, rules: rules,
+          date, time, endTime, theme, about, rules,
           createdBy: auth.currentUser.email
         });
         scheduleForm.reset();
@@ -1611,10 +1729,8 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     if (streakModal.classList.contains('open')) return;
     if (!currentUserAdmission) return;
     
-    // Fetch data
     meetingHistory = await buildMeetingHistory();
     
-    // Start on the most recent month with meetings, else current month
     const dates = Object.keys(meetingHistory).sort();
     if (dates.length > 0) {
       const latest = new Date(dates[dates.length - 1]);
@@ -1626,13 +1742,11 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       calYear = now.getFullYear();
     }
     
-    // Reset to calendar view
     document.getElementById('streakCalView').classList.remove('hidden');
     document.getElementById('streakDetailView').classList.add('hidden');
     
     renderCalendar(false);
     
-    // Compute the "start" transform so the modal appears to grow out of the streak card
     const modalCard = streakModal.querySelector('.modal-card');
     const card = document.querySelector('.streak-card');
     
@@ -1643,7 +1757,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       const vw = window.innerWidth, vh = window.innerHeight;
       
       if (cardCx > 0 && cardCx < vw && cardCy > 0 && cardCy < vh) {
-        // Measure modal's layout center (zero translation)
         modalCard.style.setProperty('--start-x', '0px');
         modalCard.style.setProperty('--start-y', '0px');
         const mr = modalCard.getBoundingClientRect();
@@ -1659,7 +1772,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         modalCard.style.setProperty('--start-y', '0px');
       }
       
-      // Force reflow so the transition sees the start state
       void modalCard.offsetWidth;
     }
     
@@ -1711,7 +1823,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     document.getElementById('calMonthLabel').textContent = 
       firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     
-    // Disable "next" if we're at the current month
     const now = new Date();
     const isAtCurrent = (calYear > now.getFullYear()) || 
       (calYear === now.getFullYear() && calMonth >= now.getMonth());
@@ -1776,13 +1887,12 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     
     const dateObj = new Date(m.date + 'T' + m.time);
     const dateText = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-    const timeText = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    const timeText = formatTimeRange(m.time, m.endTime);
     document.getElementById('detailDate').textContent = `${dateText} at ${timeText}`;
     
     document.getElementById('detailAbout').textContent = m.about || 'No description provided.';
     document.getElementById('detailRules').textContent = m.rules || 'No rules listed.';
     
-    // Switch views
     document.getElementById('streakCalView').classList.add('hidden');
     const detail = document.getElementById('streakDetailView');
     detail.classList.remove('hidden');
@@ -1800,7 +1910,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     cal.classList.add('fade-in');
   }
 
-  // Close streak modal on Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && streakModal.classList.contains('open')) {
       closeStreakModal();
