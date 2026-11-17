@@ -437,18 +437,12 @@ header, main, footer { position: relative; z-index: 1; }
 }
 @keyframes stroke { 100% { stroke-dashoffset: 0; } }
 
-.change-link {
-  color: #7fe0f5; text-decoration: underline; cursor: pointer;
-  font-size: 0.85rem; margin-top: 20px; display: inline-block;
-}
-.change-link:hover { color: #fff; }
-
 /* ============================================================
    ATTENDANCE MODAL SPECIFIC
    ============================================================ */
 .attendance-card {
   position: relative;
-  width: min(800px, 95vw); /* Wider for list */
+  width: min(800px, 95vw);
   max-height: 85vh;
   background: var(--panel-soft);
   border: 1px solid rgba(255,255,255,.14);
@@ -474,7 +468,6 @@ header, main, footer { position: relative; z-index: 1; }
   padding: 8px;
   margin-bottom: 20px;
 }
-/* Custom Scrollbar */
 .attendance-list::-webkit-scrollbar { width: 8px; }
 .attendance-list::-webkit-scrollbar-track { background: rgba(0,0,0,.2); border-radius: 8px; }
 .attendance-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 8px; }
@@ -490,7 +483,6 @@ header, main, footer { position: relative; z-index: 1; }
 .att-name { color: #fff; font-weight: 500; }
 .att-rsvp { font-size: 0.75rem; color: var(--muted); margin-left: 10px; }
 
-/* Toggle Switch */
 .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider {
@@ -563,7 +555,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     <div class="glow"></div>
   </div>
 
-  <!-- NAVBAR -->
   <header class="nav">
     <div class="nav-inner">
       <a href="index.html" class="brand">
@@ -590,9 +581,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 
   <main class="wrap">
     
-    <!-- ========================================== -->
-    <!-- VIEW 1: OVERVIEW (Visible to everyone)     -->
-    <!-- ========================================== -->
     <div id="view-overview">
       <section class="dashboard-header">
         <div class="header-text">
@@ -610,7 +598,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       </section>
 
       <section class="dashboard-grid">
-        <!-- Meetings Card -->
         <div class="dash-card" style="grid-column: span 2;">
           <h3>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -621,7 +608,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
           </div>
         </div>
 
-        <!-- Meeting Streak Card -->
         <div class="dash-card streak-card">
           <h3 style="justify-content:center;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
@@ -639,9 +625,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       </section>
     </div>
 
-    <!-- ========================================== -->
-    <!-- VIEW 2: EXCOMS (Visible only to ExComs)    -->
-    <!-- ========================================== -->
     <div id="view-excoms" style="display:none;">
       <section class="dashboard-header" style="padding-bottom: 20px;">
         <div class="header-text">
@@ -732,7 +715,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       </div>
 
       <p style="font-size:0.8rem; color:var(--muted); margin-top:16px; font-style:italic; line-height:1.5;">
-        ⚠️ You can change your RSVP <strong>once</strong> after confirming. Choose carefully.
+        ⚠️ You can only RSVP <strong>once</strong> per meeting. Your choice is final — choose carefully.
       </p>
     </div>
 
@@ -762,10 +745,9 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       </svg>
       <h3 style="font-size:1.6rem; color:#fff; margin:0 0 10px;">RSVP Confirmed!</h3>
       <p id="rsvpSuccessMsg" style="color:var(--muted); font-size:1rem;"></p>
-      <span class="change-link" id="changeRsvpLink" onclick="changeRsvp()">Change RSVP</span>
-      <p id="rsvpLockNote" style="display:none; font-size:0.82rem; color:var(--muted); margin-top:16px; font-style:italic; line-height:1.5;">
-        🔒 You've used your one allowed RSVP change for this meeting.<br>
-        Please contact an ExCom if you need to update again.
+      <p style="font-size:0.82rem; color:var(--muted); margin-top:16px; font-style:italic; line-height:1.5;">
+        🔒 Your RSVP is final and cannot be changed.<br>
+        Contact an ExCom if you need to make an update.
       </p>
     </div>
 
@@ -821,12 +803,11 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   let currentUserName = "";
   let allGaveliers = [];
 
-  // Modal State
   let activeMeetingId = "";
   let activeAttendanceMeetingId = "";
 
   // ==========================================
-  // 1. TAB SWITCHING LOGIC
+  // 1. TAB SWITCHING
   // ==========================================
   window.switchTab = function(tabName, event) {
     if (event) event.preventDefault();
@@ -847,7 +828,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   }
 
   // ==========================================
-  // 2. CHECK AUTH & FETCH USER DATA
+  // 2. AUTH & USER DATA
   // ==========================================
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -886,7 +867,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         loader.style.opacity = '0';
         setTimeout(() => loader.style.display = 'none', 500);
 
-        // Load meetings and calculate streak
         loadMeetings();
 
       } catch (err) {
@@ -899,7 +879,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   });
 
   // ==========================================
-  // 3. MEETING SYSTEM, STREAK, & RSVP
+  // 3. MEETINGS & STREAK
   // ==========================================
   const meetingsList = document.getElementById('meetingsList');
   const adminMeetingsList = document.getElementById('adminMeetingsList');
@@ -925,7 +905,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         const dateObj = new Date(data.date + 'T' + data.time);
         const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
         
-        // --- Overview Tab ---
         const overviewHtml = `
           <div class="meeting-item" onclick="openRsvpModal('${docId}', '${data.theme}', '${formattedDate}', '${data.time}')">
             <div class="meeting-header">
@@ -943,7 +922,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         `;
         meetingsList.innerHTML += overviewHtml;
 
-        // --- Admin Tab ---
         if (currentUserIsExCom && adminMeetingsList) {
           const adminHtml = `
             <div class="meeting-item" style="display:flex; justify-content:space-between; align-items:center; padding: 16px; cursor: default;">
@@ -961,12 +939,10 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         }
       });
 
-      // Calculate streak after loading meetings
       calculateStreak();
     });
   }
 
-  // --- STREAK CALCULATION LOGIC ---
   async function calculateStreak() {
     try {
       const today = new Date().toISOString().split('T')[0];
@@ -977,7 +953,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       let freezes = 0;
       let freezeProgress = 0; 
 
-      // Fetch all past RSVPs for the user
       const pastMeetings = [];
       snapshot.forEach(doc => {
         if (doc.data().date < today) {
@@ -1000,7 +975,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
           attStatus = data.attendanceStatus || 'None';
         }
 
-        // Skip if attendance hasn't been marked yet
         if (attStatus === 'None') continue;
 
         if (rsvpStatus === 'Present' && attStatus === 'Present') {
@@ -1010,10 +984,9 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
             if (freezes < 1) {
               freezes = 1;
             }
-            freezeProgress = 0; // Reset progress
+            freezeProgress = 0;
           }
         } else {
-          // Any other combination breaks the streak
           if (freezes > 0) {
             freezes--;
             freezeProgress = 0;
@@ -1024,7 +997,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         }
       }
 
-      // Update UI
       document.getElementById('streakCount').textContent = streak;
       document.getElementById('freezeCount').textContent = freezes;
 
@@ -1033,46 +1005,10 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     }
   }
 
-  // --- RSVP MODAL LOGIC ---
+  // ==========================================
+  // 4. RSVP (one submission, then locked)
+  // ==========================================
   const rsvpModal = document.getElementById('rsvpModal');
-
-  // Shared save logic — enforces the one-change limit
-  async function saveRsvp(status, extraData = {}) {
-    const ref = doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission);
-    const existingSnap = await getDoc(ref);
-
-    let editCount = 0;
-    if (existingSnap.exists()) {
-      const prevEditCount = existingSnap.data().editCount || 0;
-      if (prevEditCount >= 1) {
-        throw new Error("You've already changed your RSVP once for this meeting.");
-      }
-      editCount = prevEditCount + 1;
-    }
-
-    await setDoc(ref, {
-      name: currentUserName,
-      admissionNo: currentUserAdmission,
-      rsvpStatus: status,
-      ...extraData,
-      editCount,
-      timestamp: new Date()
-    }, { merge: true });
-
-    return editCount;
-  }
-
-  function updateRsvpChangeState(editCount) {
-    const changeLink = document.getElementById('changeRsvpLink');
-    const lockNote = document.getElementById('rsvpLockNote');
-    if (editCount >= 1) {
-      changeLink.style.display = 'none';
-      lockNote.style.display = 'block';
-    } else {
-      changeLink.style.display = 'inline-block';
-      lockNote.style.display = 'none';
-    }
-  }
 
   window.openRsvpModal = async function(id, theme, dateStr, timeStr) {
     activeMeetingId = id;
@@ -1092,7 +1028,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       if (rsvpSnap.exists()) {
         const data = rsvpSnap.data();
         const status = data.rsvpStatus || data.status;
-        const editCount = data.editCount || 0;
         
         document.getElementById('rsvpStep1').style.display = 'none';
         document.getElementById('rsvpStep3').style.display = 'block';
@@ -1102,8 +1037,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         } else {
           document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Absent</strong>.`;
         }
-
-        updateRsvpChangeState(editCount);
       }
     } catch (err) {
       console.error("Error checking RSVP status:", err);
@@ -1113,10 +1046,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   }
 
   window.closeRsvpModal = function() { rsvpModal.classList.remove('open'); }
-  window.changeRsvp = function() {
-    document.getElementById('rsvpStep3').style.display = 'none';
-    document.getElementById('rsvpStep1').style.display = 'block';
-  }
+  
   window.selectPresent = function() {
     document.getElementById('rsvpStep1').style.display = 'none';
     document.getElementById('rsvpStep2').style.display = 'block';
@@ -1129,15 +1059,20 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     btn.disabled = true;
 
     try {
-      const editCount = await saveRsvp("Absent");
+      await setDoc(doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission), {
+        name: currentUserName,
+        admissionNo: currentUserAdmission,
+        rsvpStatus: "Absent",
+        timestamp: new Date()
+      });
 
       document.getElementById('rsvpStep1').style.display = 'none';
       document.getElementById('rsvpStep3').style.display = 'block';
       document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Absent</strong>.`;
-      updateRsvpChangeState(editCount);
       
     } catch (err) {
-      alert(err.message || "Failed to save RSVP.");
+      console.error(err);
+      alert("Could not save RSVP. If you already RSVP'd, contact an ExCom to change it.");
       btn.textContent = original;
       btn.disabled = false;
     }
@@ -1154,21 +1089,30 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     btn.disabled = true;
 
     try {
-      const editCount = await saveRsvp("Present", { food, additional });
+      await setDoc(doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission), {
+        name: currentUserName,
+        admissionNo: currentUserAdmission,
+        rsvpStatus: "Present",
+        food: food,
+        additional: additional,
+        timestamp: new Date()
+      });
 
       document.getElementById('rsvpStep2').style.display = 'none';
       document.getElementById('rsvpStep3').style.display = 'block';
       document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Present</strong>.<br>Food: ${food} ${additional ? '('+additional+')' : ''}`;
-      updateRsvpChangeState(editCount);
 
     } catch (err) {
-      alert(err.message || "Failed to save RSVP.");
+      console.error(err);
+      alert("Could not save RSVP. If you already RSVP'd, contact an ExCom to change it.");
       btn.textContent = original;
       btn.disabled = false;
     }
   }
 
-  // --- ATTENDANCE MODAL LOGIC ---
+  // ==========================================
+  // 5. ATTENDANCE (ExCom only)
+  // ==========================================
   const attendanceModal = document.getElementById('attendanceModal');
   const attendanceList = document.getElementById('attendanceList');
 
@@ -1193,7 +1137,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         const admNo = student.admissionNo;
         const rsvp = rsvpData[admNo];
         
-        // If they have an attendance status, use that. Otherwise default to checked if RSVP'd Present
         let isPresent = false;
         if (rsvp && rsvp.attendanceStatus) {
           isPresent = rsvp.attendanceStatus === "Present";
@@ -1261,8 +1204,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       
       alert("Attendance saved successfully!");
       closeAttendanceModal();
-      
-      // Recalculate streak since attendance changed
       calculateStreak();
 
     } catch (err) {
@@ -1274,7 +1215,9 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     }
   }
 
-  // --- EXCOM SCHEDULING LOGIC ---
+  // ==========================================
+  // 6. EXCOM SCHEDULING
+  // ==========================================
   if(scheduleForm) {
     scheduleForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1314,7 +1257,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   };
 
   // ==========================================
-  // 4. LOGOUT LOGIC
+  // 7. LOGOUT
   // ==========================================
   document.getElementById('logoutBtn').addEventListener('click', () => {
     signOut(auth).then(() => {
