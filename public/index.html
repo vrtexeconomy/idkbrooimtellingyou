@@ -52,7 +52,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 ::selection{background:rgba(120,225,255,.32);color:#fff}
 
 /* ============================================================
-   PAGE WRAPPER (Fixes the scrolling line glitch)
+   PAGE WRAPPER
    ============================================================ */
 .page {
   position: relative;
@@ -61,7 +61,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 }
 
 /* ============================================================
-   BACKGROUND — Absolute (scrolls with page, zero glitches)
+   BACKGROUND
    ============================================================ */
 .bg{
   position:absolute;
@@ -91,14 +91,13 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   to{transform:translate3d(12vw,9vh,0)}
 }
 
-/* Push content above the background */
 header, main, footer {
   position: relative;
   z-index: 1;
 }
 
 /* ============================================================
-   NAVBAR — smooth shadow fade
+   NAVBAR
    ============================================================ */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:60;
@@ -134,12 +133,8 @@ header, main, footer {
   pointer-events: none;
 }
 
-.nav.scrolled .nav-inner {
-  border-color: rgba(255,255,255,.12);
-}
-.nav.scrolled .nav-inner::after {
-  opacity: 1;
-}
+.nav.scrolled .nav-inner { border-color: rgba(255,255,255,.12); }
+.nav.scrolled .nav-inner::after { opacity: 1; }
 
 /* brand */
 .brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
@@ -204,17 +199,14 @@ header, main, footer {
 }
 .btn-primary:hover{box-shadow:0 16px 34px -14px rgba(120,220,255,.85)}
 
-/* shine sweep */
-.btn-primary::before,
-.btn-login::before{
+.btn-primary::before, .btn-login::before{
   content:'';position:absolute;inset:0;
   background:linear-gradient(105deg,transparent 32%,rgba(255,255,255,.75) 48%,transparent 64%);
   transform:translate3d(-130%,0,0);
   transition:transform .8s var(--ease);
   pointer-events:none;
 }
-.btn-primary:hover::before,
-.btn-login:hover::before{transform:translate3d(130%,0,0)}
+.btn-primary:hover::before, .btn-login:hover::before{transform:translate3d(130%,0,0)}
 
 .btn-login{
   padding:11px 22px;
@@ -252,7 +244,7 @@ section{scroll-margin-top:110px}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
 
 /* ============================================================
-   HERO — 2 column layout for desktop
+   HERO
    ============================================================ */
 .hero{
   display: grid;
@@ -263,9 +255,7 @@ section{scroll-margin-top:110px}
   padding-bottom:clamp(46px,7vh,80px);
 }
 
-.hero-copy {
-  max-width: 700px;
-}
+.hero-copy { max-width: 700px; }
 
 .hero h1{
   font-size:clamp(2.5rem,5.5vw,4.6rem);
@@ -283,9 +273,7 @@ section{scroll-margin-top:110px}
   animation:wordUp .75s var(--ease) forwards;
   animation-delay:calc(.22s + var(--i) * .055s);
 }
-@keyframes wordUp{
-  to{opacity:1;transform:translate3d(0,0,0)}
-}
+@keyframes wordUp{ to{opacity:1;transform:translate3d(0,0,0)} }
 
 .serif{
   font-family:'Instrument Serif',Georgia,serif;
@@ -319,19 +307,11 @@ section{scroll-margin-top:110px}
 .hero-visual {
   display: flex;
   justify-content: flex-end;
-  animation: cardIn .9s var(--ease) both .5s,
-             floaty 10s ease-in-out 1.4s infinite alternate;
+  animation: cardIn .9s var(--ease) both .5s, floaty 10s ease-in-out 1.4s infinite alternate;
 }
 
-@keyframes cardIn {
-  from { opacity: 0; transform: translate3d(0, 30px, 0); }
-  to { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-
-@keyframes floaty {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(0, -12px, 0); }
-}
+@keyframes cardIn { from { opacity: 0; transform: translate3d(0, 30px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+@keyframes floaty { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -12px, 0); } }
 
 .quote-card {
   position: relative;
@@ -424,7 +404,7 @@ section{scroll-margin-top:110px}
 }
 
 /* ============================================================
-   SECTIONS
+   SECTIONS & CARDS
    ============================================================ */
 .section{padding-block:clamp(64px,10vh,110px)}
 
@@ -449,7 +429,7 @@ h2.title{
 }
 .about-grid p strong{color:#fff;font-weight:500}
 
-/* cards */
+/* Program Cards */
 .cards{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(228px,1fr));
@@ -462,8 +442,7 @@ h2.title{
   border-radius:22px;
   background:var(--panel);
   border:1px solid var(--brd);
-  transition:transform .4s var(--ease), border-color .4s var(--ease),
-             box-shadow .4s var(--ease);
+  transition:transform .4s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);
 }
 .card:hover{
   transform:translate3d(0,-7px,0);
@@ -481,7 +460,7 @@ h2.title{
 .card h4{margin:0 0 9px;font-size:1.06rem;font-weight:500;letter-spacing:-.01em}
 .card p{margin:0;font-size:.9rem;color:rgba(234,246,251,.6);line-height:1.6}
 
-/* stats */
+/* Stats */
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -505,6 +484,59 @@ h2.title{
   display:block;margin-top:7px;
   font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
   color:rgba(157,194,214,.9);
+}
+
+/* ============================================================
+   GAVELIERS SECTION (New)
+   ============================================================ */
+.gaveliers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+.gavelier-card {
+  background: var(--panel);
+  border: 1px solid var(--brd);
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  transition: transform .4s var(--ease), border-color .4s var(--ease);
+}
+.gavelier-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(160,235,255,.3);
+}
+.gavelier-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 16px;
+  border: 2px solid rgba(255,255,255,0.1);
+  box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5);
+  background: #012a41;
+}
+.gavelier-name {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0 0 4px;
+  color: #fff;
+}
+.gavelier-role {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.gavelier-phone {
+  display: inline-block;
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 50px;
+  font-size: 0.9rem;
+  color: #9fe9ff;
 }
 
 /* ============================================================
@@ -616,7 +648,7 @@ footer{
    ============================================================ */
 @media (max-width:960px){
   .hero { grid-template-columns: 1fr; }
-  .hero-visual { display: none; } /* Hides quote card on tablets/mobile to keep clean */
+  .hero-visual { display: none; }
   .about-grid{grid-template-columns:1fr}
   .nav-links{display:none}
   .btn-login{margin-left:auto}
@@ -648,15 +680,12 @@ footer{
 
 <body>
 
-<!-- THE PAGE WRAPPER -->
 <div class="page">
 
-  <!-- ===================== BACKGROUND ===================== -->
   <div class="bg" aria-hidden="true">
     <div class="glow"></div>
   </div>
 
-  <!-- ===================== NAVBAR ===================== -->
   <header class="nav" id="nav">
     <div class="nav-inner">
       <a href="#top" class="brand" aria-label="Pearl Gavel Club home">
@@ -670,8 +699,8 @@ footer{
       <nav class="nav-links" aria-label="Primary">
         <a href="#about">About</a>
         <a href="#program">Program</a>
+        <a href="#gaveliers">Gaveliers</a>
         <a href="#stats">Community</a>
-        <a href="#excoms">ExComs</a>
       </nav>
 
       <button class="btn btn-login" id="loginBtn" type="button">
@@ -686,7 +715,7 @@ footer{
 
   <main id="top">
 
-    <!-- ===================== HERO ===================== -->
+    <!-- HERO -->
     <section class="hero wrap">
       <div class="hero-copy">
         <span class="eyebrow"><i class="dot"></i> Gavel Club · Toastmasters Tradition</span>
@@ -716,7 +745,6 @@ footer{
         </div>
       </div>
 
-      <!-- Floating Quote Card to fill the space -->
       <div class="hero-visual">
         <div class="quote-card">
           <span class="quote-mark">“</span>
@@ -726,7 +754,7 @@ footer{
       </div>
     </section>
 
-    <!-- ===================== MARQUEE ===================== -->
+    <!-- MARQUEE -->
     <div class="marquee" aria-hidden="true">
       <div class="marquee-track">
         <span>Prepared Speeches</span><span>Table Topics</span><span>Evaluations</span>
@@ -736,7 +764,7 @@ footer{
       </div>
     </div>
 
-    <!-- ===================== ABOUT ===================== -->
+    <!-- ABOUT -->
     <section class="section wrap" id="about">
       <div class="about-grid">
         <div class="reveal">
@@ -762,7 +790,7 @@ footer{
       </div>
     </section>
 
-    <!-- ===================== PROGRAM CARDS ===================== -->
+    <!-- PROGRAM -->
     <section class="section wrap" id="program" style="padding-top:0">
       <div class="reveal">
         <span class="eyebrow"><i class="dot"></i> What we do</span>
@@ -775,19 +803,16 @@ footer{
           <h4>Prepared Speeches</h4>
           <p>Craft a message, structure it, and deliver it to a room that's rooting for you.</p>
         </article>
-
         <article class="card reveal" style="--d:.1s">
           <span class="num">02</span>
           <h4>Table Topics</h4>
           <p>Think on your feet. Two minutes of impromptu speaking builds real composure.</p>
         </article>
-
         <article class="card reveal" style="--d:.16s">
           <span class="num">03</span>
           <h4>Evaluations</h4>
           <p>Give and receive feedback that's specific, kind, and genuinely useful.</p>
         </article>
-
         <article class="card reveal" style="--d:.22s">
           <span class="num">04</span>
           <h4>Leadership Roles</h4>
@@ -796,243 +821,14 @@ footer{
       </div>
     </section>
 
-    <!-- ===================== STATS ===================== -->
-    <section class="section wrap" id="stats" style="padding-top:0">
-      <div class="stats reveal">
-        <div class="stat"><b>48+</b><span>Active members</span></div>
-        <div class="stat"><b>24</b><span>Meetings a year</span></div>
-        <div class="stat"><b>120+</b><span>Speeches delivered</span></div>
-        <div class="stat"><b>100%</b><span>Supportive room</span></div>
+    <!-- GAVELIERS SECTION -->
+    <section class="section wrap" id="gaveliers" style="padding-top:0">
+      <div class="reveal">
+        <span class="eyebrow"><i class="dot"></i> The People</span>
+        <h2 class="title">Meet our Gaveliers.</h2>
+        <p style="color:var(--muted); margin-top:12px; max-width:50ch;">The student leaders and members who make the Pearl Gavel Club what it is.</p>
       </div>
-    </section>
 
-  </main>
-
-  <!-- ===================== FOOTER ===================== -->
-  <footer>
-    <div class="foot-inner">
-      <div style="display:flex;align-items:center;gap:11px">
-        <span class="pearl-mark" style="width:22px;height:22px" aria-hidden="true"></span>
-        <span>© <span id="year"></span> Pearl Gavel Club</span>
-      </div>
-      <div class="foot-links">
-        <a href="#about">About</a>
-        <a href="#program">Program</a>
-        <a href="#excoms">ExComs</a>
-        <a href="mailto:hello@pearlgavelclub.org">Contact</a>
-      </div>
-    </div>
-  </footer>
-
-</div> <!-- END PAGE WRAPPER -->
-
-<!-- ===================== LOGIN MODAL ===================== -->
-<div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-  <div class="modal-backdrop" data-close></div>
-
-  <div class="modal-card">
-    <button class="modal-close" type="button" data-close aria-label="Close login">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
-        <path d="M18 6 6 18M6 6l12 12"/>
-      </svg>
-    </button>
-
-    <h3 id="loginTitle">Welcome back</h3>
-    <p class="modal-sub">Log in with your admission number.</p>
-
-    <form id="loginForm">
-      <div class="field">
-        <label for="admission">Admission number (only numbers)</label>
-        <input
-          id="admission"
-          name="admission"
-          type="text"
-          inputmode="numeric"
-          pattern="[0-9]+"
-          placeholder="e.g. 20240123"
-          autocomplete="username"
-          required
-        >
-      </div>
-      <div class="field">
-        <label for="password">Password</label>
-        <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required>
-      </div>
-      <button class="btn btn-primary" type="submit">Log in</button>
-    </form>
-
-    <p class="modal-note">
-      New member?
-      <a href="mailto:hello@pearlgavelclub.org?subject=Joining%20Pearl%20Gavel%20Club">Ask about joining</a>
-    </p>
-  </div>
-</div>
-
-<script type="module">
-  // 1. Import Firebase functions
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
-
-  // 2. Firebase Config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDduauqRyaR-G2QZYok3YZRypC_8VHUffk",
-    authDomain: "pearlgavelclub.firebaseapp.com",
-    projectId: "pearlgavelclub",
-    storageBucket: "pearlgavelclub.firebasestorage.app",
-    messagingSenderId: "1004163489261",
-    appId: "1:1004163489261:web:1980c6c44a24f693e65be4",
-    measurementId: "G-6ZRKC8TWSP"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
-
-  // ==========================================
-  // FETCH AND DISPLAY GAVELIERS
-  // ==========================================
-  async function loadGaveliers() {
-    const grid = document.getElementById('gaveliersGrid');
-    
-    try {
-      const querySnapshot = await getDocs(collection(db, "gaveliers"));
-      
-      if (querySnapshot.empty) {
-        grid.innerHTML = '<p style="color:var(--muted);">No members found in the database yet.</p>';
-        return;
-      }
-
-      grid.innerHTML = ""; // Clear loading text
-      
-      querySnapshot.forEach((doc) => {
-        const person = doc.data();
-        
-        // Build the card HTML
-        grid.innerHTML += `
-          <div class="gavelier-card">
-            <img src="${person.imageUrl || 'https://via.placeholder.com/120?text=No+Photo'}" alt="${person.name}" class="gavelier-img">
-            <h4 class="gavelier-name">${person.name}</h4>
-            <div class="gavelier-role">${person.role} <span style="opacity:0.5;">|</span> ${person.class || ''}</div>
-            <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 12px;">
-              ${person.food || ''}
-            </div>
-            <div class="gavelier-phone">
-              ${person.phone}
-            </div>
-          </div>
-        `;
-      });
-    } catch (err) {
-      console.error("Error loading gaveliers:", err);
-      grid.innerHTML = '<p style="color:#ff6b6b;">Failed to connect to Firebase.</p>';
-    }
-  }
-  
-  // Call the function to load data
-  loadGaveliers();
-
-  // ==========================================
-  // LOGIN LOGIC
-  // ==========================================
-  const modal = document.getElementById('loginModal');
-  const loginForm = document.getElementById('loginForm');
-  const admissionInput = document.getElementById('admission');
-  let lastFocused = null;
-
-  admissionInput.addEventListener('input', () => {
-    const digitsOnly = admissionInput.value.replace(/\D/g, '');
-    if (admissionInput.value !== digitsOnly) admissionInput.value = digitsOnly;
-  });
-
-  function openModal() {
-    lastFocused = document.activeElement;
-    modal.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => admissionInput.focus(), 220);
-  }
-
-  function closeModal() {
-    modal.classList.remove('open');
-    document.body.style.overflow = '';
-    if (lastFocused) lastFocused.focus();
-  }
-
-  document.getElementById('loginBtn').addEventListener('click', openModal);
-  modal.querySelectorAll('[data-close]').forEach((el) => {
-    el.addEventListener('click', () => closeModal());
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-  });
-
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const admissionNumber = admissionInput.value;
-    // We append a fake domain so Firebase accepts it as an email
-    const fakeEmail = `${admissionNumber}@pearlgavelclub.com`; 
-    const password = document.getElementById('password').value;
-
-    const btn = loginForm.querySelector('button[type="submit"]');
-    const original = btn.textContent;
-    btn.textContent = 'Logging in…';
-    btn.style.opacity = '.75';
-
-    try {
-      await signInWithEmailAndPassword(auth, fakeEmail, password);
-      alert("Login successful! Welcome back.");
-      closeModal();
-      // window.location.href = '/dashboard.html'; // Add redirect later
-    } catch (err) {
-      console.error(err);
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found') {
-        alert("Invalid admission number or password.");
-      } else {
-        alert("Login failed: " + err.message);
-      }
-    } finally {
-      btn.textContent = original;
-      btn.style.opacity = '';
-    }
-  });
-
-  // ==========================================
-  // SCROLL ANIMATIONS & NAV
-  // ==========================================
-  const nav = document.getElementById('nav');
-  let navTicking = false;
-  function updateNav(){
-    nav.classList.toggle('scrolled', window.scrollY > 24);
-    navTicking = false;
-  }
-  window.addEventListener('scroll', () => {
-    if (!navTicking){
-      navTicking = true;
-      requestAnimationFrame(updateNav);
-    }
-  }, { passive: true });
-  updateNav();
-
-  document.getElementById('year').textContent = new Date().getFullYear();
-
-  const revealEls = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
-    revealEls.forEach((el) => io.observe(el));
-  } else {
-    revealEls.forEach((el) => el.classList.add('in'));
-  }
-</script>
-
-</body>
-</html>
+      <!-- The database will inject the cards here -->
+      <div class="gaveliers-grid reveal" id="gaveliersGrid">
+        <p style="color:var(--muted);">Loading members...</
