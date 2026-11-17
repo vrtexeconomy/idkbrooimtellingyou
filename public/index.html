@@ -487,56 +487,47 @@ h2.title{
 }
 
 /* ============================================================
-   GAVELIERS SECTION
+   EXCOMS SECTION
    ============================================================ */
-.gaveliers-grid {
+.excom-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 24px;
   margin-top: 40px;
 }
-.gavelier-card {
+.excom-card {
   background: var(--panel);
   border: 1px solid var(--brd);
   border-radius: 20px;
-  padding: 24px;
+  padding: 30px 20px;
   text-align: center;
   transition: transform .4s var(--ease), border-color .4s var(--ease);
 }
-.gavelier-card:hover {
+.excom-card:hover {
   transform: translateY(-5px);
   border-color: rgba(160,235,255,.3);
 }
-.gavelier-img {
-  width: 120px;
-  height: 120px;
+.excom-img {
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
   object-fit: cover;
-  margin: 0 auto 16px;
-  border: 2px solid rgba(255,255,255,0.1);
+  margin: 0 auto 20px;
+  border: 3px solid rgba(255,255,255,0.1);
   box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5);
   background: #012a41;
 }
-.gavelier-name {
-  font-size: 1.2rem;
+.excom-name {
+  font-size: 1.15rem;
   font-weight: 500;
-  margin: 0 0 4px;
+  margin: 0 0 6px;
   color: #fff;
 }
-.gavelier-role {
-  font-size: 0.85rem;
+.excom-role {
+  font-size: 0.8rem;
   color: var(--muted);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 8px;
-}
-.gavelier-phone {
-  display: inline-block;
-  padding: 6px 14px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 50px;
-  font-size: 0.9rem;
-  color: #9fe9ff;
+  letter-spacing: 0.15em;
 }
 
 /* ============================================================
@@ -699,7 +690,7 @@ footer{
       <nav class="nav-links" aria-label="Primary">
         <a href="#about">About</a>
         <a href="#program">Program</a>
-        <a href="#gaveliers">Gaveliers</a>
+        <a href="#excoms">ExComs</a>
         <a href="#stats">Community</a>
       </nav>
 
@@ -821,17 +812,63 @@ footer{
       </div>
     </section>
 
-    <!-- GAVELIERS SECTION -->
-    <section class="section wrap" id="gaveliers" style="padding-top:0">
+    <!-- EXCOMS SECTION -->
+    <section class="section wrap" id="excoms" style="padding-top:0">
       <div class="reveal">
-        <span class="eyebrow"><i class="dot"></i> The People</span>
-        <h2 class="title">Meet our Gaveliers.</h2>
-        <p style="color:var(--muted); margin-top:12px; max-width:50ch;">The student leaders and members who make the Pearl Gavel Club what it is.</p>
+        <span class="eyebrow"><i class="dot"></i> Leadership</span>
+        <h2 class="title">Executive Committee.</h2>
+        <p style="color:var(--muted); margin-top:12px; max-width:50ch;">The dedicated team leading the Pearl Gavel Club this term.</p>
       </div>
 
-      <!-- The database will inject the cards here -->
-      <div class="gaveliers-grid reveal" id="gaveliersGrid">
-        <p style="color:var(--muted);">Loading members...</p>
+      <div class="excom-grid reveal">
+        <!-- 1. President -->
+        <div class="excom-card">
+          <img src="https://cdn.phototourl.com/anon/2026-11-17-4b9af167-2cbc-4f43-922b-f8394c1cd982.jpg" alt="Aysha Zarine" class="excom-img">
+          <h4 class="excom-name">Aysha Zarine</h4>
+          <div class="excom-role">President</div>
+        </div>
+
+        <!-- 2. Vice President of Education -->
+        <div class="excom-card">
+          <img src="https://cdn.phototourl.com/anon/2026-11-17-0d44286e-82c8-4269-a723-f4c4ce504565.jpg" alt="Nibushna Jotheeswar Dheeban" class="excom-img">
+          <h4 class="excom-name">Nibushna Jotheeswar Dheeban</h4>
+          <div class="excom-role">VP of Education</div>
+        </div>
+
+        <!-- 3. Vice President of Membership -->
+        <div class="excom-card">
+          <img src="https://cdn.phototourl.com/anon/2026-11-17-0104b83d-a525-407d-a0f3-642e950d07a6.jpg" alt="Aahil Ali Anwar" class="excom-img">
+          <h4 class="excom-name">Aahil Ali Anwar</h4>
+          <div class="excom-role">VP of Membership</div>
+        </div>
+
+        <!-- 4. Vice President of Public Relations -->
+        <div class="excom-card">
+          <img src="https://cdn.phototourl.com/anon/2026-11-17-256323de-7338-4608-a9a6-955bee23ec05.jpg" alt="Rushil Bhavsar" class="excom-img">
+          <h4 class="excom-name">Rushil Bhavsar</h4>
+          <div class="excom-role">VP of Public Relations</div>
+        </div>
+
+        <!-- 5. Secretary -->
+        <div class="excom-card">
+          <img src="https://cdn.phototourl.com/anon/2026-11-17-ed53de37-8b53-4807-ba0b-b4f76ed38905.jpg" alt="Ritika Nair" class="excom-img">
+          <h4 class="excom-name">Ritika Nair</h4>
+          <div class="excom-role">Secretary</div>
+        </div>
+
+        <!-- 6. Treasurer -->
+        <div class="excom-card">
+          <img src="https://cdn.phototourl.com/anon/2026-11-17-8dc6841c-fcc9-422e-8a86-86fc994c2b7a.jpg" alt="Eleanor Louisa Carasco" class="excom-img">
+          <h4 class="excom-name">Eleanor Louisa Carasco</h4>
+          <div class="excom-role">Treasurer</div>
+        </div>
+
+        <!-- 7. Sergeant at Arms -->
+        <div class="excom-card">
+          <img src="https://cdn.phototourl.com/anon/2026-11-17-9a31c0b7-d1da-458f-ab25-7de147abb4d1.jpg" alt="Aleesha Nasrin" class="excom-img">
+          <h4 class="excom-name">Aleesha Nasrin</h4>
+          <div class="excom-role">Sergeant at Arms</div>
+        </div>
       </div>
     </section>
 
@@ -856,7 +893,7 @@ footer{
       <div class="foot-links">
         <a href="#about">About</a>
         <a href="#program">Program</a>
-        <a href="#gaveliers">Gaveliers</a>
+        <a href="#excoms">ExComs</a>
         <a href="mailto:hello@pearlgavelclub.org">Contact</a>
       </div>
     </div>
@@ -880,8 +917,8 @@ footer{
 
     <form id="loginForm">
       <div class="field">
-        <label for="admission">Admission number (only numbers)</label>
-        <input id="admission" name="admission" type="text" inputmode="numeric" pattern="[0-9]+" placeholder="e.g. 20240123" autocomplete="username" required>
+        <label for="admission">Admission number</label>
+        <input id="admission" name="admission" type="text" inputmode="numeric" pattern="[0-9]+" placeholder="e.g. 4671" autocomplete="username" required>
       </div>
       <div class="field">
         <label for="password">Password</label>
@@ -900,7 +937,6 @@ footer{
 <script type="module">
   // 1. Import Firebase functions
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
   import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
 
   // 2. Firebase Config
@@ -915,51 +951,7 @@ footer{
   };
 
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
   const auth = getAuth(app);
-
-  // ==========================================
-  // FETCH AND DISPLAY GAVELIERS
-  // ==========================================
-  async function loadGaveliers() {
-    const grid = document.getElementById('gaveliersGrid');
-    
-    try {
-      const querySnapshot = await getDocs(collection(db, "gaveliers"));
-      
-      if (querySnapshot.empty) {
-        grid.innerHTML = '<p style="color:var(--muted);">No members found in the database yet.</p>';
-        return;
-      }
-
-      grid.innerHTML = ""; // Clear loading text
-      
-      querySnapshot.forEach((doc) => {
-        const person = doc.data();
-        
-        // Build the card HTML
-        grid.innerHTML += `
-          <div class="gavelier-card">
-            <img src="${person.imageUrl || 'https://via.placeholder.com/120?text=No+Photo'}" alt="${person.name}" class="gavelier-img">
-            <h4 class="gavelier-name">${person.name}</h4>
-            <div class="gavelier-role">${person.role} <span style="opacity:0.5;">|</span> ${person.class || ''}</div>
-            <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 12px;">
-              ${person.food || ''}
-            </div>
-            <div class="gavelier-phone">
-              ${person.phone}
-            </div>
-          </div>
-        `;
-      });
-    } catch (err) {
-      console.error("Error loading gaveliers:", err);
-      grid.innerHTML = '<p style="color:#ff6b6b;">Failed to connect to Firebase.</p>';
-    }
-  }
-  
-  // Call the function to load data
-  loadGaveliers();
 
   // ==========================================
   // LOGIN LOGIC
@@ -969,6 +961,7 @@ footer{
   const admissionInput = document.getElementById('admission');
   let lastFocused = null;
 
+  // Strip any letters so the user only types numbers
   admissionInput.addEventListener('input', () => {
     const digitsOnly = admissionInput.value.replace(/\D/g, '');
     if (admissionInput.value !== digitsOnly) admissionInput.value = digitsOnly;
@@ -999,9 +992,10 @@ footer{
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const admissionNumber = admissionInput.value;
-    // We append a fake domain so Firebase accepts it as an email
-    const fakeEmail = `${admissionNumber}@pearlgavelclub.com`; 
+    const admissionNumber = admissionInput.value; // e.g., "4671"
+    
+    // Add the Capital 'P' and the domain to match Firebase Auth
+    const fakeEmail = `P${admissionNumber}@pearlgavelclub.com`; 
     const password = document.getElementById('password').value;
 
     const btn = loginForm.querySelector('button[type="submit"]');
@@ -1016,7 +1010,7 @@ footer{
       // window.location.href = '/dashboard.html'; // Add redirect later
     } catch (err) {
       console.error(err);
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found') {
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
         alert("Invalid admission number or password.");
       } else {
         alert("Login failed: " + err.message);
