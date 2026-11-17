@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Member Portal — Pearl Gavel Club</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   TOKENS & BASE
+   ============================================================ */
+:root{
+  --bg:#014165;
+  --panel:#023a56;
+  --panel-deep:#012e45;
+  --panel-soft:#03455f;
+  --ink:#eaf6fb;
+  --muted:#9cc3d7;
+  --brd:rgba(255,255,255,.09);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --maxw:1180px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth; background-color:var(--bg);}
+body{
+  margin:0;
+  background-color:var(--bg);
+  color:var(--ink);
+  font-family:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-weight:300;
+  line-height:1.65;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+
+/* ============================================================
+   PAGE WRAPPER & BACKGROUND
+   ============================================================ */
+.page { position: relative; overflow: hidden; min-height: 100vh; }
+
+.bg{
+  position:absolute; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(900px 640px at 8% -12%, #06658f 0%, rgba(6,101,143,0) 62%),
+    radial-gradient(780px 620px at 97% -2%, #01787e 0%, rgba(1,120,126,0) 58%),
+    radial-gradient(1100px 820px at 50% 118%, #012a41 0%, rgba(1,42,65,0) 66%);
+}
+
+.glow{
+  position:absolute; width:90vw; height:90vw; max-width:900px; max-height:900px;
+  left:-20vw; top:-20vw;
+  background:radial-gradient(circle at center, rgba(40,175,230,.35), rgba(40,175,230,0) 62%);
+  animation:drift 34s ease-in-out infinite alternate;
+}
+
+@keyframes drift{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(12vw,9vh,0)}
+}
+
+header, main, footer { position: relative; z-index: 1; }
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:60;
+  padding:16px clamp(14px,4vw,40px);
+  animation:navIn .8s var(--ease) both .1s;
+}
+@keyframes navIn{
+  from{opacity:0;transform:translate3d(0,-20px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+
+.nav-inner{
+  position:relative; max-width:var(--maxw); margin:0 auto;
+  display:flex; align-items:center; gap:clamp(14px,3vw,34px);
+  padding:9px 10px 9px 18px; border-radius:100px;
+  background:var(--panel-deep); border:1px solid rgba(255,255,255,.07);
+  box-shadow: 0 14px 40px rgba(0,10,20,.6);
+}
+
+.brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.brand-logo {
+  width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(140,225,255,.3);
+}
+.brand-text{display:flex;flex-direction:column;line-height:1.05}
+.brand-text strong{font-size:.92rem;font-weight:600;letter-spacing:.22em}
+.brand-text span{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);font-weight:400;}
+
+.nav-links{display:flex;align-items:center;gap:clamp(14px,2.2vw,30px);margin-left:auto}
+.nav-links a{
+  font-size:.87rem;letter-spacing:.03em;color:rgba(234,246,251,.75);
+  position:relative;padding:6px 0; transition:color .3s var(--ease);
+}
+.nav-links a:hover{color:#fff}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  position:relative; display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  padding:11px 22px; border-radius:100px; font-size:.87rem; font-weight:600;
+  cursor:pointer; overflow:hidden; white-space:nowrap; transition:transform .35s var(--ease), box-shadow .35s var(--ease);
+}
+.btn:hover{transform:translate3d(0,-2px,0)}
+
+.btn-logout{
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.2);
+  color:#fff;
+  margin-left:6px;
+}
+.btn-logout:hover{background:rgba(255,255,255,.2);}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.wrap{ max-width:var(--maxw); margin:0 auto; padding-inline:clamp(16px,4vw,40px); }
+
+/* ============================================================
+   DASHBOARD HEADER
+   ============================================================ */
+.dashboard-header {
+  padding-top: clamp(140px, 20vh, 200px);
+  padding-bottom: clamp(40px, 6vh, 60px);
+}
+.dashboard-header h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: -.03em;
+  margin: 0 0 16px;
+}
+.serif {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  background: linear-gradient(115deg, #ffffff 0%, #a9e9ff 45%, #8df0d6 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  padding-right: .04em;
+}
+.dashboard-header p {
+  color: rgba(234,246,251,.7);
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  max-width: 600px;
+}
+
+/* ============================================================
+   DASHBOARD GRID (Placeholders)
+   ============================================================ */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 20px;
+  padding-bottom: 60px;
+}
+.dash-card {
+  background: var(--panel);
+  border: 1px solid var(--brd);
+  border-radius: 24px;
+  padding: 32px;
+  transition: transform .4s var(--ease), border-color .4s var(--ease);
+}
+.dash-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(160,235,255,.3);
+}
+.dash-card h3 {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #fff;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dash-card h3 svg { color: #7fe0f5; width: 22px; height: 22px; }
+.dash-card p {
+  margin: 0;
+  color: rgba(234,246,251,.65);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  border-top: 1px solid rgba(255,255,255,.07);
+  padding: 38px clamp(16px,4vw,40px) 52px;
+}
+.foot-inner {
+  max-width: var(--maxw); margin: 0 auto; display: flex; flex-wrap: wrap;
+  gap: 20px; justify-content: space-between; align-items: center;
+  font-size: .86rem; color: rgba(157,194,214,.85);
+}
+.foot-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.foot-links a { transition: color .3s var(--ease); }
+.foot-links a:hover { color: #fff; }
+
+/* ============================================================
+   LOADER (While fetching user data)
+   ============================================================ */
+#loader {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.5s var(--ease);
+}
+.loader-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid rgba(255,255,255,0.1);
+  border-top-color: #7fe0f5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+@media (max-width: 760px) {
+  .nav-links { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOADER (Hides page until we confirm they are logged in) -->
+<div id="loader">
+  <div class="loader-spinner"></div>
+  <p style="color:var(--muted); font-size:0.9rem; letter-spacing:0.1em; text-transform:uppercase;">Authenticating...</p>
+</div>
+
+<div class="page">
+  <div class="bg" aria-hidden="true">
+    <div class="glow"></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">
+        <img src="https://cdn.phototourl.com/anon/2026-11-17-5f32addc-00d9-4b3c-b6c1-8a2fc1aecbc0.png" alt="Pearl Gavel Club Logo" class="brand-logo">
+        <span class="brand-text">
+          <strong>PEARL</strong>
+          <span>Gavel Club</span>
+        </span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="join.html">How to Join</a>
+      </nav>
+
+      <button class="btn btn-logout" id="logoutBtn">
+        Log out
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- WELCOME HEADER -->
+    <section class="dashboard-header">
+      <span class="eyebrow" style="display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:100px;background:var(--panel-deep);border:1px solid rgba(255,255,255,.09);font-size:.73rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(234,246,251,.85);font-weight:400;margin-bottom:20px;">
+        <i style="width:6px;height:6px;border-radius:50%;background:#7fe8cf;box-shadow:0 0 8px rgba(127,232,207,.9);animation:blink 2.8s infinite;"></i> Member Portal
+      </span>
+      <h1 id="welcomeMessage">Welcome back, <span class="serif">Gavelier.</span></h1>
+      <p>This is your personal dashboard. Stay tuned for upcoming meeting schedules, speech sign-ups, and club resources.</p>
+    </section>
+
+    <!-- DASHBOARD CONTENT -->
+    <section class="dashboard-grid">
+      
+      <div class="dash-card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Next Meeting
+        </h3>
+        <p>No meeting scheduled yet. Check back soon for the next Toastmasters session!</p>
+      </div>
+
+      <div class="dash-card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          My Speeches
+        </h3>
+        <p>Track your progress through the Toastmasters pathways. Your next speech slot is waiting for you.</p>
+      </div>
+
+      <div class="dash-card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+          Table Topics
+        </h3>
+        <p>Ready to think on your feet? Prepare for impromptu speaking at our next session.</p>
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-inner">
+      <div style="display:flex;align-items:center;gap:11px">
+        <img src="https://cdn.phototourl.com/anon/2026-11-17-5f32addc-00d9-4b3c-b6c1-8a2fc1aecbc0.png" alt="Logo" class="brand-logo" style="width:24px;height:24px;box-shadow:none;">
+        <span>© <span id="year"></span> Pearl Gavel Club</span>
+      </div>
+      <div class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="join.html">Join</a>
+        <a href="mailto:hello@pearlgavelclub.org">Contact</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ===================== FIREBASE & LOGIC ===================== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+  import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+  // Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDduauqRyaR-G2QZYok3YZRypC_8VHUffk",
+    authDomain: "pearlgavelclub.firebaseapp.com",
+    projectId: "pearlgavelclub",
+    storageBucket: "pearlgavelclub.firebasestorage.app",
+    messagingSenderId: "1004163489261",
+    appId: "1:1004163489261:web:1980c6c44a24f693e65be4",
+    measurementId: "G-6ZRKC8TWSP"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ==========================================
+  // 1. CHECK AUTHENTICATION
+  // ==========================================
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      // User is logged in. Let's find their name!
+      const email = user.email; // e.g. "P4671@pearlgavelclub.com"
+      const admissionNo = email.split('@')[0]; // "P4671"
+
+      try {
+        // Query Firestore for their specific record
+        const q = query(collection(db, "gaveliers"), where("admissionNo", "==", admissionNo));
+        const querySnapshot = await getDocs(q);
+
+        let displayName = "Gavelier"; // Fallback
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          // Get the first name (e.g., "Aysha Zarine" -> "Aysha")
+          const firstName = userData.name.split(' ')[0];
+          displayName = `Gav. ${firstName}`;
+        }
+
+        // Update the HTML
+        document.getElementById('welcomeMessage').innerHTML = `Welcome back, <span class="serif">${displayName}.</span>`;
+        
+        // Fade out the loading screen
+        const loader = document.getElementById('loader');
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
+
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+        document.getElementById('welcomeMessage').innerHTML = `Welcome back, <span class="serif">Gavelier.</span>`;
+        document.getElementById('loader').style.display = 'none';
+      }
+
+    } else {
+      // Not logged in! Kick them back to the login page immediately
+      window.location.href = 'index.html';
+    }
+  });
+
+  // ==========================================
+  // 2. LOGOUT LOGIC
+  // ==========================================
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    signOut(auth).then(() => {
+      // Redirect to home page after logging out
+      window.location.href = 'index.html';
+    }).catch((error) => {
+      console.error("Logout error:", error);
+    });
+  });
+</script>
+
+</body>
+</html>
