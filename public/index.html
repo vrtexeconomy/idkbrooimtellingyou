@@ -822,7 +822,7 @@ footer{
       </button>
 
       <!-- Logged-in profile button (hidden until we know the user is logged in) -->
-      <a href="dashboard.html" class="btn-profile" id="profileBtn" style="display:none;" aria-label="Go to my dashboard">
+      <a href="/dashboard" class="btn-profile" id="profileBtn" style="display:none;" aria-label="Go to my dashboard">
         <img
           src="https://cdn.phototourl.com/anon/2026-11-17-5f32addc-00d9-4b3c-b6c1-8a2fc1aecbc0.png"
           alt="Your profile"
@@ -868,7 +868,7 @@ footer{
         </p>
 
         <div class="cta-row">
-          <a href="join.html" class="btn btn-primary">How to join the club</a>
+          <a href="/join" class="btn btn-primary">How to join the club</a>
         </div>
       </div>
 
@@ -1208,7 +1208,7 @@ footer{
       await signInWithEmailAndPassword(auth, fakeEmail, password);
       
       closeModal();
-      window.location.href = 'dashboard.html'; 
+      window.location.href = '/dashboard'; 
       
     } catch (err) {
       console.error(err);
