@@ -162,6 +162,15 @@ header, main, footer { position: relative; z-index: 1; }
 }
 .btn-cancel:hover { background: rgba(255, 100, 100, 0.25); }
 
+.btn-edit {
+  background: rgba(120, 220, 255, 0.15);
+  border: 1px solid rgba(120, 220, 255, 0.4);
+  color: #7fe0f5;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+}
+.btn-edit:hover { background: rgba(120, 220, 255, 0.25); }
+
 .btn-attendance {
   background: rgba(127, 232, 207, 0.15);
   border: 1px solid rgba(127, 232, 207, 0.4);
@@ -187,28 +196,66 @@ header, main, footer { position: relative; z-index: 1; }
   letter-spacing: 0.1em;
   color: var(--muted);
 }
-.form-group input, .form-group textarea {
-  padding: 14px 16px;
+
+/* Rich Text Editor Styles */
+.rich-editor-container {
   border-radius: 12px;
   background: #023a56;
   border: 1px solid rgba(255,255,255,.14);
+  overflow: hidden;
+  transition: border-color .3s var(--ease-smooth), box-shadow .3s var(--ease-smooth);
+}
+.rich-editor-container:focus-within {
+  border-color: rgba(140,235,255,.55);
+  box-shadow: 0 0 0 3px rgba(120,220,255,.1);
+}
+.rich-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  background: rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.rich-toolbar button {
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--muted);
+  transition: background .2s, color .2s;
+  font-size: 0.85rem;
+}
+.rich-toolbar button:hover {
+  background: rgba(255,255,255,.1);
   color: #fff;
-  font-family: inherit;
+}
+.rich-toolbar select {
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  outline: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px;
+}
+.rich-toolbar select option { background: #023a56; color: #fff; }
+.rich-input {
+  padding: 14px 16px;
+  min-height: 42px;
+  color: #fff;
   font-size: 0.95rem;
   outline: none;
-  resize: vertical;
-  transition:
-    border-color .3s var(--ease-smooth),
-    box-shadow .3s var(--ease-smooth),
-    background-color .3s var(--ease-smooth);
+  overflow-y: auto;
+  max-height: 200px;
 }
-.form-group input:hover, .form-group textarea:hover {
-  border-color: rgba(255,255,255,.22);
+.rich-input:empty:before {
+  content: attr(data-placeholder);
+  color: rgba(234,246,251,.3);
+  pointer-events: none;
 }
-.form-group input:focus, .form-group textarea:focus {
-  border-color: rgba(140,235,255,.55);
-  background: #024260;
-  box-shadow: 0 0 0 3px rgba(120,220,255,.1);
+.rich-input.single-line {
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-height: auto;
 }
 
 /* ============================================================
@@ -394,13 +441,31 @@ header, main, footer { position: relative; z-index: 1; }
   padding: 20px;
   background: rgba(0,0,0,.1);
 }
-.meeting-details p { margin: 0 0 12px; font-size: 0.95rem; color: var(--muted); }
-.meeting-details p:last-child { margin-bottom: 0; }
-.meeting-details strong { color: #fff; font-weight: 500; }
+/* Block style for meeting details */
+.meeting-info-block {
+  margin-bottom: 16px;
+}
+.meeting-info-block:last-child { margin-bottom: 0; }
+.meeting-info-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.meeting-info-text {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.meeting-info-text p { margin: 0 0 8px 0; }
+.meeting-info-text p:last-child { margin-bottom: 0; }
 .rsvp-hint {
   font-size: 0.75rem;
   color: #7fe8cf;
-  margin-top: 12px;
+  margin-top: 16px;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -852,12 +917,14 @@ input:checked + .slider:before {
   margin: 0 0 6px;
   font-weight: 500;
 }
-.streak-detail-section p {
+.streak-detail-section div {
   margin: 0;
   color: rgba(234,246,251,0.82);
   font-size: 0.94rem;
   line-height: 1.55;
 }
+.streak-detail-section div p { margin: 0 0 8px 0; }
+.streak-detail-section div p:last-child { margin-bottom: 0; }
 
 /* ============================================================
    FOOTER & LOADER
@@ -938,6 +1005,9 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 
   <main class="wrap">
     
+    <!-- ========================================== -->
+    <!-- VIEW 1: OVERVIEW (Visible to everyone)     -->
+    <!-- ========================================== -->
     <div id="view-overview">
       <section class="dashboard-header">
         <div class="header-text">
@@ -984,20 +1054,23 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       </section>
     </div>
 
+    <!-- ========================================== -->
+    <!-- VIEW 2: EXCOMS (Visible only to ExComs)    -->
+    <!-- ========================================== -->
     <div id="view-excoms" style="display:none;">
       <section class="dashboard-header" style="padding-bottom: 20px;">
         <div class="header-text">
           <span class="eyebrow" style="display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:100px;background:var(--panel-deep);border:1px solid rgba(255,255,255,.09);font-size:.73rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(234,246,251,.85);font-weight:400;margin-bottom:20px;">
             <i style="width:6px;height:6px;border-radius:50%;background:#ff8a8a;box-shadow:0 0 8px rgba(255,100,100,.9);animation:blink 2.8s infinite;"></i> Admin Access
           </span>
-          <h1>ExCom Dashboard.</h1>
-          <p>Schedule new meetings and manage the club's calendar.</p>
+          <h1 id="excomHeaderTitle">ExCom Dashboard.</h1>
+          <p id="excomHeaderSub">Schedule new meetings and manage the club's calendar.</p>
         </div>
       </section>
 
       <section class="dashboard-grid">
-        <div class="dash-card" style="grid-column: 1 / -1;">
-          <h3>Schedule a Meeting</h3>
+        <div class="dash-card" style="grid-column: 1 / -1;" id="meetingFormCard">
+          <h3 id="formTitle">Schedule a Meeting</h3>
           <form id="scheduleForm" class="admin-form">
             <div class="form-group">
               <label>Date</label>
@@ -1011,20 +1084,62 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
               <label>End Time</label>
               <input type="time" id="meetingEndTime" required>
             </div>
+            
             <div class="form-group full-width">
               <label>Theme</label>
-              <input type="text" id="meetingTheme" placeholder="e.g., The Power of Small Talk" required>
+              <div class="rich-editor-container">
+                <div class="rich-toolbar">
+                  <button type="button" onclick="formatDoc('bold')"><b>B</b></button>
+                  <button type="button" onclick="formatDoc('italic')"><i>I</i></button>
+                  <button type="button" onclick="formatDoc('underline')"><u>U</u></button>
+                  <select onchange="formatDoc('fontName', this.value)">
+                    <option value="Outfit">Outfit</option>
+                    <option value="Instrument Serif">Serif</option>
+                    <option value="Arial">Arial</option>
+                  </select>
+                </div>
+                <div class="rich-input single-line" id="meetingTheme" contenteditable="true" data-placeholder="e.g., The Power of Small Talk"></div>
+              </div>
             </div>
+
             <div class="form-group full-width">
               <label>About the Theme</label>
-              <textarea id="meetingAbout" rows="3" placeholder="Provide a brief description about what the theme means..." required></textarea>
+              <div class="rich-editor-container">
+                <div class="rich-toolbar">
+                  <button type="button" onclick="formatDoc('bold')"><b>B</b></button>
+                  <button type="button" onclick="formatDoc('italic')"><i>I</i></button>
+                  <button type="button" onclick="formatDoc('underline')"><u>U</u></button>
+                  <select onchange="formatDoc('fontName', this.value)">
+                    <option value="Outfit">Outfit</option>
+                    <option value="Instrument Serif">Serif</option>
+                    <option value="Arial">Arial</option>
+                  </select>
+                </div>
+                <div class="rich-input" id="meetingAbout" contenteditable="true" data-placeholder="Provide a brief description about what the theme means..."></div>
+              </div>
             </div>
+
             <div class="form-group full-width">
               <label>Rules / Guidelines</label>
-              <textarea id="meetingRules" rows="3" placeholder="e.g., Speeches must be under 5 minutes. No phones allowed." required></textarea>
+              <div class="rich-editor-container">
+                <div class="rich-toolbar">
+                  <button type="button" onclick="formatDoc('bold')"><b>B</b></button>
+                  <button type="button" onclick="formatDoc('italic')"><i>I</i></button>
+                  <button type="button" onclick="formatDoc('underline')"><u>U</u></button>
+                  <select onchange="formatDoc('fontName', this.value)">
+                    <option value="Outfit">Outfit</option>
+                    <option value="Instrument Serif">Serif</option>
+                    <option value="Arial">Arial</option>
+                  </select>
+                </div>
+                <div class="rich-input" id="meetingRules" contenteditable="true" data-placeholder="e.g., Speeches must be under 5 minutes. No phones allowed."></div>
+              </div>
             </div>
             
-            <button type="submit" class="btn btn-schedule" style="grid-column: 1 / -1;">Publish Meeting</button>
+            <div style="grid-column: 1 / -1; display: flex; gap: 10px;">
+              <button type="submit" class="btn btn-schedule" id="submitBtn" style="margin-top: 10px;">Publish Meeting</button>
+              <button type="button" class="btn btn-cancel" id="cancelEditBtn" style="display:none; margin-top: 10px; padding: 14px 24px; font-size: 0.95rem;" onclick="cancelEditMode()">Cancel Edit</button>
+            </div>
           </form>
         </div>
 
@@ -1204,12 +1319,12 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 
         <div class="streak-detail-section">
           <h4>About</h4>
-          <p id="detailAbout"></p>
+          <div id="detailAbout"></div>
         </div>
 
         <div class="streak-detail-section">
           <h4>Rules</h4>
-          <p id="detailRules"></p>
+          <div id="detailRules"></div>
         </div>
       </div>
     </div>
@@ -1220,7 +1335,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc, getDoc, writeBatch } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc, getDoc, writeBatch, updateDoc } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDduauqRyaR-G2QZYok3YZRypC_8VHUffk",
@@ -1241,12 +1356,14 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   let currentUserAdmission = "";
   let currentUserName = "";
   let allGaveliers = [];
+  let allMeetings = [];
 
   let activeMeetingId = "";
   let activeAttendanceMeetingId = "";
+  let editingMeetingId = null; // Tracks if we are in "Edit" mode
 
   // ==========================================
-  // HELPERS — Time formatting
+  // HELPERS — Formatting
   // ==========================================
   function formatTime(t) {
     if (!t) return '';
@@ -1261,6 +1378,22 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     if (!end) return formatTime(start);
     return `${formatTime(start)} – ${formatTime(end)}`;
   }
+
+  // ==========================================
+  // RICH TEXT EDITOR LOGIC
+  // ==========================================
+  window.formatDoc = function(cmd, value = null) {
+    document.execCommand(cmd, false, value);
+    // Refocus the active editor so the toolbar doesn't steal focus
+    if (document.activeElement && document.activeElement.classList.contains('rich-input')) {
+      document.activeElement.focus();
+    }
+  };
+
+  // Prevent Enter key from creating new lines in the single-line theme input
+  document.getElementById('meetingTheme').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') e.preventDefault();
+  });
 
   // ==========================================
   // 1. TAB SWITCHING
@@ -1345,6 +1478,9 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     const q = query(collection(db, "meetings"), orderBy("date", "asc"));
     
     onSnapshot(q, (snapshot) => {
+      allMeetings = [];
+      snapshot.forEach(d => allMeetings.push({ id: d.id, ...d.data() }));
+
       if (snapshot.empty) {
         meetingsList.innerHTML = '<p style="color: var(--muted);">No meetings scheduled yet.</p>';
         if(adminMeetingsList) adminMeetingsList.innerHTML = '<p style="color: var(--muted);">No meetings scheduled yet.</p>';
@@ -1362,6 +1498,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
         const timeRange = formatTimeRange(data.time, data.endTime);
         
+        // Overview Tab (Rich Text with Block Layout)
         const overviewHtml = `
           <div class="meeting-item" onclick="openRsvpModal('${docId}', '${data.theme.replace(/'/g, "\\'")}', '${formattedDate}', '${timeRange}')">
             <div class="meeting-header">
@@ -1371,14 +1508,21 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
               </div>
             </div>
             <div class="meeting-details">
-              <p><strong>About:</strong> ${data.about}</p>
-              <p><strong>Rules:</strong> ${data.rules}</p>
+              <div class="meeting-info-block">
+                <span class="meeting-info-label">About</span>
+                <div class="meeting-info-text">${data.about}</div>
+              </div>
+              <div class="meeting-info-block">
+                <span class="meeting-info-label">Rules</span>
+                <div class="meeting-info-text">${data.rules}</div>
+              </div>
               <div class="rsvp-hint">👉 Click to RSVP</div>
             </div>
           </div>
         `;
         meetingsList.innerHTML += overviewHtml;
 
+        // Admin Tab (Added Edit Button)
         if (currentUserIsExCom && adminMeetingsList) {
           const adminHtml = `
             <div class="meeting-item" style="display:flex; justify-content:space-between; align-items:center; padding: 16px; cursor: default;">
@@ -1387,6 +1531,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
                 <p>${formattedDate} at ${timeRange}</p>
               </div>
               <div style="display:flex; gap: 8px;">
+                <button class="btn btn-edit" onclick="window.editMeeting('${docId}')">Edit</button>
                 <button class="btn btn-attendance" onclick="openAttendanceModal('${docId}', '${data.theme.replace(/'/g, "\\'")}')">Take Attendance</button>
                 <button class="btn btn-cancel" onclick="window.cancelMeeting('${docId}')">Cancel</button>
               </div>
@@ -1468,7 +1613,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   window.openRsvpModal = async function(id, theme, dateStr, timeStr) {
     activeMeetingId = id;
     
-    document.getElementById('rsvpTheme').textContent = theme;
+    document.getElementById('rsvpTheme').innerHTML = theme; // innerHTML to parse bold/italics
     document.getElementById('rsvpDate').textContent = `${dateStr} at ${timeStr}`;
     
     document.getElementById('rsvpStep1').style.display = 'block';
@@ -1573,7 +1718,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 
   window.openAttendanceModal = async function(id, theme) {
     activeAttendanceMeetingId = id;
-    document.getElementById('attendanceMeetingTitle').textContent = theme;
+    document.getElementById('attendanceMeetingTitle').innerHTML = theme;
     attendanceList.innerHTML = '<p style="text-align:center; color:var(--muted); padding: 20px;">Loading students...</p>';
     
     attendanceModal.classList.add('open');
@@ -1671,8 +1816,9 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   }
 
   // ==========================================
-  // 6. EXCOM SCHEDULING
+  // 6. EXCOM SCHEDULING & EDITING
   // ==========================================
+  
   if(scheduleForm) {
     scheduleForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1681,28 +1827,85 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       const date = document.getElementById('meetingDate').value;
       const time = document.getElementById('meetingTime').value;
       const endTime = document.getElementById('meetingEndTime').value;
-      const theme = document.getElementById('meetingTheme').value;
-      const about = document.getElementById('meetingAbout').value;
-      const rules = document.getElementById('meetingRules').value;
+      const theme = document.getElementById('meetingTheme').innerHTML;
+      const about = document.getElementById('meetingAbout').innerHTML;
+      const rules = document.getElementById('meetingRules').innerHTML;
 
       if (!endTime || endTime <= time) {
         alert("End time must be after the start time.");
         return;
       }
+      if (!theme || theme === '<br>') {
+        alert("Please enter a theme.");
+        return;
+      }
 
       try {
-        await addDoc(collection(db, "meetings"), {
-          date, time, endTime, theme, about, rules,
-          createdBy: auth.currentUser.email
-        });
-        scheduleForm.reset();
-        alert("Meeting scheduled successfully!");
-        switchTab('overview');
+        const meetingData = { date, time, endTime, theme, about, rules };
+
+        if (editingMeetingId) {
+          // Update existing meeting
+          await updateDoc(doc(db, "meetings", editingMeetingId), meetingData);
+          alert("Meeting updated successfully!");
+          cancelEditMode();
+        } else {
+          // Create new meeting
+          meetingData.createdBy = auth.currentUser.email;
+          await addDoc(collection(db, "meetings"), meetingData);
+          scheduleForm.reset();
+          clearRichEditors();
+          alert("Meeting scheduled successfully!");
+          switchTab('overview');
+        }
       } catch (err) {
-        console.error("Error scheduling meeting:", err);
-        alert("Failed to schedule meeting.");
+        console.error("Error saving meeting:", err);
+        alert("Failed to save meeting.");
       }
     });
+  }
+
+  window.editMeeting = function(id) {
+    if (!currentUserIsExCom) return;
+    
+    const meeting = allMeetings.find(m => m.id === id);
+    if (!meeting) return;
+
+    editingMeetingId = id;
+    
+    // Switch to ExCom tab if not already there
+    switchTab('excoms');
+
+    // Populate form
+    document.getElementById('meetingDate').value = meeting.date;
+    document.getElementById('meetingTime').value = meeting.time;
+    document.getElementById('meetingEndTime').value = meeting.endTime || '';
+    document.getElementById('meetingTheme').innerHTML = meeting.theme;
+    document.getElementById('meetingAbout').innerHTML = meeting.about;
+    document.getElementById('meetingRules').innerHTML = meeting.rules;
+
+    // Change UI mode
+    document.getElementById('formTitle').textContent = "Edit Meeting";
+    document.getElementById('submitBtn').textContent = "Save Changes";
+    document.getElementById('cancelEditBtn').style.display = "block";
+    
+    // Scroll to form
+    document.getElementById('meetingFormCard').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  window.cancelEditMode = function() {
+    editingMeetingId = null;
+    document.getElementById('scheduleForm').reset();
+    clearRichEditors();
+
+    document.getElementById('formTitle').textContent = "Schedule a Meeting";
+    document.getElementById('submitBtn').textContent = "Publish Meeting";
+    document.getElementById('cancelEditBtn').style.display = "none";
+  };
+
+  function clearRichEditors() {
+    document.getElementById('meetingTheme').innerHTML = '';
+    document.getElementById('meetingAbout').innerHTML = '';
+    document.getElementById('meetingRules').innerHTML = '';
   }
 
   window.cancelMeeting = async (docId) => {
@@ -1883,15 +2086,16 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       entry.status === 'present' ? '✓ Attended' :
       entry.status === 'absent' ? '✕ Missed' : 'Pending';
     
-    document.getElementById('detailTheme').textContent = m.theme;
+    document.getElementById('detailTheme').innerHTML = m.theme;
     
     const dateObj = new Date(m.date + 'T' + m.time);
     const dateText = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     const timeText = formatTimeRange(m.time, m.endTime);
     document.getElementById('detailDate').textContent = `${dateText} at ${timeText}`;
     
-    document.getElementById('detailAbout').textContent = m.about || 'No description provided.';
-    document.getElementById('detailRules').textContent = m.rules || 'No rules listed.';
+    // Use innerHTML to render rich text
+    document.getElementById('detailAbout').innerHTML = m.about || 'No description provided.';
+    document.getElementById('detailRules').innerHTML = m.rules || 'No rules listed.';
     
     document.getElementById('streakCalView').classList.add('hidden');
     const detail = document.getElementById('streakDetailView');
@@ -1921,7 +2125,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   // ==========================================
   document.getElementById('logoutBtn').addEventListener('click', () => {
     signOut(auth).then(() => {
-      window.location.href = 'index.html';
+      window.location.href = '/';
     }).catch((error) => {
       console.error("Logout error:", error);
     });
