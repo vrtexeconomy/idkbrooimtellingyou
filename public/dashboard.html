@@ -181,7 +181,38 @@ header, main, footer { position: relative; z-index: 1; }
 }
 .btn-attendance:hover { background: rgba(127, 232, 207, 0.25); }
 
-/* Admin Form */
+/* Schedule Card */
+.schedule-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  border: 2px dashed rgba(255,255,255,0.15) !important;
+  background: rgba(255,255,255,0.02) !important;
+  transition: all .4s var(--ease-out-expo);
+}
+.schedule-card:hover {
+  border-color: rgba(127, 232, 207, 0.6) !important;
+  background: rgba(127, 232, 207, 0.05) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px -20px rgba(127, 232, 207, 0.4);
+}
+.schedule-icon {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: rgba(127, 232, 207, 0.1);
+  display: grid; place-items: center;
+  margin-bottom: 16px;
+  color: #7fe8cf;
+  transition: transform .4s var(--ease-out-expo);
+}
+.schedule-card:hover .schedule-icon {
+  transform: scale(1.1) rotate(90deg);
+}
+
+/* Admin Form (Inside Modal) */
 .admin-form {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -441,10 +472,7 @@ header, main, footer { position: relative; z-index: 1; }
   padding: 20px;
   background: rgba(0,0,0,.1);
 }
-/* Block style for meeting details */
-.meeting-info-block {
-  margin-bottom: 16px;
-}
+.meeting-info-block { margin-bottom: 16px; }
 .meeting-info-block:last-child { margin-bottom: 0; }
 .meeting-info-label {
   display: block;
@@ -504,15 +532,28 @@ header, main, footer { position: relative; z-index: 1; }
 }
 .modal.open .modal-card { transform: translate3d(0,0,0) scale(1); }
 
+/* Meeting Form Modal Specific */
+.meeting-form-modal {
+  width: min(800px, 95vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  text-align: left;
+  padding: 40px;
+}
+.meeting-form-modal::-webkit-scrollbar { width: 8px; }
+.meeting-form-modal::-webkit-scrollbar-track { background: transparent; }
+.meeting-form-modal::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 8px; }
+
 .modal-close {
   position: absolute; top: 16px; right: 16px;
-  width: 30px; height: 30px; border-radius: 50%;
+  width: 34px; height: 34px; border-radius: 50%;
   background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
   color: var(--muted); display: grid; place-items: center; cursor: pointer;
   transition:
     background-color .3s var(--ease-smooth),
     color .3s var(--ease-smooth),
     transform .45s var(--ease-out-expo);
+  z-index: 10;
 }
 .modal-close:hover {
   background: rgba(255,255,255,.15);
@@ -960,6 +1001,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   .header-profile { margin: 0 auto; }
   .serif { white-space: normal; }
   .admin-form { grid-template-columns: 1fr; }
+  .meeting-form-modal { padding: 24px; }
   .attendance-card { padding: 20px; }
   .dashboard-grid > .dash-card { grid-column: auto !important; }
 }
@@ -1064,83 +1106,18 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
             <i style="width:6px;height:6px;border-radius:50%;background:#ff8a8a;box-shadow:0 0 8px rgba(255,100,100,.9);animation:blink 2.8s infinite;"></i> Admin Access
           </span>
           <h1 id="excomHeaderTitle">ExCom Dashboard.</h1>
-          <p id="excomHeaderSub">Schedule new meetings and manage the club's calendar.</p>
+          <p id="excomHeaderSub">Manage the club's calendar and attendance.</p>
         </div>
       </section>
 
       <section class="dashboard-grid">
-        <div class="dash-card" style="grid-column: 1 / -1;" id="meetingFormCard">
-          <h3 id="formTitle">Schedule a Meeting</h3>
-          <form id="scheduleForm" class="admin-form">
-            <div class="form-group">
-              <label>Date</label>
-              <input type="date" id="meetingDate" required>
-            </div>
-            <div class="form-group">
-              <label>Start Time</label>
-              <input type="time" id="meetingTime" required>
-            </div>
-            <div class="form-group">
-              <label>End Time</label>
-              <input type="time" id="meetingEndTime" required>
-            </div>
-            
-            <div class="form-group full-width">
-              <label>Theme</label>
-              <div class="rich-editor-container">
-                <div class="rich-toolbar">
-                  <button type="button" onclick="formatDoc('bold')"><b>B</b></button>
-                  <button type="button" onclick="formatDoc('italic')"><i>I</i></button>
-                  <button type="button" onclick="formatDoc('underline')"><u>U</u></button>
-                  <select onchange="formatDoc('fontName', this.value)">
-                    <option value="Outfit">Outfit</option>
-                    <option value="Instrument Serif">Serif</option>
-                    <option value="Arial">Arial</option>
-                  </select>
-                </div>
-                <div class="rich-input single-line" id="meetingTheme" contenteditable="true" data-placeholder="e.g., The Power of Small Talk"></div>
-              </div>
-            </div>
-
-            <div class="form-group full-width">
-              <label>About the Theme</label>
-              <div class="rich-editor-container">
-                <div class="rich-toolbar">
-                  <button type="button" onclick="formatDoc('bold')"><b>B</b></button>
-                  <button type="button" onclick="formatDoc('italic')"><i>I</i></button>
-                  <button type="button" onclick="formatDoc('underline')"><u>U</u></button>
-                  <select onchange="formatDoc('fontName', this.value)">
-                    <option value="Outfit">Outfit</option>
-                    <option value="Instrument Serif">Serif</option>
-                    <option value="Arial">Arial</option>
-                  </select>
-                </div>
-                <div class="rich-input" id="meetingAbout" contenteditable="true" data-placeholder="Provide a brief description about what the theme means..."></div>
-              </div>
-            </div>
-
-            <div class="form-group full-width">
-              <label>Rules / Guidelines</label>
-              <div class="rich-editor-container">
-                <div class="rich-toolbar">
-                  <button type="button" onclick="formatDoc('bold')"><b>B</b></button>
-                  <button type="button" onclick="formatDoc('italic')"><i>I</i></button>
-                  <button type="button" onclick="formatDoc('underline')"><u>U</u></button>
-                  <select onchange="formatDoc('fontName', this.value)">
-                    <option value="Outfit">Outfit</option>
-                    <option value="Instrument Serif">Serif</option>
-                    <option value="Arial">Arial</option>
-                  </select>
-                </div>
-                <div class="rich-input" id="meetingRules" contenteditable="true" data-placeholder="e.g., Speeches must be under 5 minutes. No phones allowed."></div>
-              </div>
-            </div>
-            
-            <div style="grid-column: 1 / -1; display: flex; gap: 10px;">
-              <button type="submit" class="btn btn-schedule" id="submitBtn" style="margin-top: 10px;">Publish Meeting</button>
-              <button type="button" class="btn btn-cancel" id="cancelEditBtn" style="display:none; margin-top: 10px; padding: 14px 24px; font-size: 0.95rem;" onclick="cancelEditMode()">Cancel Edit</button>
-            </div>
-          </form>
+        <!-- The Clickable Schedule Card -->
+        <div class="dash-card schedule-card" onclick="openMeetingModal()">
+          <div class="schedule-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          </div>
+          <h3 style="justify-content:center; margin:0; font-size:1.2rem;">Schedule a Meeting</h3>
+          <p style="font-size:0.85rem; margin-top:8px;">Click here to open the scheduling form.</p>
         </div>
 
         <div class="dash-card" style="grid-column: 1 / -1;">
@@ -1166,6 +1143,91 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       </div>
     </div>
   </footer>
+</div>
+
+<!-- ========================================== -->
+<!-- MEETING FORM MODAL (New)                   -->
+<!-- ========================================== -->
+<div class="modal" id="meetingModal">
+  <div class="modal-backdrop" onclick="closeMeetingModal()"></div>
+  <div class="modal-card meeting-form-modal">
+    <button class="modal-close" onclick="closeMeetingModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+
+    <h3 id="formTitle" style="margin-top:0; margin-bottom:24px; font-size:1.6rem; color:#fff; font-weight:500;">Schedule a Meeting</h3>
+    
+    <form id="scheduleForm" class="admin-form">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="meetingDate" required>
+      </div>
+      <div class="form-group">
+        <label>Start Time</label>
+        <input type="time" id="meetingTime" required>
+      </div>
+      <div class="form-group">
+        <label>End Time</label>
+        <input type="time" id="meetingEndTime" required>
+      </div>
+      
+      <div class="form-group full-width">
+        <label>Theme</label>
+        <div class="rich-editor-container">
+          <div class="rich-toolbar">
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('bold')"><b>B</b></button>
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('italic')"><i>I</i></button>
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('underline')"><u>U</u></button>
+            <select onchange="formatDoc('fontName', this.value)" onmousedown="event.preventDefault()">
+              <option value="Outfit">Outfit</option>
+              <option value="Instrument Serif">Serif</option>
+              <option value="Arial">Arial</option>
+            </select>
+          </div>
+          <div class="rich-input single-line" id="meetingTheme" contenteditable="true" data-placeholder="e.g., The Power of Small Talk"></div>
+        </div>
+      </div>
+
+      <div class="form-group full-width">
+        <label>About the Theme</label>
+        <div class="rich-editor-container">
+          <div class="rich-toolbar">
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('bold')"><b>B</b></button>
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('italic')"><i>I</i></button>
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('underline')"><u>U</u></button>
+            <select onchange="formatDoc('fontName', this.value)" onmousedown="event.preventDefault()">
+              <option value="Outfit">Outfit</option>
+              <option value="Instrument Serif">Serif</option>
+              <option value="Arial">Arial</option>
+            </select>
+          </div>
+          <div class="rich-input" id="meetingAbout" contenteditable="true" data-placeholder="Provide a brief description about what the theme means..."></div>
+        </div>
+      </div>
+
+      <div class="form-group full-width">
+        <label>Rules / Guidelines</label>
+        <div class="rich-editor-container">
+          <div class="rich-toolbar">
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('bold')"><b>B</b></button>
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('italic')"><i>I</i></button>
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('underline')"><u>U</u></button>
+            <select onchange="formatDoc('fontName', this.value)" onmousedown="event.preventDefault()">
+              <option value="Outfit">Outfit</option>
+              <option value="Instrument Serif">Serif</option>
+              <option value="Arial">Arial</option>
+            </select>
+          </div>
+          <div class="rich-input" id="meetingRules" contenteditable="true" data-placeholder="e.g., Speeches must be under 5 minutes. No phones allowed."></div>
+        </div>
+      </div>
+      
+      <div style="grid-column: 1 / -1; display: flex; gap: 10px; margin-top: 10px;">
+        <button type="submit" class="btn btn-schedule" id="submitBtn" style="margin-top: 0;">Publish Meeting</button>
+        <button type="button" class="btn btn-cancel" id="cancelEditBtn" style="display:none; padding: 14px 24px; font-size: 0.95rem;" onclick="cancelEditMode()">Cancel Edit</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- ========================================== -->
@@ -1224,13 +1286,11 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       <h3 style="font-size:1.6rem; color:#fff; margin:0 0 10px;">RSVP Confirmed!</h3>
       <p id="rsvpSuccessMsg" style="color:var(--muted); font-size:1rem;"></p>
       
-      <!-- Lock message for regular students -->
       <p id="rsvpLockMessage" style="font-size:0.82rem; color:var(--muted); margin-top:16px; font-style:italic; line-height:1.5;">
         🔒 Your RSVP is final and cannot be changed.<br>
         Contact an ExCom if you need to make an update.
       </p>
 
-      <!-- Change RSVP button for ExComs -->
       <button id="changeRsvpBtn" class="btn btn-edit" style="display:none; margin-top:16px; width:100%;" onclick="changeRsvp()">Change RSVP</button>
     </div>
 
@@ -1385,12 +1445,17 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   }
 
   // ==========================================
-  // RICH TEXT EDITOR LOGIC
+  // RICH TEXT EDITOR LOGIC (Fixed Focus Bug)
   // ==========================================
   window.formatDoc = function(cmd, value = null) {
     document.execCommand(cmd, false, value);
+    // Refocus the active editor
     if (document.activeElement && document.activeElement.classList.contains('rich-input')) {
       document.activeElement.focus();
+    } else {
+      // If focus was lost, find the last active editor in the modal
+      const activeEditor = document.querySelector('.meeting-form-modal .rich-input:focus');
+      if (activeEditor) activeEditor.focus();
     }
   };
 
@@ -1469,7 +1534,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   // ==========================================
   const meetingsList = document.getElementById('meetingsList');
   const adminMeetingsList = document.getElementById('adminMeetingsList');
-  const scheduleForm = document.getElementById('scheduleForm');
 
   function loadMeetings() {
     const q = query(collection(db, "meetings"), orderBy("date", "asc"));
@@ -1601,7 +1665,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   }
 
   // ==========================================
-  // 4. RSVP (one submission for Gaveliers, ExComs can change)
+  // 4. RSVP
   // ==========================================
   const rsvpModal = document.getElementById('rsvpModal');
 
@@ -1639,7 +1703,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
           document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Absent</strong>.`;
         }
 
-        // Toggle Lock message vs Change button based on role
         if (currentUserIsExCom) {
           document.getElementById('rsvpLockMessage').style.display = 'none';
           document.getElementById('changeRsvpBtn').style.display = 'inline-block';
@@ -1736,7 +1799,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   }
 
   // ==========================================
-  // 5. ATTENDANCE (ExCom only)
+  // 5. ATTENDANCE
   // ==========================================
   const attendanceModal = document.getElementById('attendanceModal');
   const attendanceList = document.getElementById('attendanceList');
@@ -1842,9 +1905,27 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   }
 
   // ==========================================
-  // 6. EXCOM SCHEDULING & EDITING
+  // 6. EXCOM SCHEDULING & EDITING (Inside Modal)
   // ==========================================
-  
+  const meetingModal = document.getElementById('meetingModal');
+  const scheduleForm = document.getElementById('scheduleForm');
+
+  window.openMeetingModal = function() {
+    editingMeetingId = null;
+    scheduleForm.reset();
+    clearRichEditors();
+
+    document.getElementById('formTitle').textContent = "Schedule a Meeting";
+    document.getElementById('submitBtn').textContent = "Publish Meeting";
+    document.getElementById('cancelEditBtn').style.display = "none";
+
+    meetingModal.classList.add('open');
+  }
+
+  window.closeMeetingModal = function() {
+    meetingModal.classList.remove('open');
+  }
+
   if(scheduleForm) {
     scheduleForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1876,9 +1957,8 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         } else {
           meetingData.createdBy = auth.currentUser.email;
           await addDoc(collection(db, "meetings"), meetingData);
-          scheduleForm.reset();
-          clearRichEditors();
           alert("Meeting scheduled successfully!");
+          closeMeetingModal();
           switchTab('overview');
         }
       } catch (err) {
@@ -1896,8 +1976,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 
     editingMeetingId = id;
     
-    switchTab('excoms');
-
     document.getElementById('meetingDate').value = meeting.date;
     document.getElementById('meetingTime').value = meeting.time;
     document.getElementById('meetingEndTime').value = meeting.endTime || '';
@@ -1909,17 +1987,14 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     document.getElementById('submitBtn').textContent = "Save Changes";
     document.getElementById('cancelEditBtn').style.display = "block";
     
-    document.getElementById('meetingFormCard').scrollIntoView({ behavior: 'smooth' });
+    meetingModal.classList.add('open');
   };
 
   window.cancelEditMode = function() {
     editingMeetingId = null;
     document.getElementById('scheduleForm').reset();
     clearRichEditors();
-
-    document.getElementById('formTitle').textContent = "Schedule a Meeting";
-    document.getElementById('submitBtn').textContent = "Publish Meeting";
-    document.getElementById('cancelEditBtn').style.display = "none";
+    closeMeetingModal();
   };
 
   function clearRichEditors() {
@@ -2136,6 +2211,9 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && streakModal.classList.contains('open')) {
       closeStreakModal();
+    }
+    if (e.key === 'Escape' && meetingModal.classList.contains('open')) {
+      closeMeetingModal();
     }
   });
 
