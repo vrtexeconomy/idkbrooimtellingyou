@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Member Portal — Pearl Gavel Club</title>
+<title>Pearl Gavel Club — Find Your Voice</title>
+<meta name="description" content="Pearl Gavel Club is a student-led public speaking and leadership club. Practice speeches, sharpen feedback, and grow confident." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +12,7 @@
 
 <style>
 /* ============================================================
-   TOKENS & BASE
+   TOKENS
    ============================================================ */
 :root{
   --bg:#014165;
@@ -22,13 +23,17 @@
   --muted:#9cc3d7;
   --brd:rgba(255,255,255,.09);
   --ease:cubic-bezier(.22,1,.36,1);
-  --ease-smooth:cubic-bezier(.4,0,.2,1);
   --ease-out-expo:cubic-bezier(.16,1,.3,1);
   --maxw:1180px;
 }
 
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth; background-color:var(--bg);}
+
+html{
+  scroll-behavior:smooth; 
+  background-color:var(--bg);
+}
+
 body{
   margin:0;
   background-color:var(--bg);
@@ -45,13 +50,25 @@ img,svg{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
-/* ============================================================
-   PAGE WRAPPER & BACKGROUND
-   ============================================================ */
-.page { position: relative; overflow: hidden; min-height: 100vh; }
+::selection{background:rgba(120,225,255,.32);color:#fff}
 
+/* ============================================================
+   PAGE WRAPPER
+   ============================================================ */
+.page {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   BACKGROUND
+   ============================================================ */
 .bg{
-  position:absolute; inset:0; z-index:0; pointer-events:none;
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
   background:
     radial-gradient(900px 640px at 8% -12%, #06658f 0%, rgba(6,101,143,0) 62%),
     radial-gradient(780px 620px at 97% -2%, #01787e 0%, rgba(1,120,126,0) 58%),
@@ -59,8 +76,13 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 }
 
 .glow{
-  position:absolute; width:90vw; height:90vw; max-width:900px; max-height:900px;
-  left:-20vw; top:-20vw;
+  position:absolute;
+  width:90vw;
+  height:90vw;
+  max-width:900px;
+  max-height:900px;
+  left:-20vw;
+  top:-20vw;
   background:radial-gradient(circle at center, rgba(40,175,230,.35), rgba(40,175,230,0) 62%);
   animation:drift 34s ease-in-out infinite alternate;
 }
@@ -70,7 +92,10 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   to{transform:translate3d(12vw,9vh,0)}
 }
 
-header, main, footer { position: relative; z-index: 1; }
+header, main, footer {
+  position: relative;
+  z-index: 1;
+}
 
 /* ============================================================
    NAVBAR
@@ -78,7 +103,7 @@ header, main, footer { position: relative; z-index: 1; }
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:60;
   padding:16px clamp(14px,4vw,40px);
-  animation:navIn .8s var(--ease-out-expo) both .1s;
+  animation:navIn .8s var(--ease) both .1s;
 }
 @keyframes navIn{
   from{opacity:0;transform:translate3d(0,-20px,0)}
@@ -86,902 +111,693 @@ header, main, footer { position: relative; z-index: 1; }
 }
 
 .nav-inner{
-  position:relative; max-width:var(--maxw); margin:0 auto;
-  display:flex; align-items:center; gap:clamp(14px,3vw,34px);
-  padding:9px 10px 9px 18px; border-radius:100px;
-  background:var(--panel-deep); border:1px solid rgba(255,255,255,.07);
-  box-shadow: 0 14px 40px rgba(0,10,20,.6);
+  position:relative;
+  max-width:var(--maxw);
+  margin:0 auto;
+  display:flex;align-items:center;gap:clamp(14px,3vw,34px);
+  padding:9px 10px 9px 18px;
+  border-radius:100px;
+  background:var(--panel-deep);
+  border:1px solid rgba(255,255,255,.07);
+  transition:border-color .4s var(--ease);
 }
 
+.nav-inner::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  z-index: -1;
+  box-shadow: 0 14px 40px rgba(0,10,20,.6);
+  opacity: 0;
+  transition: opacity .4s var(--ease);
+  pointer-events: none;
+}
+
+.nav.scrolled .nav-inner { border-color: rgba(255,255,255,.12); }
+.nav.scrolled .nav-inner::after { opacity: 1; }
+
+/* brand */
 .brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
 .brand-logo {
-  width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
   box-shadow: 0 0 12px rgba(140,225,255,.3);
   transition: transform .5s var(--ease-out-expo);
 }
 .brand:hover .brand-logo { transform: scale(1.08) rotate(-4deg); }
+
 .brand-text{display:flex;flex-direction:column;line-height:1.05}
 .brand-text strong{font-size:.92rem;font-weight:600;letter-spacing:.22em}
-.brand-text span{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);font-weight:400;}
+.brand-text span{
+  font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--muted);font-weight:400;
+}
 
+/* links */
 .nav-links{display:flex;align-items:center;gap:clamp(14px,2.2vw,30px);margin-left:auto}
 .nav-links a{
   font-size:.87rem;letter-spacing:.03em;color:rgba(234,246,251,.75);
   position:relative;padding:6px 0;
-  transition:color .3s var(--ease-smooth);
-  cursor: pointer;
+  transition:color .3s var(--ease);
 }
 .nav-links a::after{
-  content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;
-  background:linear-gradient(90deg,#7fe0f5,#8ef0d8);
-  transform:scaleX(0);transform-origin:left;
-  transition:transform .45s var(--ease-out-expo);
+  content:'';position:absolute;left:0;bottom:0;
+  width:100%;height:1px;background:linear-gradient(90deg,#7fe0f5,#8ef0d8);
+  transform:scaleX(0);transform-origin:right;
+  transition:transform .4s var(--ease);
 }
-.nav-links a:hover, .nav-links a.active { color:#fff; }
-.nav-links a.active::after { transform: scaleX(1); }
+.nav-links a:hover{color:#fff}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+
+/* Hamburger Icon */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 24px;
+  height: 20px;
+  cursor: pointer;
+  margin-left: auto;
+  z-index: 70;
+}
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: var(--ink);
+  transition: all 0.3s var(--ease);
+  border-radius: 2px;
+}
+.hamburger.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
 
 /* ============================================================
-   BUTTONS & FORMS
+   BUTTONS
    ============================================================ */
 .btn{
-  position:relative; display:inline-flex; align-items:center; justify-content:center; gap:9px;
-  padding:11px 22px; border-radius:100px; font-size:.87rem; font-weight:600;
-  cursor:pointer; overflow:hidden; white-space:nowrap;
-  transition:
-    transform .4s var(--ease-out-expo),
-    box-shadow .4s var(--ease-smooth),
-    background-color .3s var(--ease-smooth),
-    color .3s var(--ease-smooth);
+  position:relative;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:13px 26px;border-radius:100px;
+  font-size:.92rem;font-weight:500;letter-spacing:.015em;
+  cursor:pointer;overflow:hidden;white-space:nowrap;
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease),
+             background-color .3s var(--ease), border-color .3s var(--ease), color .3s var(--ease);
 }
 .btn:hover{transform:translate3d(0,-2px,0)}
-.btn:active{transform:translate3d(0,0,0) scale(.97);transition-duration:.15s}
+.btn:active{transform:translate3d(0,0,0) scale(.985)}
 
-.btn-logout{
-  background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.2);
-  color:#fff;
+.btn-primary{
+  background:linear-gradient(180deg,#ffffff 0%,#ddf1fa 100%);
+  color:#013a58;
+  font-weight:600;
+  box-shadow:0 10px 24px -12px rgba(120,220,255,.6);
+}
+.btn-primary:hover{box-shadow:0 16px 34px -14px rgba(120,220,255,.85)}
+
+.btn-primary::before, .btn-login::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 32%,rgba(255,255,255,.75) 48%,transparent 64%);
+  transform:translate3d(-130%,0,0);
+  transition:transform .8s var(--ease);
+  pointer-events:none;
+}
+.btn-primary:hover::before, .btn-login:hover::before{transform:translate3d(130%,0,0)}
+
+.btn-login{
+  padding:11px 22px;
+  background:linear-gradient(180deg,#ffffff,#ddf1fa);
+  color:#013a58;font-weight:600;font-size:.87rem;
+  box-shadow:0 8px 20px -12px rgba(120,220,255,.7);
   margin-left:6px;
 }
-.btn-logout:hover{background:rgba(255,255,255,.2);box-shadow:0 6px 16px -8px rgba(0,0,0,.4);}
+.btn-login svg{width:14px;height:14px;transition:transform .35s var(--ease)}
+.btn-login:hover svg{transform:translate3d(3px,0,0)}
 
-.btn-schedule {
-  background: linear-gradient(180deg, #ffffff 0%, #ddf1fa 100%);
-  color: #013a58;
-  padding: 14px 24px;
-  width: 100%;
-  margin-top: 10px;
-}
-.btn-schedule:hover { box-shadow: 0 10px 24px -10px rgba(120,220,255,.7); }
-
-.btn-cancel {
-  background: rgba(255, 100, 100, 0.15);
-  border: 1px solid rgba(255, 100, 100, 0.3);
-  color: #ff8a8a;
-  padding: 8px 16px;
-  font-size: 0.8rem;
-}
-.btn-cancel:hover { background: rgba(255, 100, 100, 0.25); }
-
-.btn-edit {
-  background: rgba(120, 220, 255, 0.15);
-  border: 1px solid rgba(120, 220, 255, 0.4);
-  color: #7fe0f5;
-  padding: 8px 16px;
-  font-size: 0.8rem;
-}
-.btn-edit:hover { background: rgba(120, 220, 255, 0.25); }
-
-.btn-attendance {
-  background: rgba(127, 232, 207, 0.15);
-  border: 1px solid rgba(127, 232, 207, 0.4);
-  color: #7fe8cf;
-  padding: 8px 16px;
-  font-size: 0.8rem;
-  margin-right: 8px;
-}
-.btn-attendance:hover { background: rgba(127, 232, 207, 0.25); }
-
-/* Admin Form */
-.admin-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
-  margin-top: 24px;
-}
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-.form-group.full-width { grid-column: 1 / -1; }
-.form-group label {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-}
-
-/* Rich Text Editor Styles */
-.rich-editor-container {
-  border-radius: 12px;
-  background: #023a56;
-  border: 1px solid rgba(255,255,255,.14);
-  overflow: hidden;
-  transition: border-color .3s var(--ease-smooth), box-shadow .3s var(--ease-smooth);
-}
-.rich-editor-container:focus-within {
-  border-color: rgba(140,235,255,.55);
-  box-shadow: 0 0 0 3px rgba(120,220,255,.1);
-}
-.rich-toolbar {
-  display: flex;
-  gap: 4px;
-  padding: 8px;
-  background: rgba(0,0,0,0.2);
-  border-bottom: 1px solid rgba(255,255,255,.1);
-}
-.rich-toolbar button {
-  padding: 4px 8px;
-  border-radius: 6px;
-  color: var(--muted);
-  transition: background .2s, color .2s;
-  font-size: 0.85rem;
-}
-.rich-toolbar button:hover {
-  background: rgba(255,255,255,.1);
-  color: #fff;
-}
-.rich-toolbar select {
-  background: transparent;
-  color: var(--muted);
-  border: none;
-  outline: none;
-  font-size: 0.85rem;
-  cursor: pointer;
-  padding: 4px;
-}
-.rich-toolbar select option { background: #023a56; color: #fff; }
-.rich-input {
-  padding: 14px 16px;
-  min-height: 42px;
-  color: #fff;
-  font-size: 0.95rem;
-  outline: none;
-  overflow-y: auto;
-  max-height: 200px;
-}
-.rich-input:empty:before {
-  content: attr(data-placeholder);
-  color: rgba(234,246,251,.3);
-  pointer-events: none;
-}
-.rich-input.single-line {
-  white-space: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  min-height: auto;
-}
-
-/* ============================================================
-   LAYOUT & HEADERS
-   ============================================================ */
-.wrap{ max-width:var(--maxw); margin:0 auto; padding-inline:clamp(16px,4vw,40px); }
-
-.dashboard-header {
-  padding-top: clamp(140px, 20vh, 200px);
-  padding-bottom: clamp(40px, 6vh, 60px);
-  display: flex;
-  justify-content: space-between;
+/* Logged-in profile button */
+.btn-profile {
+  display: inline-flex;
   align-items: center;
-  gap: 40px;
+  gap: 9px;
+  padding: 5px 16px 5px 5px;
+  border-radius: 100px;
+  background: linear-gradient(180deg,#ffffff,#ddf1fa);
+  color: #013a58;
+  font-weight: 600;
+  font-size: .8rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -12px rgba(120,220,255,.7);
+  margin-left: 6px;
+  transition:
+    transform .4s var(--ease-out-expo),
+    box-shadow .4s var(--ease);
 }
-
-.header-text { flex: 1; max-width: 700px; min-width: 0; }
-
-.header-text h1 {
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  line-height: 1.1;
-  font-weight: 400;
-  letter-spacing: -.03em;
-  margin: 0 0 16px;
+.btn-profile:hover {
+  transform: translate3d(0,-2px,0);
+  box-shadow: 0 12px 26px -12px rgba(120,220,255,.9);
 }
-.serif {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-style: italic;
-  background: linear-gradient(115deg, #ffffff 0%, #a9e9ff 45%, #8df0d6 100%);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  padding-right: .04em;
-  white-space: nowrap;
+.btn-profile:active {
+  transform: scale(.97);
+  transition-duration: .15s;
 }
-
-.header-text p {
-  color: rgba(234,246,251,.7);
-  font-size: clamp(1rem, 1.2vw, 1.15rem);
-  margin: 0;
-}
-
-.header-profile { flex-shrink: 0; animation: cardIn .9s var(--ease-out-expo) both .2s; }
-
-@keyframes cardIn {
-  from { opacity: 0; transform: translate3d(0, 30px, 0); }
-  to { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-
-.profile-pic {
-  width: clamp(140px, 20vw, 200px);
-  height: clamp(140px, 20vw, 200px);
+.btn-profile-pic {
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid var(--panel);
-  box-shadow: 0 20px 40px -15px rgba(0,0,0,0.6), 0 0 20px rgba(140,225,255,.2);
+  border: 2px solid rgba(1,58,88,0.15);
   background: #012a41;
-  transition: transform .5s var(--ease-out-expo), box-shadow .5s var(--ease-smooth);
+  flex-shrink: 0;
+  transition: transform .5s var(--ease-out-expo);
 }
-.profile-pic:hover {
-  transform: scale(1.03);
-  box-shadow: 0 24px 46px -15px rgba(0,0,0,0.65), 0 0 26px rgba(140,225,255,.32);
+.btn-profile:hover .btn-profile-pic {
+  transform: scale(1.08);
 }
 
 /* ============================================================
-   DASHBOARD GRID & CARDS
+   LAYOUT
    ============================================================ */
-.dashboard-grid {
+.wrap{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding-inline:clamp(16px,4vw,40px);
+}
+section{scroll-margin-top:110px}
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:7px 15px 7px 12px;border-radius:100px;
+  background:var(--panel-deep);
+  border:1px solid rgba(255,255,255,.09);
+  font-size:.73rem;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(234,246,251,.85);font-weight:400;
+}
+.eyebrow .dot{
+  width:6px;height:6px;border-radius:50%;background:#7fe8cf;
+  box-shadow:0 0 8px rgba(127,232,207,.9);
+  animation:blink 2.8s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
-  margin-top: 20px;
-  padding-bottom: 60px;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(30px, 5vw, 70px);
+  align-items: center;
+  padding-top:clamp(126px,17vh,180px);
+  padding-bottom:clamp(46px,7vh,80px);
 }
-.dash-card {
+
+.hero-copy { max-width: 700px; }
+
+.hero h1{
+  font-size:clamp(2.5rem,5.5vw,4.6rem);
+  line-height:1.04;
+  font-weight:400;
+  letter-spacing:-.035em;
+  margin:22px 0 0;
+}
+.line{display:block}
+
+.word{
+  display:inline-block;
+  opacity:0;
+  transform:translate3d(0,.7em,0);
+  animation:wordUp .75s var(--ease) forwards;
+  animation-delay:calc(.22s + var(--i) * .055s);
+}
+@keyframes wordUp{ to{opacity:1;transform:translate3d(0,0,0)} }
+
+.serif{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-style:italic;font-weight:400;letter-spacing:-.01em;
+  background:linear-gradient(115deg,#ffffff 0%,#a9e9ff 45%,#8df0d6 100%);
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;
+  padding-right:.04em;
+}
+
+.hero p.lead{
+  max-width:54ch;
+  margin:26px 0 0;
+  font-size:clamp(1rem,1.25vw,1.12rem);
+  color:rgba(234,246,251,.75);
+  font-weight:300;
+  animation:fadeUp .9s var(--ease) both .8s;
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translate3d(0,18px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+
+.cta-row{
+  display:flex;flex-wrap:wrap;gap:13px;
+  margin-top:36px;
+  animation:fadeUp .9s var(--ease) both .95s;
+}
+
+/* --- Right side visual (Quote Card) --- */
+.hero-visual {
+  display: flex;
+  justify-content: flex-end;
+  animation: cardIn .9s var(--ease) both .5s, floaty 10s ease-in-out 1.4s infinite alternate;
+}
+
+@keyframes cardIn { from { opacity: 0; transform: translate3d(0, 30px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+@keyframes floaty { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -12px, 0); } }
+
+.quote-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 38px 34px;
+  border-radius: 26px;
   background: var(--panel);
-  border: 1px solid var(--brd);
-  border-radius: 24px;
-  padding: 32px;
-  transition:
-    transform .5s var(--ease-out-expo),
-    border-color .4s var(--ease-smooth),
-    box-shadow .4s var(--ease-smooth);
-  animation: dashFadeIn .7s var(--ease-out-expo) both;
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 30px 60px -30px rgba(0,10,20,.85);
 }
-@keyframes dashFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+
+.quote-mark {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 5rem;
+  line-height: 0.8;
+  color: rgba(140, 235, 255, 0.25);
+  display: block;
+  margin-bottom: -10px;
 }
-.dash-card:hover {
-  border-color: rgba(160,235,255,.3);
-  box-shadow: 0 14px 40px -20px rgba(0,0,0,.55);
-}
-.dash-card h3 {
-  font-size: 1.3rem;
-  font-weight: 500;
+
+.quote-text {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-size: 1.6rem;
+  line-height: 1.35;
   color: #fff;
-  margin: 0 0 16px;
+  margin: 0 0 24px;
+}
+
+.quote-author {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-.dash-card h3 svg { color: #7fe0f5; width: 22px; height: 22px; }
-.dash-card p { margin: 0; color: rgba(234,246,251,.65); font-size: 0.95rem; }
-
-/* Streak Card Specific */
-.streak-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  cursor: pointer;
-  transition:
-    transform .5s var(--ease-out-expo),
-    border-color .4s var(--ease-smooth),
-    box-shadow .4s var(--ease-smooth);
-}
-.streak-card:hover {
-  border-color: rgba(160,235,255,.4);
-  box-shadow: 0 16px 44px -18px rgba(127,232,207,.4);
-  transform: translate3d(0,-3px,0);
-}
-.streak-card:active {
-  transform: scale(.98);
-  transition-duration: .15s;
-}
-.streak-number {
-  font-size: 4rem;
-  font-weight: 600;
-  color: #7fe0f5;
-  line-height: 1;
-  margin-bottom: 8px;
-  text-shadow: 0 0 20px rgba(127,224,245,.4);
-  transition: text-shadow .4s var(--ease-smooth);
-}
-.streak-card:hover .streak-number {
-  text-shadow: 0 0 26px rgba(127,224,245,.6);
-}
-.freeze-badge {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 50px;
-  padding: 8px 18px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 16px;
-  transition: background-color .3s var(--ease-smooth), border-color .3s var(--ease-smooth);
-}
-.freeze-badge span:first-child { font-size: 1.2rem; }
-.freeze-badge span:nth-child(2) { font-weight: 600; color: #fff; font-size: 1.1rem; }
-.freeze-badge span:last-child { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
-
-/* Meeting Cards */
-.meeting-item {
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 16px;
-  margin-bottom: 16px;
-  overflow: hidden;
-  cursor: pointer;
-  transition:
-    transform .4s var(--ease-out-expo),
-    border-color .3s var(--ease-smooth),
-    background-color .3s var(--ease-smooth),
-    box-shadow .4s var(--ease-smooth);
-}
-.meeting-item:hover {
-  transform: translate3d(0,-3px,0);
-  border-color: rgba(160,235,255,.4);
-  background: rgba(255,255,255,.05);
-  box-shadow: 0 14px 32px -18px rgba(0,0,0,.4);
-}
-.meeting-header {
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,.05);
-}
-.meeting-title h4 { margin: 0 0 4px; font-size: 1.2rem; color: #fff; }
-.meeting-title p { margin: 0; font-size: 0.85rem; color: #7fe0f5; }
-.meeting-details {
-  padding: 20px;
-  background: rgba(0,0,0,.1);
-}
-/* Block style for meeting details */
-.meeting-info-block {
-  margin-bottom: 16px;
-}
-.meeting-info-block:last-child { margin-bottom: 0; }
-.meeting-info-label {
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #fff;
-  text-transform: uppercase;
+  font-size: 0.85rem;
   letter-spacing: 0.1em;
-  margin-bottom: 6px;
-}
-.meeting-info-text {
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-.meeting-info-text p { margin: 0 0 8px 0; }
-.meeting-info-text p:last-child { margin-bottom: 0; }
-.rsvp-hint {
-  font-size: 0.75rem;
-  color: #7fe8cf;
-  margin-top: 16px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-/* ============================================================
-   MODALS (General)
-   ============================================================ */
-.modal {
-  position: fixed; inset: 0; z-index: 200;
-  display: grid; place-items: center; padding: 20px;
-  opacity: 0; pointer-events: none;
-  transition: opacity .4s var(--ease-smooth);
-}
-.modal.open { opacity: 1; pointer-events: auto; }
-.modal-backdrop {
-  position: absolute; inset: 0;
-  background: rgba(0,18,31,.85);
-  backdrop-filter: blur(5px);
-}
-
-.modal-card {
-  position: relative;
-  width: min(440px, 100%);
-  background: var(--panel-soft);
-  border: 1px solid rgba(255,255,255,.14);
-  border-radius: 24px;
-  padding: 32px;
-  box-shadow: 0 40px 80px -30px rgba(0,0,0,.9);
-  transform: translate3d(0,20px,0) scale(.97);
-  transition: transform .55s var(--ease-out-expo);
-  text-align: center;
-}
-.modal.open .modal-card { transform: translate3d(0,0,0) scale(1); }
-
-.modal-close {
-  position: absolute; top: 16px; right: 16px;
-  width: 30px; height: 30px; border-radius: 50%;
-  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
-  color: var(--muted); display: grid; place-items: center; cursor: pointer;
-  transition:
-    background-color .3s var(--ease-smooth),
-    color .3s var(--ease-smooth),
-    transform .45s var(--ease-out-expo);
-}
-.modal-close:hover {
-  background: rgba(255,255,255,.15);
-  color: #fff;
-  transform: rotate(90deg);
-}
-
-/* ============================================================
-   RSVP MODAL SPECIFIC
-   ============================================================ */
-.rsvp-step h2 { font-size: 1.6rem; font-weight: 500; color: #fff; margin: 0 0 10px; }
-.rsvp-step p { color: var(--muted); margin: 0 0 24px; font-size: 0.95rem; }
-.rsvp-info-box {
-  background: rgba(0,0,0,.2); border-radius: 12px; padding: 16px;
-  margin-bottom: 24px; text-align: left;
-}
-.rsvp-info-box p { margin: 0 0 8px; color: #fff; font-size: 1rem; font-weight: 500;}
-.rsvp-info-box p:last-child { margin: 0; color: #7fe0f5; font-size: 0.9rem; }
-
-.rsvp-actions { display: flex; gap: 12px; }
-.rsvp-actions .btn { flex: 1; padding: 14px; font-size: 1rem; }
-
-.btn-present { background: #7fe8cf; color: #013a58; }
-.btn-present:hover { background: #a7f0df; }
-.btn-absent { background: rgba(255,100,100,0.15); color: #ff8a8a; border: 1px solid rgba(255,100,100,0.3); }
-.btn-absent:hover { background: rgba(255,100,100,0.25); }
-
-.food-options { display: flex; gap: 12px; margin-bottom: 16px; }
-.food-label { flex: 1; cursor: pointer; }
-.food-label input { display: none; }
-.food-label span {
-  display: block; padding: 14px; border-radius: 12px;
-  background: #023a56; border: 1px solid rgba(255,255,255,.14);
-  color: var(--muted); font-weight: 500;
-  transition:
-    background-color .3s var(--ease-smooth),
-    border-color .3s var(--ease-smooth),
-    color .3s var(--ease-smooth),
-    transform .3s var(--ease-out-expo);
-}
-.food-label:hover span { transform: translateY(-1px); border-color: rgba(255,255,255,.25); }
-.food-label input:checked + span {
-  background: rgba(127,232,207,0.15); border-color: #7fe8cf; color: #fff;
-}
-#rsvpAdditional {
-  width: 100%; padding: 14px; border-radius: 12px; background: #023a56;
-  border: 1px solid rgba(255,255,255,.14); color: #fff; margin-bottom: 24px; outline: none;
-  transition: border-color .3s var(--ease-smooth), box-shadow .3s var(--ease-smooth), background-color .3s var(--ease-smooth);
-}
-#rsvpAdditional:focus {
-  border-color: rgba(140,235,255,.55);
-  background: #024260;
-  box-shadow: 0 0 0 3px rgba(120,220,255,.1);
-}
-
-.checkmark {
-  width: 80px; height: 80px; border-radius: 50%; display: block; stroke-width: 4;
-  stroke: #7fe8cf; stroke-miterlimit: 10; margin: 0 auto 24px;
-  box-shadow: 0 0 20px rgba(127,232,207,.3);
-}
-.checkmark__circle {
-  stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 4; stroke-miterlimit: 10;
-  stroke: #7fe8cf; fill: none; animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-}
-.checkmark__check {
-  transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48;
-  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
-}
-@keyframes stroke { 100% { stroke-dashoffset: 0; } }
-
-/* ============================================================
-   ATTENDANCE MODAL SPECIFIC
-   ============================================================ */
-.attendance-card {
-  position: relative;
-  width: min(800px, 95vw);
-  max-height: 85vh;
-  background: var(--panel-soft);
-  border: 1px solid rgba(255,255,255,.14);
-  border-radius: 24px;
-  padding: 32px;
-  box-shadow: 0 40px 80px -30px rgba(0,0,0,.9);
-  transform: translate3d(0,20px,0) scale(.97);
-  transition: transform .55s var(--ease-out-expo);
-  display: flex;
-  flex-direction: column;
-}
-.modal.open .attendance-card { transform: translate3d(0,0,0) scale(1); }
-
-.attendance-header { text-align: center; margin-bottom: 20px; }
-.attendance-header h2 { margin: 0 0 6px; color: #fff; font-size: 1.8rem; }
-.attendance-header p { margin: 0; color: #7fe0f5; font-size: 0.95rem; }
-
-.attendance-list {
-  flex: 1;
-  overflow-y: auto;
-  background: rgba(0,0,0,.2);
-  border-radius: 16px;
-  padding: 8px;
-  margin-bottom: 20px;
-}
-.attendance-list::-webkit-scrollbar { width: 8px; }
-.attendance-list::-webkit-scrollbar-track { background: rgba(0,0,0,.2); border-radius: 8px; }
-.attendance-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 8px; }
-
-.att-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,.05);
-  transition: background-color .25s var(--ease-smooth);
-}
-.att-row:hover { background: rgba(255,255,255,.03); }
-.att-row:last-child { border-bottom: none; }
-
-.att-name { color: #fff; font-weight: 500; }
-.att-rsvp { font-size: 0.75rem; color: var(--muted); margin-left: 10px; }
-
-.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider {
-  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(255,100,100,0.2); border: 1px solid rgba(255,100,100,0.4);
-  transition:
-    background-color .35s var(--ease-smooth),
-    border-color .35s var(--ease-smooth);
-  border-radius: 24px;
-}
-.slider:before {
-  position: absolute; content: ""; height: 16px; width: 16px;
-  left: 3px; bottom: 3px; background-color: #ff8a8a;
-  transition:
-    transform .35s var(--ease-out-expo),
-    background-color .35s var(--ease-smooth);
-  border-radius: 50%;
-}
-input:checked + .slider {
-  background-color: rgba(127,232,207,0.2); border-color: #7fe8cf;
-}
-input:checked + .slider:before {
-  transform: translateX(20px); background-color: #7fe8cf;
-}
-
-/* ============================================================
-   STREAK CALENDAR MODAL
-   ============================================================ */
-.streak-modal .modal-card {
-  width: min(480px, 92%);
-  height: 560px;
-  max-height: 92vh;
-  padding: 24px;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  --start-x: 0px;
-  --start-y: 0px;
-  transform: translate(var(--start-x), var(--start-y)) scale(0.15);
-  transition: transform 0.6s var(--ease-out-expo);
-}
-.streak-modal.open .modal-card {
-  transform: translate(0, 0) scale(1);
-}
-.streak-modal .modal-close {
-  top: 14px; right: 14px;
-  width: 34px; height: 34px;
-}
-
-.streak-views {
-  flex: 1;
-  overflow-y: auto;
-  min-height: 0;
-}
-.streak-views::-webkit-scrollbar { width: 6px; }
-.streak-views::-webkit-scrollbar-track { background: transparent; }
-.streak-views::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,.15); border-radius: 6px;
-}
-
-.streak-view { transition: opacity 0.25s var(--ease-smooth), transform 0.25s var(--ease-smooth); }
-.streak-view.hidden { display: none; }
-.streak-view.fade-in { animation: streakViewIn 0.4s var(--ease-out-expo) both; }
-@keyframes streakViewIn {
-  from { opacity: 0; transform: translate3d(0,8px,0); }
-  to { opacity: 1; transform: translate3d(0,0,0); }
-}
-
-.streak-modal-title {
-  text-align: center;
-  margin-bottom: 20px;
-}
-.streak-modal-title h2 {
-  font-size: 1.35rem;
-  font-weight: 500;
-  color: #fff;
-  margin: 0 0 4px;
-  letter-spacing: -0.02em;
-}
-.streak-modal-title p {
-  margin: 0;
-  font-size: 0.82rem;
   color: var(--muted);
 }
 
-.streak-cal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-  padding: 0 4px;
-}
-.streak-cal-month {
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: #fff;
-  letter-spacing: -0.01em;
-}
-.streak-nav-btn {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.1);
-  color: var(--ink);
-  display: grid; place-items: center;
-  cursor: pointer;
-  transition:
-    background-color .3s var(--ease-smooth),
-    transform .4s var(--ease-out-expo),
-    opacity .3s var(--ease-smooth);
-}
-.streak-nav-btn:hover:not(:disabled) {
-  background: rgba(255,255,255,.14);
-  transform: scale(1.1);
-}
-.streak-nav-btn:active:not(:disabled) {
-  transform: scale(.95);
-  transition-duration: .1s;
-}
-.streak-nav-btn:disabled {
-  opacity: 0.25;
-  cursor: not-allowed;
-}
-
-.streak-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 6px;
-  gap: 4px;
-}
-.streak-weekday {
-  text-align: center;
-  font-size: 0.68rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  padding: 4px 0;
-  font-weight: 500;
-}
-
-.streak-cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  justify-items: center;
-  gap: 4px;
-}
-.streak-cal-grid.fade-in { animation: calGridIn 0.4s var(--ease-out-expo) both; }
-@keyframes calGridIn {
-  from { opacity: 0; transform: translate3d(0,4px,0); }
-  to { opacity: 1; transform: translate3d(0,0,0); }
-}
-
-.cal-cell {
-  width: clamp(32px, 8vw, 44px);
-  height: clamp(32px, 8vw, 44px);
-  display: grid;
-  place-items: center;
-  position: relative;
-  font-size: 0.82rem;
-  color: rgba(234,246,251,.85);
-}
-.cal-cell.empty { visibility: hidden; }
-.cal-day-num {
-  position: relative;
-  z-index: 1;
-  transition: color .3s var(--ease-smooth);
-  font-weight: 400;
-}
-.cal-cell.has-meeting { cursor: pointer; }
-.cal-cell.has-meeting::before {
+.quote-author::before {
   content: '';
-  position: absolute;
-  inset: 8%;
-  border-radius: 50%;
-  transition:
-    transform .35s var(--ease-out-expo),
-    box-shadow .35s var(--ease-smooth);
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--muted);
 }
-.cal-cell.present::before {
-  background: rgba(127,232,207,0.18);
-  border: 1.5px solid #7fe8cf;
-  box-shadow: 0 0 10px rgba(127,232,207,0.22);
-}
-.cal-cell.absent::before {
-  background: rgba(255,138,138,0.14);
-  border: 1.5px solid #ff8a8a;
-}
-.cal-cell.unmarked::before {
-  background: rgba(255,255,255,0.04);
-  border: 1.5px dashed rgba(255,255,255,0.28);
-}
-.cal-cell.has-meeting:hover::before { transform: scale(1.16); }
-.cal-cell.present:hover::before { box-shadow: 0 0 16px rgba(127,232,207,.4); }
-.cal-cell.absent:hover::before { box-shadow: 0 0 12px rgba(255,138,138,.3); }
-.cal-cell.present:hover .cal-day-num { color: #7fe8cf; }
-.cal-cell.absent:hover .cal-day-num { color: #ff8a8a; }
 
-.streak-legend {
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+.marquee{
+  position:relative;
+  padding:16px 0;
+  border-top:1px solid rgba(255,255,255,.07);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.02);
+  overflow:hidden;
+}
+
+.marquee::before {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 12%;
+  z-index: 2; pointer-events: none;
+  background: linear-gradient(90deg, var(--bg) 0%, transparent 100%);
+}
+.marquee::after {
+  content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 12%;
+  z-index: 2; pointer-events: none;
+  background: linear-gradient(-90deg, var(--bg) 0%, transparent 100%);
+}
+
+.marquee-track{
+  display:flex;width:max-content;
+  animation:scrollX 38s linear infinite;
+  will-change:transform;
+}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes scrollX{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-50%,0,0)}
+}
+.marquee-track span{
+  display:inline-flex;align-items:center;gap:26px;
+  padding-right:26px;
+  font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(157,194,214,.85);white-space:nowrap;
+}
+.marquee-track span::after{
+  content:'✦';color:rgba(127,232,207,.55);font-size:.75rem;
+}
+
+/* ============================================================
+   SECTIONS & CARDS
+   ============================================================ */
+.section{padding-block:clamp(64px,10vh,110px)}
+
+.about-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(28px,5vw,70px);
+  align-items:start;
+}
+h2.title{
+  font-size:clamp(1.9rem,3.6vw,3rem);
+  line-height:1.1;
+  letter-spacing:-.03em;
+  font-weight:400;
+  margin:18px 0 0;
+}
+.about-grid p{
+  margin:0 0 18px;
+  color:rgba(234,246,251,.72);
+  font-size:1.02rem;
+  max-width:56ch;
+}
+.about-grid p strong{color:#fff;font-weight:500}
+
+/* Program Cards */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(228px,1fr));
+  gap:16px;
+  margin-top:clamp(34px,5vh,52px);
+}
+.card{
+  position:relative;
+  padding:26px 24px 30px;
+  border-radius:22px;
+  background:var(--panel);
+  border:1px solid var(--brd);
+  transition:transform .4s var(--ease), border-color .4s var(--ease);
+}
+.card:hover{
+  transform: translateY(-5px);
+  border-color: rgba(160,235,255,.3);
+}
+.card .num{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-size:1.45rem;
+  color:rgba(127,224,245,.85);
+  line-height:1;
+  display:block;
+  margin-bottom:18px;
+}
+.card h4{margin:0 0 9px;font-size:1.06rem;font-weight:500;letter-spacing:-.01em}
+.card p{margin:0;font-size:.9rem;color:rgba(234,246,251,.6);line-height:1.6}
+
+/* Stats */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:22px;
+  margin-top:clamp(38px,6vh,60px);
+  padding:clamp(26px,4vw,38px) clamp(20px,3vw,34px);
+  border-radius:26px;
+  background:var(--panel);
+  border:1px solid var(--brd);
+}
+.stat b{
+  display:block;
+  font-size:clamp(1.65rem,3.2vw,2.4rem);
+  font-weight:600;
+  letter-spacing:-.03em;
+  line-height:1.1;
+  background:linear-gradient(120deg,#ffffff,#9fe9ff);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.stat span{
+  display:block;margin-top:7px;
+  font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(157,194,214,.9);
+}
+
+/* ============================================================
+   EXCOMS SECTION
+   ============================================================ */
+.excoms-container {
   display: flex;
-  gap: 16px;
-  justify-content: center;
-  margin-top: 20px;
-  flex-wrap: wrap;
-  font-size: 0.74rem;
-  color: var(--muted);
-}
-.streak-legend span { display: inline-flex; align-items: center; gap: 6px; }
-.streak-legend .dot {
-  width: 10px; height: 10px; border-radius: 50%; display: inline-block;
-}
-.streak-legend .dot.present {
-  background: rgba(127,232,207,0.5);
-  border: 1.5px solid #7fe8cf;
-  box-shadow: 0 0 6px rgba(127,232,207,0.4);
-}
-.streak-legend .dot.absent {
-  background: rgba(255,138,138,0.4);
-  border: 1.5px solid #ff8a8a;
-}
-.streak-legend .dot.unmarked {
-  background: transparent;
-  border: 1.5px dashed rgba(255,255,255,0.3);
-}
-
-.streak-back {
-  display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  font-size: 0.82rem;
-  color: var(--muted);
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 6px 0;
-  margin-bottom: 20px;
-  transition: color .25s var(--ease-smooth), transform .35s var(--ease-out-expo);
+  gap: 32px;
+  margin-top: 40px;
 }
-.streak-back:hover { color: #fff; transform: translateX(-3px); }
-
-.streak-detail-status {
-  display: inline-block;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
+.excom-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  width: 100%;
+}
+.excom-card {
+  background: var(--panel);
+  border: 1px solid var(--brd);
+  border-radius: 20px;
+  padding: 30px 20px;
+  text-align: center;
+  width: 100%;
+  max-width: 280px;
+  transition: transform .4s var(--ease), border-color .4s var(--ease);
+}
+.excom-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(160,235,255,.3);
+}
+.excom-img {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 20px;
+  border: 3px solid rgba(255,255,255,0.1);
+  box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5);
+  background: #012a41;
+}
+.excom-name {
+  font-size: 1.15rem;
   font-weight: 500;
-  padding: 5px 12px;
-  border-radius: 100px;
-  margin-bottom: 14px;
-}
-.streak-detail-status.present {
-  background: rgba(127,232,207,0.15);
-  color: #7fe8cf;
-  border: 1px solid rgba(127,232,207,0.4);
-}
-.streak-detail-status.absent {
-  background: rgba(255,138,138,0.14);
-  color: #ff8a8a;
-  border: 1px solid rgba(255,138,138,0.35);
-}
-.streak-detail-status.unmarked {
-  background: rgba(255,255,255,0.05);
-  color: var(--muted);
-  border: 1px solid rgba(255,255,255,0.15);
-}
-
-.streak-detail-title {
-  font-size: 1.5rem;
-  font-weight: 500;
+  margin: 0 0 6px;
   color: #fff;
-  margin: 0 0 6px;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
 }
-.streak-detail-date {
-  color: #7fe0f5;
-  font-size: 0.88rem;
-  margin: 0 0 24px;
-}
-.streak-detail-section { margin-bottom: 18px; }
-.streak-detail-section h4 {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
+.excom-role {
+  font-size: 0.8rem;
   color: var(--muted);
-  margin: 0 0 6px;
-  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
 }
-.streak-detail-section div {
-  margin: 0;
-  color: rgba(234,246,251,0.82);
-  font-size: 0.94rem;
-  line-height: 1.55;
-}
-.streak-detail-section div p { margin: 0 0 8px 0; }
-.streak-detail-section div p:last-child { margin-bottom: 0; }
 
 /* ============================================================
-   FOOTER & LOADER
+   FOOTER
    ============================================================ */
-footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4vw,40px) 52px; }
-.foot-inner {
-  max-width: var(--maxw); margin: 0 auto; display: flex; flex-wrap: wrap;
-  gap: 20px; justify-content: space-between; align-items: center;
-  font-size: .86rem; color: rgba(157,194,214,.85);
+footer{
+  border-top:1px solid rgba(255,255,255,.07);
+  padding:38px clamp(16px,4vw,40px) 52px;
+  margin-top:clamp(30px,5vh,60px);
 }
-.foot-links { display: flex; gap: 22px; flex-wrap: wrap; }
-.foot-links a { transition: color .3s var(--ease-smooth); }
-.foot-links a:hover { color: #fff; }
-
-#loader {
-  position: fixed; inset: 0; z-index: 250;
-  background: var(--bg);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity 0.6s var(--ease-smooth);
+.foot-inner{
+  max-width:var(--maxw);margin:0 auto;
+  display:flex;flex-wrap:wrap;gap:20px;
+  justify-content:space-between;align-items:center;
+  font-size:.86rem;color:rgba(157,194,214,.85);
 }
-.loader-spinner {
-  width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1);
-  border-top-color: #7fe0f5; border-radius: 50%; animation: spin 1s linear infinite;
-  margin-bottom: 20px;
-}
-@keyframes spin { 100% { transform: rotate(360deg); } }
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{transition:color .3s var(--ease)}
+.foot-links a:hover{color:#fff}
 
 /* ============================================================
-   RESPONSIVE
+   LOGIN MODAL
    ============================================================ */
-@media (max-width: 860px) {
-  .dashboard-header { flex-direction: column-reverse; align-items: flex-start; gap: 30px; }
-  .header-profile { margin: 0 auto; }
-  .serif { white-space: normal; }
-  .admin-form { grid-template-columns: 1fr; }
-  .attendance-card { padding: 20px; }
-  .dashboard-grid > .dash-card { grid-column: auto !important; }
+.modal{
+  position:fixed;inset:0;z-index:120;
+  display:grid;place-items:center;
+  padding:20px;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s var(--ease);
+}
+.modal.open{opacity:1;pointer-events:auto}
+
+.modal-backdrop{
+  position:absolute;inset:0;
+  background:rgba(0,18,31,.75);
+}
+
+.modal-card{
+  position:relative;
+  width:min(420px,100%);
+  padding:clamp(26px,4vw,36px);
+  border-radius:26px;
+  background:var(--panel-soft);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.9);
+  transform:translate3d(0,20px,0) scale(.97);
+  transition:transform .4s var(--ease);
+}
+.modal.open .modal-card{transform:translate3d(0,0,0) scale(1)}
+
+.modal-close{
+  position:absolute;top:14px;right:14px;
+  width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.13);
+  color:rgba(234,246,251,.8);
+  transition:background-color .3s var(--ease),transform .3s var(--ease);
+}
+.modal-close:hover{background:rgba(255,255,255,.15);transform:rotate(90deg)}
+
+.modal-card h3{margin:0 0 6px;font-size:1.45rem;font-weight:500;letter-spacing:-.02em}
+.modal-card .modal-sub{margin:0 0 24px;font-size:.9rem;color:rgba(234,246,251,.6)}
+
+.field{margin-bottom:14px}
+.field label{
+  display:block;margin-bottom:7px;
+  font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(157,194,214,.9);
+}
+.field input{
+  width:100%;
+  padding:13px 16px;
+  border-radius:14px;
+  background:#023a56;
+  border:1px solid rgba(255,255,255,.14);
+  color:#fff;
+  font-family:inherit;font-size:.94rem;
+  outline:none;
+  transition:border-color .3s var(--ease), background-color .3s var(--ease), box-shadow .3s var(--ease);
+}
+.field input::placeholder{color:rgba(234,246,251,.3)}
+.field input:focus{
+  border-color:rgba(140,235,255,.55);
+  background:#024260;
+  box-shadow:0 0 0 3px rgba(120,220,255,.12);
+}
+
+.modal-card .btn{width:100%;margin-top:10px}
+.modal-note{
+  margin:16px 0 0;text-align:center;
+  font-size:.78rem;color:rgba(157,194,214,.85);
+}
+.modal-note a{color:#9fe9ff;border-bottom:1px solid rgba(159,233,255,.3)}
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+.reveal{
+  opacity:0;
+  transform:translate3d(0,24px,0);
+  transition:opacity .6s var(--ease), transform .6s var(--ease);
+  transition-delay:var(--d,0s);
+}
+.reveal.in{opacity:1;transform:translate3d(0,0,0)}
+
+/* ============================================================
+   RESPONSIVE (Mobile & Tablet Fix)
+   ============================================================ */
+@media (max-width:960px){
+  .hero { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .about-grid{grid-template-columns:1fr}
+  .btn-login{margin-left:auto; padding:10px 18px;}
+  .btn-profile{margin-left:auto; padding:4px 14px 4px 4px;}
+  
+  /* Show Hamburger */
+  .hamburger { display: flex; }
+
+  /* Mobile Dropdown Menu */
+  .nav-links {
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    width: 90%;
+    max-width: 400px;
+    background: var(--panel-deep);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 20px;
+    padding: 16px;
+    flex-direction: column;
+    align-items: stretch;
+    box-shadow: 0 20px 40px rgba(0,0,0,.6);
+    
+    /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s var(--ease);
+    margin-left: 0;
+  }
+
+  .nav-links.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .nav-links a {
+    padding: 14px 16px;
+    font-size: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+  }
+  .nav-links a:last-child {
+    border-bottom: none;
+  }
+  
+  /* Remove the underline hover effect in mobile menu */
+  .nav-links a::after { display: none; }
+}
+
+@media (max-width:760px){
+  .stats{grid-template-columns:repeat(2,1fr);gap:26px 18px}
+  .brand-text span{display:none}
+  .brand-logo{width:30px;height:30px}
+}
+@media (max-width:420px){
+  .brand-text strong{letter-spacing:.14em;font-size:.82rem}
+  .btn-login{padding:8px 14px;font-size:.75rem}
+  .btn-profile{padding:3px 12px 3px 3px; gap: 7px;}
+  .btn-profile-pic{width:26px;height:26px;}
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  html{scroll-behavior:auto}
+  .reveal,.word{opacity:1 !important;transform:none !important}
+  .glow,.hero-visual{animation:none}
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOADER -->
-<div id="loader">
-  <div class="loader-spinner"></div>
-  <p style="color:var(--muted); font-size:0.9rem; letter-spacing:0.1em; text-transform:uppercase;">Authenticating...</p>
-</div>
-
 <div class="page">
+
   <div class="bg" aria-hidden="true">
     <div class="glow"></div>
   </div>
 
-  <header class="nav">
+  <header class="nav" id="nav">
     <div class="nav-inner">
-      <a href="/" class="brand">
+      <a href="#top" class="brand" aria-label="Pearl Gavel Club home">
         <img src="https://cdn.phototourl.com/anon/2026-11-17-5f32addc-00d9-4b3c-b6c1-8a2fc1aecbc0.png" alt="Pearl Gavel Club Logo" class="brand-logo">
         <span class="brand-text">
           <strong>PEARL</strong>
@@ -989,359 +805,278 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         </span>
       </a>
 
-      <nav class="nav-links">
-        <a href="#" id="nav-overview" class="active" onclick="switchTab('overview', event)">Overview</a>
-        <a href="#" id="nav-excoms" style="display:none;" onclick="switchTab('excoms', event)">ExComs</a>
+      <!-- Mobile Menu Dropdown -->
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#program">Program</a>
+        <a href="#excoms">ExComs</a>
+        <a href="#stats">Community</a>
       </nav>
 
-      <button class="btn btn-logout" id="logoutBtn">
-        Log out
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+      <button class="btn btn-login" id="loginBtn" type="button">
+        Log in
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6"/>
         </svg>
+      </button>
+
+      <!-- Logged-in profile button (hidden until we know the user is logged in) -->
+      <a href="/dashboard" class="btn-profile" id="profileBtn" style="display:none;" aria-label="Go to my dashboard">
+        <img
+          src="https://cdn.phototourl.com/anon/2026-11-17-5f32addc-00d9-4b3c-b6c1-8a2fc1aecbc0.png"
+          alt="Your profile"
+          class="btn-profile-pic"
+          id="profileBtnPic"
+        >
+        <span>YOU</span>
+      </a>
+
+      <!-- Hamburger Button -->
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
     </div>
   </header>
 
-  <main class="wrap">
-    
-    <!-- ========================================== -->
-    <!-- VIEW 1: OVERVIEW (Visible to everyone)     -->
-    <!-- ========================================== -->
-    <div id="view-overview">
-      <section class="dashboard-header">
-        <div class="header-text">
-          <span class="eyebrow" style="display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:100px;background:var(--panel-deep);border:1px solid rgba(255,255,255,.09);font-size:.73rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(234,246,251,.85);font-weight:400;margin-bottom:20px;">
-            <i style="width:6px;height:6px;border-radius:50%;background:#7fe8cf;box-shadow:0 0 8px rgba(127,232,207,.9);animation:blink 2.8s infinite;"></i> Member Portal
+  <main id="top">
+
+    <!-- HERO -->
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <span class="eyebrow"><i class="dot"></i> Gavel Club · Toastmasters Tradition</span>
+
+        <h1>
+          <span class="line">
+            <span class="word" style="--i:0">Find</span>
+            <span class="word" style="--i:1">your</span>
+            <span class="word serif" style="--i:2">voice.</span>
           </span>
-          
-          <h1 id="welcomeMessage">Welcome back, <span class="serif">Gavelier.</span></h1>
-          <p>This is your personal dashboard. Stay tuned for upcoming meeting schedules, speech sign-ups, and club resources.</p>
-        </div>
+          <span class="line">
+            <span class="word" style="--i:3">Own</span>
+            <span class="word" style="--i:4">the</span>
+            <span class="word serif" style="--i:5">room.</span>
+          </span>
+        </h1>
 
-        <div class="header-profile">
-          <img src="https://cdn.phototourl.com/anon/2026-11-17-5f32addc-00d9-4b3c-b6c1-8a2fc1aecbc0.png" alt="Profile Picture" class="profile-pic" id="userProfilePic">
-        </div>
-      </section>
+        <p class="lead">
+          Pearl Gavel Club is a student-led public speaking and leadership community.
+          We meet to craft speeches, give honest feedback, and grow confident —
+          one speech at a time.
+        </p>
 
-      <section class="dashboard-grid">
-        <div class="dash-card" style="grid-column: span 2;">
-          <h3>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            Upcoming Meetings <span style="font-size:0.8rem; color:var(--muted); font-weight:300; margin-left:auto;">(Click to RSVP)</span>
-          </h3>
-          <div id="meetingsList">
-            <p style="color: var(--muted);">Loading meetings...</p>
-          </div>
+        <div class="cta-row">
+          <a href="/join" class="btn btn-primary">How to join the club</a>
         </div>
+      </div>
 
-        <div class="dash-card streak-card" onclick="openStreakModal()">
-          <h3 style="justify-content:center;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
-            Meeting Streak
-          </h3>
-          <div class="streak-number" id="streakCount">0</div>
-          <p>Consecutive Meetings Attended</p>
-          
-          <div class="freeze-badge">
-            <span>❄️</span>
-            <span id="freezeCount">0</span>
-            <span>Streak Freeze</span>
-          </div>
-
-          <p style="font-size:0.72rem; color:var(--muted); margin-top:16px; letter-spacing:0.05em;">Click to see your history →</p>
+      <div class="hero-visual">
+        <div class="quote-card">
+          <span class="quote-mark">“</span>
+          <p class="quote-text">The spoken word is the most powerful tool we possess. Use it to build, to inspire, and to lead.</p>
+          <div class="quote-author">Gavel Club Mantra</div>
         </div>
-      </section>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Prepared Speeches</span><span>Table Topics</span><span>Evaluations</span>
+        <span>Leadership Roles</span><span>Icebreakers</span><span>Speech Contests</span>
+        <span>Prepared Speeches</span><span>Table Topics</span><span>Evaluations</span>
+        <span>Leadership Roles</span><span>Icebreakers</span><span>Speech Contests</span>
+      </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- VIEW 2: EXCOMS (Visible only to ExComs)    -->
-    <!-- ========================================== -->
-    <div id="view-excoms" style="display:none;">
-      <section class="dashboard-header" style="padding-bottom: 20px;">
-        <div class="header-text">
-          <span class="eyebrow" style="display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:100px;background:var(--panel-deep);border:1px solid rgba(255,255,255,.09);font-size:.73rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(234,246,251,.85);font-weight:400;margin-bottom:20px;">
-            <i style="width:6px;height:6px;border-radius:50%;background:#ff8a8a;box-shadow:0 0 8px rgba(255,100,100,.9);animation:blink 2.8s infinite;"></i> Admin Access
-          </span>
-          <h1 id="excomHeaderTitle">ExCom Dashboard.</h1>
-          <p id="excomHeaderSub">Schedule new meetings and manage the club's calendar.</p>
-        </div>
-      </section>
-
-      <section class="dashboard-grid">
-        <div class="dash-card" style="grid-column: 1 / -1;" id="meetingFormCard">
-          <h3 id="formTitle">Schedule a Meeting</h3>
-          <form id="scheduleForm" class="admin-form">
-            <div class="form-group">
-              <label>Date</label>
-              <input type="date" id="meetingDate" required>
-            </div>
-            <div class="form-group">
-              <label>Start Time</label>
-              <input type="time" id="meetingTime" required>
-            </div>
-            <div class="form-group">
-              <label>End Time</label>
-              <input type="time" id="meetingEndTime" required>
-            </div>
-            
-            <div class="form-group full-width">
-              <label>Theme</label>
-              <div class="rich-editor-container">
-                <div class="rich-toolbar">
-                  <button type="button" onclick="formatDoc('bold')"><b>B</b></button>
-                  <button type="button" onclick="formatDoc('italic')"><i>I</i></button>
-                  <button type="button" onclick="formatDoc('underline')"><u>U</u></button>
-                  <select onchange="formatDoc('fontName', this.value)">
-                    <option value="Outfit">Outfit</option>
-                    <option value="Instrument Serif">Serif</option>
-                    <option value="Arial">Arial</option>
-                  </select>
-                </div>
-                <div class="rich-input single-line" id="meetingTheme" contenteditable="true" data-placeholder="e.g., The Power of Small Talk"></div>
-              </div>
-            </div>
-
-            <div class="form-group full-width">
-              <label>About the Theme</label>
-              <div class="rich-editor-container">
-                <div class="rich-toolbar">
-                  <button type="button" onclick="formatDoc('bold')"><b>B</b></button>
-                  <button type="button" onclick="formatDoc('italic')"><i>I</i></button>
-                  <button type="button" onclick="formatDoc('underline')"><u>U</u></button>
-                  <select onchange="formatDoc('fontName', this.value)">
-                    <option value="Outfit">Outfit</option>
-                    <option value="Instrument Serif">Serif</option>
-                    <option value="Arial">Arial</option>
-                  </select>
-                </div>
-                <div class="rich-input" id="meetingAbout" contenteditable="true" data-placeholder="Provide a brief description about what the theme means..."></div>
-              </div>
-            </div>
-
-            <div class="form-group full-width">
-              <label>Rules / Guidelines</label>
-              <div class="rich-editor-container">
-                <div class="rich-toolbar">
-                  <button type="button" onclick="formatDoc('bold')"><b>B</b></button>
-                  <button type="button" onclick="formatDoc('italic')"><i>I</i></button>
-                  <button type="button" onclick="formatDoc('underline')"><u>U</u></button>
-                  <select onchange="formatDoc('fontName', this.value)">
-                    <option value="Outfit">Outfit</option>
-                    <option value="Instrument Serif">Serif</option>
-                    <option value="Arial">Arial</option>
-                  </select>
-                </div>
-                <div class="rich-input" id="meetingRules" contenteditable="true" data-placeholder="e.g., Speeches must be under 5 minutes. No phones allowed."></div>
-              </div>
-            </div>
-            
-            <div style="grid-column: 1 / -1; display: flex; gap: 10px;">
-              <button type="submit" class="btn btn-schedule" id="submitBtn" style="margin-top: 10px;">Publish Meeting</button>
-              <button type="button" class="btn btn-cancel" id="cancelEditBtn" style="display:none; margin-top: 10px; padding: 14px 24px; font-size: 0.95rem;" onclick="cancelEditMode()">Cancel Edit</button>
-            </div>
-          </form>
+    <!-- ABOUT -->
+    <section class="section wrap" id="about">
+      <div class="about-grid">
+        <div class="reveal">
+          <span class="eyebrow"><i class="dot"></i> About us</span>
+          <h2 class="title">A club built for<br><span class="serif">brave beginners.</span></h2>
         </div>
 
-        <div class="dash-card" style="grid-column: 1 / -1;">
-          <h3>Manage Scheduled Meetings</h3>
-          <div id="adminMeetingsList">
-            <p style="color: var(--muted);">Loading meetings...</p>
+        <div class="reveal" style="--d:.08s">
+          <p>
+            <strong>Pearl Gavel Club</strong> is a student chapter in the Toastmasters
+            tradition — a place where nervous first-timers and seasoned speakers share
+            the same stage.
+          </p>
+          <p>
+            Every meeting runs like a real programme: a Toastmaster of the Day, prepared
+            speeches, impromptu Table Topics, and constructive evaluations. You don't just
+            learn to speak. You learn to listen, lead, and lift others up.
+          </p>
+          <p>
+            No experience needed. No judgement given. Just show up, and grow.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRAM -->
+    <section class="section wrap" id="program" style="padding-top:0">
+      <div class="reveal">
+        <span class="eyebrow"><i class="dot"></i> What we do</span>
+        <h2 class="title">Four ways you'll grow.</h2>
+      </div>
+
+      <div class="cards">
+        <article class="card reveal" style="--d:.04s">
+          <span class="num">01</span>
+          <h4>Prepared Speeches</h4>
+          <p>Craft a message, structure it, and deliver it to a room that's rooting for you.</p>
+        </article>
+        <article class="card reveal" style="--d:.1s">
+          <span class="num">02</span>
+          <h4>Table Topics</h4>
+          <p>Think on your feet. Two minutes of impromptu speaking builds real composure.</p>
+        </article>
+        <article class="card reveal" style="--d:.16s">
+          <span class="num">03</span>
+          <h4>Evaluations</h4>
+          <p>Give and receive feedback that's specific, kind, and genuinely useful.</p>
+        </article>
+        <article class="card reveal" style="--d:.22s">
+          <span class="num">04</span>
+          <h4>Leadership Roles</h4>
+          <p>Run the meeting as Toastmaster, Timer, Grammarian, or General Evaluator.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- EXCOMS SECTION -->
+    <section class="section wrap" id="excoms" style="padding-top:0">
+      <div class="reveal" style="text-align: center; margin-bottom: 40px;">
+        <span class="eyebrow"><i class="dot"></i> Leadership</span>
+        <h2 class="title">Executive Committee.</h2>
+        <p style="color:var(--muted); margin: 12px auto 0; max-width:50ch;">The dedicated team leading the Pearl Gavel Club this term.</p>
+      </div>
+
+      <div class="excoms-container reveal">
+        
+        <!-- Row 1: President -->
+        <div class="excom-row">
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-4b9af167-2cbc-4f43-922b-f8394c1cd982.jpg" alt="Aysha Zarine" class="excom-img">
+            <h4 class="excom-name">Gav. Aysha Zarine</h4>
+            <div class="excom-role">President</div>
           </div>
         </div>
-      </section>
-    </div>
+
+        <!-- Row 2: Vice Presidents -->
+        <div class="excom-row">
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-0d44286e-82c8-4269-a723-f4c4ce504565.jpg" alt="Nibushna Jotheeswar Dheeban" class="excom-img">
+            <h4 class="excom-name">Gav. Nibushna Jotheeswar Dheeban</h4>
+            <div class="excom-role">VP of Education</div>
+          </div>
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-0104b83d-a525-407d-a0f3-642e950d07a6.jpg" alt="Aahil Ali Anwar" class="excom-img">
+            <h4 class="excom-name">Gav. Aahil Ali Anwar</h4>
+            <div class="excom-role">VP of Membership</div>
+          </div>
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-256323de-7338-4608-a9a6-955bee23ec05.jpg" alt="Rushil Bhavsar" class="excom-img">
+            <h4 class="excom-name">Gav. Rushil Bhavsar</h4>
+            <div class="excom-role">VP of Public Relations</div>
+          </div>
+        </div>
+
+        <!-- Row 3: Other Roles -->
+        <div class="excom-row">
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-ed53de37-8b53-4807-ba0b-b4f76ed38905.jpg" alt="Ritika Nair" class="excom-img">
+            <h4 class="excom-name">Gav. Ritika Nair</h4>
+            <div class="excom-role">Secretary</div>
+          </div>
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-8dc6841c-fcc9-422e-8a86-86fc994c2b7a.jpg" alt="Eleanor Louisa Carasco" class="excom-img">
+            <h4 class="excom-name">Gav. Eleanor Louisa Carasco</h4>
+            <div class="excom-role">Treasurer</div>
+          </div>
+          <div class="excom-card">
+            <img src="https://cdn.phototourl.com/anon/2026-11-17-9a31c0b7-d1da-458f-ab25-7de147abb4d1.jpg" alt="Aleesha Nasrin" class="excom-img">
+            <h4 class="excom-name">Gav. Aleesha Nasrin</h4>
+            <div class="excom-role">Sergeant at Arms</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="section wrap" id="stats" style="padding-top:0">
+      <div class="stats reveal">
+        <div class="stat"><b>48+</b><span>Active members</span></div>
+        <div class="stat"><b>24</b><span>Meetings a year</span></div>
+        <div class="stat"><b>120+</b><span>Speeches delivered</span></div>
+        <div class="stat"><b>100%</b><span>Supportive room</span></div>
+      </div>
+    </section>
 
   </main>
 
   <footer>
     <div class="foot-inner">
       <div style="display:flex;align-items:center;gap:11px">
-        <img src="https://cdn.phototourl.com/anon/2026-11-17-5f32addc-00d9-4b3c-b6c1-8a2fc1aecbc0.png" alt="Logo" class="brand-logo" style="width:24px;height:24px;box-shadow:none;">
+        <img src="https://cdn.phototourl.com/anon/2026-11-17-5f32addc-00d9-4b3c-b6c1-8a2fc1aecbc0.png" alt="Pearl Gavel Club Logo" class="brand-logo" style="width:24px;height:24px;box-shadow:none;">
         <span>© <span id="year"></span> Pearl Gavel Club</span>
       </div>
       <div class="foot-links">
-        <a href="/">Home</a>
+        <a href="#about">About</a>
+        <a href="#program">Program</a>
+        <a href="#excoms">ExComs</a>
         <a href="mailto:hello@pearlgavelclub.org">Contact</a>
       </div>
     </div>
   </footer>
+
 </div>
 
-<!-- ========================================== -->
-<!-- RSVP MODAL                                 -->
-<!-- ========================================== -->
-<div class="modal" id="rsvpModal">
-  <div class="modal-backdrop" onclick="closeRsvpModal()"></div>
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <div class="modal-backdrop" data-close></div>
   <div class="modal-card">
-    <button class="modal-close" onclick="closeRsvpModal()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-    </button>
-
-    <div id="rsvpStep1" class="rsvp-step">
-      <h2>Are you attending?</h2>
-      <p>Please let us know if you can make it.</p>
-      
-      <div class="rsvp-info-box">
-        <p id="rsvpTheme">Theme</p>
-        <p id="rsvpDate">Date & Time</p>
-      </div>
-
-      <div class="rsvp-actions">
-        <button class="btn btn-present" onclick="selectPresent()">Present</button>
-        <button class="btn btn-absent" onclick="selectAbsent()">Absent</button>
-      </div>
-
-      <p style="font-size:0.8rem; color:var(--muted); margin-top:16px; font-style:italic; line-height:1.5;">
-        ⚠️ You can only RSVP <strong>once</strong> per meeting. Your choice is final — choose carefully.
-      </p>
-    </div>
-
-    <div id="rsvpStep2" class="rsvp-step" style="display:none;">
-      <h2>Food Preference</h2>
-      <p>Will you be eating with us?</p>
-      
-      <div class="food-options">
-        <label class="food-label">
-          <input type="radio" name="food" value="Veg" checked>
-          <span>Veg</span>
-        </label>
-        <label class="food-label">
-          <input type="radio" name="food" value="Non-Veg">
-          <span>Non-Veg</span>
-        </label>
-      </div>
-      
-      <input type="text" id="rsvpAdditional" placeholder="Any additional requests? (Optional)">
-      <button class="btn btn-schedule" onclick="submitPresent()">Confirm RSVP</button>
-    </div>
-
-    <div id="rsvpStep3" class="rsvp-step" style="display:none; padding: 20px 0;">
-      <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
-        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+    <button class="modal-close" type="button" data-close aria-label="Close login">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+        <path d="M18 6 6 18M6 6l12 12"/>
       </svg>
-      <h3 style="font-size:1.6rem; color:#fff; margin:0 0 10px;">RSVP Confirmed!</h3>
-      <p id="rsvpSuccessMsg" style="color:var(--muted); font-size:1rem;"></p>
-      
-      <!-- Lock message for regular students -->
-      <p id="rsvpLockMessage" style="font-size:0.82rem; color:var(--muted); margin-top:16px; font-style:italic; line-height:1.5;">
-        🔒 Your RSVP is final and cannot be changed.<br>
-        Contact an ExCom if you need to make an update.
-      </p>
-
-      <!-- Change RSVP button for ExComs -->
-      <button id="changeRsvpBtn" class="btn btn-edit" style="display:none; margin-top:16px; width:100%;" onclick="changeRsvp()">Change RSVP</button>
-    </div>
-
-  </div>
-</div>
-
-<!-- ========================================== -->
-<!-- ATTENDANCE MODAL (ExComs Only)             -->
-<!-- ========================================== -->
-<div class="modal" id="attendanceModal">
-  <div class="modal-backdrop" onclick="closeAttendanceModal()"></div>
-  <div class="attendance-card">
-    <button class="modal-close" onclick="closeAttendanceModal()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-    </button>
-    
-    <div class="attendance-header">
-      <h2>Take Attendance</h2>
-      <p id="attendanceMeetingTitle">Meeting Theme</p>
-    </div>
-
-    <div class="attendance-list" id="attendanceList">
-      <!-- Loaded via JS -->
-    </div>
-
-    <button class="btn btn-schedule" onclick="saveAttendance()">Save Attendance</button>
-  </div>
-</div>
-
-<!-- ========================================== -->
-<!-- STREAK CALENDAR MODAL                      -->
-<!-- ========================================== -->
-<div class="modal streak-modal" id="streakModal">
-  <div class="modal-backdrop" onclick="closeStreakModal()"></div>
-  <div class="modal-card">
-    <button class="modal-close" onclick="closeStreakModal()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
 
-    <div class="streak-views">
-      <div id="streakCalView" class="streak-view">
-        <div class="streak-modal-title">
-          <h2>Your Meeting History</h2>
-          <p>Tap any highlighted day to see details</p>
-        </div>
+    <h3 id="loginTitle">Welcome back</h3>
+    <p class="modal-sub">Log in with your admission number.</p>
 
-        <div class="streak-cal-header">
-          <button class="streak-nav-btn" id="calPrevBtn" onclick="changeMonth(-1)" aria-label="Previous month">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 18l-6-6 6-6"/>
-            </svg>
-          </button>
-          <div class="streak-cal-month" id="calMonthLabel">Month Year</div>
-          <button class="streak-nav-btn" id="calNextBtn" onclick="changeMonth(1)" aria-label="Next month">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 18l6-6-6-6"/>
-            </svg>
-          </button>
-        </div>
-
-        <div class="streak-weekdays">
-          <div class="streak-weekday">Sun</div>
-          <div class="streak-weekday">Mon</div>
-          <div class="streak-weekday">Tue</div>
-          <div class="streak-weekday">Wed</div>
-          <div class="streak-weekday">Thu</div>
-          <div class="streak-weekday">Fri</div>
-          <div class="streak-weekday">Sat</div>
-        </div>
-
-        <div class="streak-cal-grid" id="calGrid"></div>
-
-        <div class="streak-legend">
-          <span><i class="dot present"></i>Attended</span>
-          <span><i class="dot absent"></i>Missed</span>
-          <span><i class="dot unmarked"></i>Not marked</span>
-        </div>
+    <form id="loginForm">
+      <div class="field">
+        <label for="admission">Admission number</label>
+        <input id="admission" name="admission" type="text" placeholder="e.g. P1234" autocomplete="username" required>
       </div>
-
-      <div id="streakDetailView" class="streak-view hidden">
-        <button class="streak-back" onclick="backToCalendar()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 18l-6-6 6-6"/>
-          </svg>
-          Back to calendar
-        </button>
-
-        <div class="streak-detail-status" id="detailStatus">Status</div>
-        <h2 class="streak-detail-title" id="detailTheme">Theme</h2>
-        <p class="streak-detail-date" id="detailDate">Date & Time</p>
-
-        <div class="streak-detail-section">
-          <h4>About</h4>
-          <div id="detailAbout"></div>
-        </div>
-
-        <div class="streak-detail-section">
-          <h4>Rules</h4>
-          <div id="detailRules"></div>
-        </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required>
       </div>
-    </div>
+      <button class="btn btn-primary" type="submit">Log in</button>
+    </form>
+
+    <p class="modal-note">
+      New member?
+      <a href="mailto:hello@pearlgavelclub.org?subject=Joining%20Pearl%20Gavel%20Club">Ask about joining</a>
+    </p>
   </div>
 </div>
 
-<!-- ===================== FIREBASE & LOGIC ===================== -->
 <script type="module">
+  // 1. Import Firebase functions
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc, getDoc, writeBatch, updateDoc, where } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
+  // 2. Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyDduauqRyaR-G2QZYok3YZRypC_8VHUffk",
     authDomain: "pearlgavelclub.firebaseapp.com",
@@ -1356,799 +1091,171 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  document.getElementById('year').textContent = new Date().getFullYear();
-  let currentUserIsExCom = false;
-  let currentUserAdmission = "";
-  let currentUserName = "";
-  let allGaveliers = [];
-  let allMeetings = [];
-
-  let activeMeetingId = "";
-  let activeAttendanceMeetingId = "";
-  let editingMeetingId = null;
-
   // ==========================================
-  // HELPERS — Formatting
-  // ==========================================
-  function formatTime(t) {
-    if (!t) return '';
-    const [h, m] = t.split(':').map(Number);
-    const d = new Date();
-    d.setHours(h, m, 0, 0);
-    return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-  }
-
-  function formatTimeRange(start, end) {
-    if (!start) return '';
-    if (!end) return formatTime(start);
-    return `${formatTime(start)} – ${formatTime(end)}`;
-  }
-
-  // ==========================================
-  // RICH TEXT EDITOR LOGIC
-  // ==========================================
-  window.formatDoc = function(cmd, value = null) {
-    document.execCommand(cmd, false, value);
-    if (document.activeElement && document.activeElement.classList.contains('rich-input')) {
-      document.activeElement.focus();
-    }
-  };
-
-  document.getElementById('meetingTheme').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') e.preventDefault();
-  });
-
-  // ==========================================
-  // 1. TAB SWITCHING
-  // ==========================================
-  window.switchTab = function(tabName, event) {
-    if (event) event.preventDefault();
-    
-    document.getElementById('nav-overview').classList.remove('active');
-    document.getElementById('nav-excoms').classList.remove('active');
-    document.getElementById('view-overview').style.display = 'none';
-    document.getElementById('view-excoms').style.display = 'none';
-
-    if (tabName === 'overview') {
-      document.getElementById('view-overview').style.display = 'block';
-      document.getElementById('nav-overview').classList.add('active');
-    } else if (tabName === 'excoms') {
-      document.getElementById('view-excoms').style.display = 'block';
-      document.getElementById('nav-excoms').classList.add('active');
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // ==========================================
-  // 2. AUTH & USER DATA
+  // LOGGED-IN STATE — swap Log in button
   // ==========================================
   onAuthStateChanged(auth, async (user) => {
+    const loginBtn = document.getElementById('loginBtn');
+    const profileBtn = document.getElementById('profileBtn');
+
     if (user) {
-      const email = user.email; 
-      currentUserAdmission = email.split('@')[0].toUpperCase(); 
+      // Show profile button, hide login button
+      loginBtn.style.display = 'none';
+      profileBtn.style.display = 'inline-flex';
 
+      // Fetch this user's gaveliers doc for the profile picture
+      const admission = user.email.split('@')[0].toUpperCase();
       try {
-        const q = query(collection(db, "gaveliers"), where("admissionNo", "==", currentUserAdmission));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-          const foundUser = querySnapshot.docs[0].data();
-          
-          currentUserName = foundUser.name;
-          document.getElementById('welcomeMessage').innerHTML = `Welcome back, <span class="serif">Gav. ${foundUser.name}.</span>`;
-          if (foundUser.imageUrl && foundUser.imageUrl.trim() !== "") {
-            document.getElementById('userProfilePic').src = foundUser.imageUrl;
+        const snap = await getDocs(collection(db, "gaveliers"));
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          if (data.admissionNo && data.admissionNo.toUpperCase() === admission) {
+            if (data.imageUrl && data.imageUrl.trim() !== "") {
+              document.getElementById('profileBtnPic').src = data.imageUrl;
+            }
           }
-
-          if (foundUser.role && foundUser.role !== "Gavelier") {
-            currentUserIsExCom = true;
-            document.getElementById('nav-excoms').style.display = 'inline-block';
-            
-            const allSnap = await getDocs(collection(db, "gaveliers"));
-            allSnap.forEach(d => allGaveliers.push(d.data()));
-          }
-        }
-        
-        const loader = document.getElementById('loader');
-        loader.style.opacity = '0';
-        setTimeout(() => loader.style.display = 'none', 600);
-
-        loadMeetings();
-
+        });
       } catch (err) {
-        console.error("Error fetching user data:", err);
-        document.getElementById('loader').style.display = 'none';
+        console.error("Could not fetch profile picture:", err);
+        // Fallback logo is already set
       }
     } else {
-      window.location.href = '/';
+      loginBtn.style.display = 'inline-flex';
+      profileBtn.style.display = 'none';
     }
   });
 
   // ==========================================
-  // 3. MEETINGS & STREAK
+  // MOBILE MENU TOGGLE
   // ==========================================
-  const meetingsList = document.getElementById('meetingsList');
-  const adminMeetingsList = document.getElementById('adminMeetingsList');
-  const scheduleForm = document.getElementById('scheduleForm');
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
 
-  function loadMeetings() {
-    const q = query(collection(db, "meetings"), orderBy("date", "asc"));
-    
-    onSnapshot(q, (snapshot) => {
-      allMeetings = [];
-      snapshot.forEach(d => allMeetings.push({ id: d.id, ...d.data() }));
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+    hamburger.classList.toggle('active');
+  });
 
-      if (snapshot.empty) {
-        meetingsList.innerHTML = '<p style="color: var(--muted);">No meetings scheduled yet.</p>';
-        if(adminMeetingsList) adminMeetingsList.innerHTML = '<p style="color: var(--muted);">No meetings scheduled yet.</p>';
-        return;
-      }
-
-      meetingsList.innerHTML = '';
-      if(adminMeetingsList) adminMeetingsList.innerHTML = '';
-
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const docId = docSnap.id;
-        
-        const dateObj = new Date(data.date + 'T' + data.time);
-        const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-        const timeRange = formatTimeRange(data.time, data.endTime);
-        
-        const overviewHtml = `
-          <div class="meeting-item" onclick="openRsvpModal('${docId}')">
-            <div class="meeting-header">
-              <div class="meeting-title">
-                <h4>${data.theme}</h4>
-                <p>${formattedDate} at ${timeRange}</p>
-              </div>
-            </div>
-            <div class="meeting-details">
-              <div class="meeting-info-block">
-                <span class="meeting-info-label">About</span>
-                <div class="meeting-info-text">${data.about}</div>
-              </div>
-              <div class="meeting-info-block">
-                <span class="meeting-info-label">Rules</span>
-                <div class="meeting-info-text">${data.rules}</div>
-              </div>
-              <div class="rsvp-hint">👉 Click to RSVP</div>
-            </div>
-          </div>
-        `;
-        meetingsList.innerHTML += overviewHtml;
-
-        if (currentUserIsExCom && adminMeetingsList) {
-          const adminHtml = `
-            <div class="meeting-item" style="display:flex; justify-content:space-between; align-items:center; padding: 16px; cursor: default;">
-              <div class="meeting-title">
-                <h4>${data.theme}</h4>
-                <p>${formattedDate} at ${timeRange}</p>
-              </div>
-              <div style="display:flex; gap: 8px;">
-                <button class="btn btn-edit" onclick="window.editMeeting('${docId}')">Edit</button>
-                <button class="btn btn-attendance" onclick="openAttendanceModal('${docId}')">Take Attendance</button>
-                <button class="btn btn-cancel" onclick="window.cancelMeeting('${docId}')">Cancel</button>
-              </div>
-            </div>
-          `;
-          adminMeetingsList.innerHTML += adminHtml;
-        }
-      });
-
-      calculateStreak();
+  // Close menu when a link is clicked
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('active');
+      hamburger.classList.remove('active');
     });
-  }
-
-  async function calculateStreak() {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const q = query(collection(db, "meetings"), orderBy("date", "asc"));
-      const snapshot = await getDocs(q);
-      
-      let streak = 0;
-      let freezes = 0;
-      let freezeProgress = 0; 
-
-      const pastMeetings = [];
-      snapshot.forEach(doc => {
-        if (doc.data().date < today) {
-          pastMeetings.push(doc);
-        }
-      });
-
-      const rsvpPromises = pastMeetings.map(m => getDoc(doc(db, "meetings", m.id, "rsvps", currentUserAdmission)));
-      const rsvpDocs = await Promise.all(rsvpPromises);
-
-      for (let i = 0; i < pastMeetings.length; i++) {
-        const rsvpDoc = rsvpDocs[i];
-        
-        let rsvpStatus = 'None';
-        let attStatus = 'None';
-        
-        if (rsvpDoc.exists()) {
-          const data = rsvpDoc.data();
-          rsvpStatus = data.rsvpStatus || data.status || 'None';
-          attStatus = data.attendanceStatus || 'None';
-        }
-
-        if (attStatus === 'None') continue;
-
-        if (rsvpStatus === 'Present' && attStatus === 'Present') {
-          streak++;
-          freezeProgress++;
-          if (freezeProgress >= 2) {
-            if (freezes < 1) freezes = 1;
-            freezeProgress = 0;
-          }
-        } else {
-          if (freezes > 0) {
-            freezes--;
-            freezeProgress = 0;
-          } else {
-            streak = 0;
-            freezeProgress = 0;
-          }
-        }
-      }
-
-      document.getElementById('streakCount').textContent = streak;
-      document.getElementById('freezeCount').textContent = freezes;
-
-    } catch (err) {
-      console.error("Error calculating streak:", err);
-    }
-  }
+  });
 
   // ==========================================
-  // 4. RSVP (one submission for Gaveliers, ExComs can change)
+  // LOGIN LOGIC
   // ==========================================
-  const rsvpModal = document.getElementById('rsvpModal');
+  const modal = document.getElementById('loginModal');
+  const loginForm = document.getElementById('loginForm');
+  const admissionInput = document.getElementById('admission');
+  let lastFocused = null;
 
-  window.openRsvpModal = async function(id) {
-    activeMeetingId = id;
-    const meeting = allMeetings.find(m => m.id === id);
-    if (!meeting) return;
-
-    const dateObj = new Date(meeting.date + 'T' + meeting.time);
-    const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-    const timeRange = formatTimeRange(meeting.time, meeting.endTime);
-    
-    document.getElementById('rsvpTheme').innerHTML = meeting.theme;
-    document.getElementById('rsvpDate').textContent = `${formattedDate} at ${timeRange}`;
-    
-    document.getElementById('rsvpStep1').style.display = 'block';
-    document.getElementById('rsvpStep2').style.display = 'none';
-    document.getElementById('rsvpStep3').style.display = 'none';
-    document.getElementById('rsvpAdditional').value = '';
-    
-    try {
-      const rsvpRef = doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission);
-      const rsvpSnap = await getDoc(rsvpRef);
-
-      if (rsvpSnap.exists()) {
-        const data = rsvpSnap.data();
-        const status = data.rsvpStatus || data.status;
-        
-        document.getElementById('rsvpStep1').style.display = 'none';
-        document.getElementById('rsvpStep3').style.display = 'block';
-        
-        if (status === "Present") {
-          document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Present</strong>.<br>Food: ${data.food} ${data.additional ? '('+data.additional+')' : ''}`;
-        } else {
-          document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Absent</strong>.`;
-        }
-
-        // Toggle Lock message vs Change button based on role
-        if (currentUserIsExCom) {
-          document.getElementById('rsvpLockMessage').style.display = 'none';
-          document.getElementById('changeRsvpBtn').style.display = 'inline-block';
-        } else {
-          document.getElementById('rsvpLockMessage').style.display = 'block';
-          document.getElementById('changeRsvpBtn').style.display = 'none';
-        }
-      }
-    } catch (err) {
-      console.error("Error checking RSVP status:", err);
+  // Allow typing P, p, and numbers. Auto-capitalize P.
+  admissionInput.addEventListener('input', () => {
+    let val = admissionInput.value.toUpperCase();
+    // Remove anything that is not a number or the letter P
+    val = val.replace(/[^P0-9]/g, '');
+    // Prevent multiple P's at the start
+    if (val.length > 0) {
+      val = val.charAt(0) === 'P' ? 'P' + val.slice(1).replace(/P/g, '') : val.replace(/P/g, '');
     }
-    
-    rsvpModal.classList.add('open');
+    admissionInput.value = val;
+  });
+
+  function openModal() {
+    lastFocused = document.activeElement;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => admissionInput.focus(), 220);
   }
 
-  window.closeRsvpModal = function() { rsvpModal.classList.remove('open'); }
-  
-  window.selectPresent = function() {
-    document.getElementById('rsvpStep1').style.display = 'none';
-    document.getElementById('rsvpStep2').style.display = 'block';
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    if (lastFocused) lastFocused.focus();
   }
 
-  window.selectAbsent = async function() {
-    const btn = event.target;
-    const original = btn.textContent;
-    btn.textContent = 'Saving...';
-    btn.disabled = true;
-
-    try {
-      await setDoc(doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission), {
-        name: currentUserName,
-        admissionNo: currentUserAdmission,
-        rsvpStatus: "Absent",
-        timestamp: new Date()
-      });
-
-      document.getElementById('rsvpStep1').style.display = 'none';
-      document.getElementById('rsvpStep3').style.display = 'block';
-      document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Absent</strong>.`;
-      
-      if (currentUserIsExCom) {
-        document.getElementById('rsvpLockMessage').style.display = 'none';
-        document.getElementById('changeRsvpBtn').style.display = 'inline-block';
-      }
-      
-    } catch (err) {
-      console.error(err);
-      alert("Could not save RSVP. If you already RSVP'd, contact an ExCom to change it.");
-      btn.textContent = original;
-      btn.disabled = false;
-    }
-  }
-
-  window.submitPresent = async function() {
-    const foodRadio = document.querySelector('input[name="food"]:checked');
-    const food = foodRadio ? foodRadio.value : "Veg";
-    const additional = document.getElementById('rsvpAdditional').value;
-
-    const btn = event.target;
-    const original = btn.textContent;
-    btn.textContent = 'Confirming...';
-    btn.disabled = true;
-
-    try {
-      await setDoc(doc(db, "meetings", activeMeetingId, "rsvps", currentUserAdmission), {
-        name: currentUserName,
-        admissionNo: currentUserAdmission,
-        rsvpStatus: "Present",
-        food: food,
-        additional: additional,
-        timestamp: new Date()
-      });
-
-      document.getElementById('rsvpStep2').style.display = 'none';
-      document.getElementById('rsvpStep3').style.display = 'block';
-      document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Present</strong>.<br>Food: ${food} ${additional ? '('+additional+')' : ''}`;
-      
-      if (currentUserIsExCom) {
-        document.getElementById('rsvpLockMessage').style.display = 'none';
-        document.getElementById('changeRsvpBtn').style.display = 'inline-block';
-      }
-
-    } catch (err) {
-      console.error(err);
-      alert("Could not save RSVP. If you already RSVP'd, contact an ExCom to change it.");
-      btn.textContent = original;
-      btn.disabled = false;
-    }
-  }
-
-  window.changeRsvp = function() {
-    document.getElementById('rsvpStep3').style.display = 'none';
-    document.getElementById('rsvpStep1').style.display = 'block';
-  }
-
-  // ==========================================
-  // 5. ATTENDANCE (ExCom only)
-  // ==========================================
-  const attendanceModal = document.getElementById('attendanceModal');
-  const attendanceList = document.getElementById('attendanceList');
-
-  window.openAttendanceModal = async function(id) {
-    activeAttendanceMeetingId = id;
-    const meeting = allMeetings.find(m => m.id === id);
-    document.getElementById('attendanceMeetingTitle').innerHTML = meeting ? meeting.theme : 'Attendance';
-    attendanceList.innerHTML = '<p style="text-align:center; color:var(--muted); padding: 20px;">Loading students...</p>';
-    
-    attendanceModal.classList.add('open');
-
-    try {
-      const rsvpSnapshot = await getDocs(collection(db, "meetings", activeAttendanceMeetingId, "rsvps"));
-      const rsvpData = {};
-      rsvpSnapshot.forEach(doc => {
-        rsvpData[doc.id] = doc.data();
-      });
-
-      attendanceList.innerHTML = '';
-      const sortedGaveliers = [...allGaveliers].sort((a, b) => a.name.localeCompare(b.name));
-
-      sortedGaveliers.forEach(student => {
-        const admNo = student.admissionNo;
-        const rsvp = rsvpData[admNo];
-        
-        let isPresent = false;
-        if (rsvp && rsvp.attendanceStatus) {
-          isPresent = rsvp.attendanceStatus === "Present";
-        } else if (rsvp && rsvp.rsvpStatus === "Present") {
-          isPresent = true;
-        }
-
-        let rsvpText = "(No RSVP)";
-        if (rsvp) {
-          const statusStr = rsvp.rsvpStatus || rsvp.status || "None";
-          rsvpText = `(RSVP: ${statusStr})`;
-        }
-
-        const row = document.createElement('div');
-        row.className = 'att-row';
-        row.innerHTML = `
-          <div>
-            <span class="att-name">${student.name}</span>
-            <span class="att-rsvp">${rsvpText}</span>
-          </div>
-          <label class="switch">
-            <input type="checkbox" class="att-checkbox" data-adm="${admNo}" ${isPresent ? 'checked' : ''}>
-            <span class="slider"></span>
-          </label>
-        `;
-        attendanceList.appendChild(row);
-      });
-
-    } catch (err) {
-      console.error("Error loading attendance:", err);
-      attendanceList.innerHTML = '<p style="text-align:center; color:#ff8a8a; padding: 20px;">Failed to load students.</p>';
-    }
-  }
-
-  window.closeAttendanceModal = function() {
-    attendanceModal.classList.remove('open');
-  }
-
-  window.saveAttendance = async function() {
-    const btn = event.target;
-    const original = btn.textContent;
-    btn.textContent = 'Saving Attendance...';
-    btn.disabled = true;
-
-    try {
-      const batch = writeBatch(db);
-      const checkboxes = attendanceList.querySelectorAll('.att-checkbox');
-      
-      checkboxes.forEach(checkbox => {
-        const admNo = checkbox.getAttribute('data-adm');
-        const isPresent = checkbox.checked;
-        const docRef = doc(db, "meetings", activeAttendanceMeetingId, "rsvps", admNo);
-        const student = allGaveliers.find(s => s.admissionNo === admNo);
-        const name = student ? student.name : "Unknown";
-
-        batch.set(docRef, {
-          name: name,
-          admissionNo: admNo,
-          attendanceStatus: isPresent ? "Present" : "Absent",
-          markedByExCom: true
-        }, { merge: true });
-      });
-
-      await batch.commit();
-      
-      alert("Attendance saved successfully!");
-      closeAttendanceModal();
-      calculateStreak();
-
-    } catch (err) {
-      console.error("Error saving attendance:", err);
-      alert("Failed to save attendance.");
-    } finally {
-      btn.textContent = original;
-      btn.disabled = false;
-    }
-  }
-
-  // ==========================================
-  // 6. EXCOM SCHEDULING & EDITING
-  // ==========================================
-  
-  if(scheduleForm) {
-    scheduleForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!currentUserIsExCom) return;
-
-      const date = document.getElementById('meetingDate').value;
-      const time = document.getElementById('meetingTime').value;
-      const endTime = document.getElementById('meetingEndTime').value;
-      const theme = document.getElementById('meetingTheme').innerHTML;
-      const about = document.getElementById('meetingAbout').innerHTML;
-      const rules = document.getElementById('meetingRules').innerHTML;
-
-      if (!endTime || endTime <= time) {
-        alert("End time must be after the start time.");
-        return;
-      }
-      if (!theme || theme === '<br>') {
-        alert("Please enter a theme.");
-        return;
-      }
-
-      try {
-        const meetingData = { date, time, endTime, theme, about, rules };
-
-        if (editingMeetingId) {
-          await updateDoc(doc(db, "meetings", editingMeetingId), meetingData);
-          alert("Meeting updated successfully!");
-          cancelEditMode();
-        } else {
-          meetingData.createdBy = auth.currentUser.email;
-          await addDoc(collection(db, "meetings"), meetingData);
-          scheduleForm.reset();
-          clearRichEditors();
-          alert("Meeting scheduled successfully!");
-          switchTab('overview');
-        }
-      } catch (err) {
-        console.error("Error saving meeting:", err);
-        alert("Failed to save meeting.");
-      }
-    });
-  }
-
-  window.editMeeting = function(id) {
-    if (!currentUserIsExCom) return;
-    
-    const meeting = allMeetings.find(m => m.id === id);
-    if (!meeting) return;
-
-    editingMeetingId = id;
-    
-    switchTab('excoms');
-
-    document.getElementById('meetingDate').value = meeting.date;
-    document.getElementById('meetingTime').value = meeting.time;
-    document.getElementById('meetingEndTime').value = meeting.endTime || '';
-    document.getElementById('meetingTheme').innerHTML = meeting.theme;
-    document.getElementById('meetingAbout').innerHTML = meeting.about;
-    document.getElementById('meetingRules').innerHTML = meeting.rules;
-
-    document.getElementById('formTitle').textContent = "Edit Meeting";
-    document.getElementById('submitBtn').textContent = "Save Changes";
-    document.getElementById('cancelEditBtn').style.display = "block";
-    
-    document.getElementById('meetingFormCard').scrollIntoView({ behavior: 'smooth' });
-  };
-
-  window.cancelEditMode = function() {
-    editingMeetingId = null;
-    document.getElementById('scheduleForm').reset();
-    clearRichEditors();
-
-    document.getElementById('formTitle').textContent = "Schedule a Meeting";
-    document.getElementById('submitBtn').textContent = "Publish Meeting";
-    document.getElementById('cancelEditBtn').style.display = "none";
-  };
-
-  function clearRichEditors() {
-    document.getElementById('meetingTheme').innerHTML = '';
-    document.getElementById('meetingAbout').innerHTML = '';
-    document.getElementById('meetingRules').innerHTML = '';
-  }
-
-  window.cancelMeeting = async (docId) => {
-    if (!currentUserIsExCom) return;
-    if (confirm("Are you sure you want to cancel this meeting?")) {
-      try {
-        await deleteDoc(doc(db, "meetings", docId));
-      } catch (err) {
-        console.error("Error cancelling meeting:", err);
-        alert("Failed to cancel meeting.");
-      }
-    }
-  };
-
-  // ==========================================
-  // 7. STREAK CALENDAR MODAL
-  // ==========================================
-  const streakModal = document.getElementById('streakModal');
-  let meetingHistory = {};
-  let calMonth = new Date().getMonth();
-  let calYear = new Date().getFullYear();
-
-  window.openStreakModal = async function() {
-    if (streakModal.classList.contains('open')) return;
-    if (!currentUserAdmission) return;
-    
-    meetingHistory = await buildMeetingHistory();
-    
-    const dates = Object.keys(meetingHistory).sort();
-    if (dates.length > 0) {
-      const latest = new Date(dates[dates.length - 1]);
-      calMonth = latest.getMonth();
-      calYear = latest.getFullYear();
-    } else {
-      const now = new Date();
-      calMonth = now.getMonth();
-      calYear = now.getFullYear();
-    }
-    
-    document.getElementById('streakCalView').classList.remove('hidden');
-    document.getElementById('streakDetailView').classList.add('hidden');
-    
-    renderCalendar(false);
-    
-    const modalCard = streakModal.querySelector('.modal-card');
-    const card = document.querySelector('.streak-card');
-    
-    if (modalCard && card) {
-      const cardRect = card.getBoundingClientRect();
-      const cardCx = cardRect.left + cardRect.width / 2;
-      const cardCy = cardRect.top + cardRect.height / 2;
-      const vw = window.innerWidth, vh = window.innerHeight;
-      
-      if (cardCx > 0 && cardCx < vw && cardCy > 0 && cardCy < vh) {
-        modalCard.style.setProperty('--start-x', '0px');
-        modalCard.style.setProperty('--start-y', '0px');
-        const mr = modalCard.getBoundingClientRect();
-        const modalCx = mr.left + mr.width / 2;
-        const modalCy = mr.top + mr.height / 2;
-        
-        const dx = cardCx - modalCx;
-        const dy = cardCy - modalCy;
-        modalCard.style.setProperty('--start-x', dx + 'px');
-        modalCard.style.setProperty('--start-y', dy + 'px');
-      } else {
-        modalCard.style.setProperty('--start-x', '0px');
-        modalCard.style.setProperty('--start-y', '0px');
-      }
-      
-      void modalCard.offsetWidth;
-    }
-    
-    streakModal.classList.add('open');
-  }
-
-  window.closeStreakModal = function() {
-    streakModal.classList.remove('open');
-  }
-
-  async function buildMeetingHistory() {
-    const today = new Date().toISOString().split('T')[0];
-    const snap = await getDocs(query(collection(db, "meetings"), orderBy("date", "asc")));
-    
-    const past = [];
-    snap.forEach(d => {
-      if (d.data().date < today) past.push(d);
-    });
-    
-    const rsvps = await Promise.all(
-      past.map(m => getDoc(doc(db, "meetings", m.id, "rsvps", currentUserAdmission)))
-    );
-    
-    const map = {};
-    past.forEach((m, i) => {
-      const data = m.data();
-      const rs = rsvps[i];
-      const rsvpData = rs.exists() ? rs.data() : null;
-      
-      const rsvpStatus = rsvpData?.rsvpStatus || rsvpData?.status || 'None';
-      const attStatus = rsvpData?.attendanceStatus || 'None';
-      
-      let status;
-      if (attStatus === 'None') status = 'unmarked';
-      else if (rsvpStatus === 'Present' && attStatus === 'Present') status = 'present';
-      else status = 'absent';
-      
-      map[data.date] = { status, meeting: data, meetingId: m.id, rsvp: rsvpData };
-    });
-    
-    return map;
-  }
-
-  function renderCalendar(animate = true) {
-    const firstDay = new Date(calYear, calMonth, 1);
-    const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-    const startWeekday = firstDay.getDay();
-    
-    document.getElementById('calMonthLabel').textContent = 
-      firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    
-    const now = new Date();
-    const isAtCurrent = (calYear > now.getFullYear()) || 
-      (calYear === now.getFullYear() && calMonth >= now.getMonth());
-    document.getElementById('calNextBtn').disabled = isAtCurrent;
-    
-    const grid = document.getElementById('calGrid');
-    grid.innerHTML = '';
-    
-    for (let i = 0; i < startWeekday; i++) {
-      const cell = document.createElement('div');
-      cell.className = 'cal-cell empty';
-      grid.appendChild(cell);
-    }
-    
-    for (let d = 1; d <= daysInMonth; d++) {
-      const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const entry = meetingHistory[dateStr];
-      
-      const cell = document.createElement('div');
-      cell.className = 'cal-cell';
-      
-      const num = document.createElement('span');
-      num.className = 'cal-day-num';
-      num.textContent = d;
-      
-      if (entry) {
-        cell.classList.add('has-meeting', entry.status);
-        cell.onclick = () => showMeetingDetail(dateStr);
-      }
-      
-      cell.appendChild(num);
-      grid.appendChild(cell);
-    }
-    
-    if (animate) {
-      grid.classList.remove('fade-in');
-      void grid.offsetWidth;
-      grid.classList.add('fade-in');
-    }
-  }
-
-  window.changeMonth = function(delta) {
-    calMonth += delta;
-    if (calMonth < 0) { calMonth = 11; calYear--; }
-    if (calMonth > 11) { calMonth = 0; calYear++; }
-    renderCalendar(true);
-  }
-
-  window.showMeetingDetail = function(dateStr) {
-    const entry = meetingHistory[dateStr];
-    if (!entry) return;
-    
-    const m = entry.meeting;
-    const statusEl = document.getElementById('detailStatus');
-    
-    statusEl.className = 'streak-detail-status ' + entry.status;
-    statusEl.textContent = 
-      entry.status === 'present' ? '✓ Attended' :
-      entry.status === 'absent' ? '✕ Missed' : 'Pending';
-    
-    document.getElementById('detailTheme').innerHTML = m.theme;
-    
-    const dateObj = new Date(m.date + 'T' + m.time);
-    const dateText = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-    const timeText = formatTimeRange(m.time, m.endTime);
-    document.getElementById('detailDate').textContent = `${dateText} at ${timeText}`;
-    
-    document.getElementById('detailAbout').innerHTML = m.about || 'No description provided.';
-    document.getElementById('detailRules').innerHTML = m.rules || 'No rules listed.';
-    
-    document.getElementById('streakCalView').classList.add('hidden');
-    const detail = document.getElementById('streakDetailView');
-    detail.classList.remove('hidden');
-    detail.classList.remove('fade-in');
-    void detail.offsetWidth;
-    detail.classList.add('fade-in');
-  }
-
-  window.backToCalendar = function() {
-    document.getElementById('streakDetailView').classList.add('hidden');
-    const cal = document.getElementById('streakCalView');
-    cal.classList.remove('hidden');
-    cal.classList.remove('fade-in');
-    void cal.offsetWidth;
-    cal.classList.add('fade-in');
-  }
+  document.getElementById('loginBtn').addEventListener('click', openModal);
+  modal.querySelectorAll('[data-close]').forEach((el) => {
+    el.addEventListener('click', () => closeModal());
+  });
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && streakModal.classList.contains('open')) {
-      closeStreakModal();
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const digits = admissionInput.value.replace(/\D/g, ''); 
+    
+    if (!digits) {
+      alert("Please enter a valid admission number.");
+      return;
+    }
+
+    const fakeEmail = `P${digits}@pearlgavelclub.com`; 
+    const password = document.getElementById('password').value;
+
+    const btn = loginForm.querySelector('button[type="submit"]');
+    const original = btn.textContent;
+    btn.textContent = 'Logging in…';
+    btn.style.opacity = '.75';
+
+    try {
+      await signInWithEmailAndPassword(auth, fakeEmail, password);
+      
+      closeModal();
+      window.location.href = '/dashboard'; 
+      
+    } catch (err) {
+      console.error(err);
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+        alert("Invalid admission number or password.");
+      } else {
+        alert("Login failed: " + err.message);
+      }
+    } finally {
+      btn.textContent = original;
+      btn.style.opacity = '';
     }
   });
 
   // ==========================================
-  // 8. LOGOUT
+  // SCROLL ANIMATIONS & NAV
   // ==========================================
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    signOut(auth).then(() => {
-      window.location.href = '/';
-    }).catch((error) => {
-      console.error("Logout error:", error);
-    });
-  });
+  const nav = document.getElementById('nav');
+  let navTicking = false;
+  function updateNav(){
+    nav.classList.toggle('scrolled', window.scrollY > 24);
+    navTicking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!navTicking){
+      navTicking = true;
+      requestAnimationFrame(updateNav);
+    }
+  }, { passive: true });
+  updateNav();
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+    revealEls.forEach((el) => io.observe(el));
+  } else {
+    revealEls.forEach((el) => el.classList.add('in'));
+  }
 </script>
 
 </body>
