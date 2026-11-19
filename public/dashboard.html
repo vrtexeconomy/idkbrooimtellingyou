@@ -1223,10 +1223,15 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       </svg>
       <h3 style="font-size:1.6rem; color:#fff; margin:0 0 10px;">RSVP Confirmed!</h3>
       <p id="rsvpSuccessMsg" style="color:var(--muted); font-size:1rem;"></p>
-      <p style="font-size:0.82rem; color:var(--muted); margin-top:16px; font-style:italic; line-height:1.5;">
+      
+      <!-- Lock message for regular students -->
+      <p id="rsvpLockMessage" style="font-size:0.82rem; color:var(--muted); margin-top:16px; font-style:italic; line-height:1.5;">
         🔒 Your RSVP is final and cannot be changed.<br>
         Contact an ExCom if you need to make an update.
       </p>
+
+      <!-- Change RSVP button for ExComs -->
+      <button id="changeRsvpBtn" class="btn btn-edit" style="display:none; margin-top:16px; width:100%;" onclick="changeRsvp()">Change RSVP</button>
     </div>
 
   </div>
@@ -1335,7 +1340,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc, getDoc, writeBatch, updateDoc } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc, getDoc, writeBatch, updateDoc, where } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDduauqRyaR-G2QZYok3YZRypC_8VHUffk",
@@ -1360,7 +1365,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 
   let activeMeetingId = "";
   let activeAttendanceMeetingId = "";
-  let editingMeetingId = null; // Tracks if we are in "Edit" mode
+  let editingMeetingId = null;
 
   // ==========================================
   // HELPERS — Formatting
@@ -1384,13 +1389,11 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   // ==========================================
   window.formatDoc = function(cmd, value = null) {
     document.execCommand(cmd, false, value);
-    // Refocus the active editor so the toolbar doesn't steal focus
     if (document.activeElement && document.activeElement.classList.contains('rich-input')) {
       document.activeElement.focus();
     }
   };
 
-  // Prevent Enter key from creating new lines in the single-line theme input
   document.getElementById('meetingTheme').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') e.preventDefault();
   });
@@ -1425,21 +1428,12 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       currentUserAdmission = email.split('@')[0].toUpperCase(); 
 
       try {
-        const querySnapshot = await getDocs(collection(db, "gaveliers"));
-        
-        querySnapshot.forEach((doc) => {
-          allGaveliers.push(doc.data());
-        });
+        const q = query(collection(db, "gaveliers"), where("admissionNo", "==", currentUserAdmission));
+        const querySnapshot = await getDocs(q);
 
-        let foundUser = null;
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          if (data.admissionNo && data.admissionNo.toUpperCase() === currentUserAdmission) {
-            foundUser = data;
-          }
-        });
-
-        if (foundUser) {
+        if (!querySnapshot.empty) {
+          const foundUser = querySnapshot.docs[0].data();
+          
           currentUserName = foundUser.name;
           document.getElementById('welcomeMessage').innerHTML = `Welcome back, <span class="serif">Gav. ${foundUser.name}.</span>`;
           if (foundUser.imageUrl && foundUser.imageUrl.trim() !== "") {
@@ -1449,6 +1443,9 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
           if (foundUser.role && foundUser.role !== "Gavelier") {
             currentUserIsExCom = true;
             document.getElementById('nav-excoms').style.display = 'inline-block';
+            
+            const allSnap = await getDocs(collection(db, "gaveliers"));
+            allSnap.forEach(d => allGaveliers.push(d.data()));
           }
         }
         
@@ -1498,9 +1495,8 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
         const timeRange = formatTimeRange(data.time, data.endTime);
         
-        // Overview Tab (Rich Text with Block Layout)
         const overviewHtml = `
-          <div class="meeting-item" onclick="openRsvpModal('${docId}', '${data.theme.replace(/'/g, "\\'")}', '${formattedDate}', '${timeRange}')">
+          <div class="meeting-item" onclick="openRsvpModal('${docId}')">
             <div class="meeting-header">
               <div class="meeting-title">
                 <h4>${data.theme}</h4>
@@ -1522,7 +1518,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         `;
         meetingsList.innerHTML += overviewHtml;
 
-        // Admin Tab (Added Edit Button)
         if (currentUserIsExCom && adminMeetingsList) {
           const adminHtml = `
             <div class="meeting-item" style="display:flex; justify-content:space-between; align-items:center; padding: 16px; cursor: default;">
@@ -1532,7 +1527,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
               </div>
               <div style="display:flex; gap: 8px;">
                 <button class="btn btn-edit" onclick="window.editMeeting('${docId}')">Edit</button>
-                <button class="btn btn-attendance" onclick="openAttendanceModal('${docId}', '${data.theme.replace(/'/g, "\\'")}')">Take Attendance</button>
+                <button class="btn btn-attendance" onclick="openAttendanceModal('${docId}')">Take Attendance</button>
                 <button class="btn btn-cancel" onclick="window.cancelMeeting('${docId}')">Cancel</button>
               </div>
             </div>
@@ -1606,15 +1601,21 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   }
 
   // ==========================================
-  // 4. RSVP (one submission, then locked)
+  // 4. RSVP (one submission for Gaveliers, ExComs can change)
   // ==========================================
   const rsvpModal = document.getElementById('rsvpModal');
 
-  window.openRsvpModal = async function(id, theme, dateStr, timeStr) {
+  window.openRsvpModal = async function(id) {
     activeMeetingId = id;
+    const meeting = allMeetings.find(m => m.id === id);
+    if (!meeting) return;
+
+    const dateObj = new Date(meeting.date + 'T' + meeting.time);
+    const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    const timeRange = formatTimeRange(meeting.time, meeting.endTime);
     
-    document.getElementById('rsvpTheme').innerHTML = theme; // innerHTML to parse bold/italics
-    document.getElementById('rsvpDate').textContent = `${dateStr} at ${timeStr}`;
+    document.getElementById('rsvpTheme').innerHTML = meeting.theme;
+    document.getElementById('rsvpDate').textContent = `${formattedDate} at ${timeRange}`;
     
     document.getElementById('rsvpStep1').style.display = 'block';
     document.getElementById('rsvpStep2').style.display = 'none';
@@ -1636,6 +1637,15 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
           document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Present</strong>.<br>Food: ${data.food} ${data.additional ? '('+data.additional+')' : ''}`;
         } else {
           document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Absent</strong>.`;
+        }
+
+        // Toggle Lock message vs Change button based on role
+        if (currentUserIsExCom) {
+          document.getElementById('rsvpLockMessage').style.display = 'none';
+          document.getElementById('changeRsvpBtn').style.display = 'inline-block';
+        } else {
+          document.getElementById('rsvpLockMessage').style.display = 'block';
+          document.getElementById('changeRsvpBtn').style.display = 'none';
         }
       }
     } catch (err) {
@@ -1670,6 +1680,11 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       document.getElementById('rsvpStep3').style.display = 'block';
       document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Absent</strong>.`;
       
+      if (currentUserIsExCom) {
+        document.getElementById('rsvpLockMessage').style.display = 'none';
+        document.getElementById('changeRsvpBtn').style.display = 'inline-block';
+      }
+      
     } catch (err) {
       console.error(err);
       alert("Could not save RSVP. If you already RSVP'd, contact an ExCom to change it.");
@@ -1701,6 +1716,11 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       document.getElementById('rsvpStep2').style.display = 'none';
       document.getElementById('rsvpStep3').style.display = 'block';
       document.getElementById('rsvpSuccessMsg').innerHTML = `You are marked as <strong>Present</strong>.<br>Food: ${food} ${additional ? '('+additional+')' : ''}`;
+      
+      if (currentUserIsExCom) {
+        document.getElementById('rsvpLockMessage').style.display = 'none';
+        document.getElementById('changeRsvpBtn').style.display = 'inline-block';
+      }
 
     } catch (err) {
       console.error(err);
@@ -1710,15 +1730,21 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     }
   }
 
+  window.changeRsvp = function() {
+    document.getElementById('rsvpStep3').style.display = 'none';
+    document.getElementById('rsvpStep1').style.display = 'block';
+  }
+
   // ==========================================
   // 5. ATTENDANCE (ExCom only)
   // ==========================================
   const attendanceModal = document.getElementById('attendanceModal');
   const attendanceList = document.getElementById('attendanceList');
 
-  window.openAttendanceModal = async function(id, theme) {
+  window.openAttendanceModal = async function(id) {
     activeAttendanceMeetingId = id;
-    document.getElementById('attendanceMeetingTitle').innerHTML = theme;
+    const meeting = allMeetings.find(m => m.id === id);
+    document.getElementById('attendanceMeetingTitle').innerHTML = meeting ? meeting.theme : 'Attendance';
     attendanceList.innerHTML = '<p style="text-align:center; color:var(--muted); padding: 20px;">Loading students...</p>';
     
     attendanceModal.classList.add('open');
@@ -1844,12 +1870,10 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         const meetingData = { date, time, endTime, theme, about, rules };
 
         if (editingMeetingId) {
-          // Update existing meeting
           await updateDoc(doc(db, "meetings", editingMeetingId), meetingData);
           alert("Meeting updated successfully!");
           cancelEditMode();
         } else {
-          // Create new meeting
           meetingData.createdBy = auth.currentUser.email;
           await addDoc(collection(db, "meetings"), meetingData);
           scheduleForm.reset();
@@ -1872,10 +1896,8 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 
     editingMeetingId = id;
     
-    // Switch to ExCom tab if not already there
     switchTab('excoms');
 
-    // Populate form
     document.getElementById('meetingDate').value = meeting.date;
     document.getElementById('meetingTime').value = meeting.time;
     document.getElementById('meetingEndTime').value = meeting.endTime || '';
@@ -1883,12 +1905,10 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     document.getElementById('meetingAbout').innerHTML = meeting.about;
     document.getElementById('meetingRules').innerHTML = meeting.rules;
 
-    // Change UI mode
     document.getElementById('formTitle').textContent = "Edit Meeting";
     document.getElementById('submitBtn').textContent = "Save Changes";
     document.getElementById('cancelEditBtn').style.display = "block";
     
-    // Scroll to form
     document.getElementById('meetingFormCard').scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -2093,7 +2113,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     const timeText = formatTimeRange(m.time, m.endTime);
     document.getElementById('detailDate').textContent = `${dateText} at ${timeText}`;
     
-    // Use innerHTML to render rich text
     document.getElementById('detailAbout').innerHTML = m.about || 'No description provided.';
     document.getElementById('detailRules').innerHTML = m.rules || 'No rules listed.';
     
