@@ -824,16 +824,13 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         </span>
       </a>
 
-      <nav class="nav-links">
+        <nav class="nav-links">
         <a href="#" id="nav-overview" class="active" onclick="switchTab('overview', event)">Overview</a>
         <a href="#" id="nav-excoms" style="display:none;" onclick="switchTab('excoms', event)">ExComs</a>
+        <a href="#" id="nav-home" onclick="switchTab('home', event)">Home</a>
       </nav>
 
       <div class="nav-actions">
-        <a href="https://pearlgavelclub.onrender.com/" class="btn btn-nav" target="_blank">
-          Home
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-        </a>
         <button class="btn btn-nav" id="logoutBtn">
           Log out
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -841,7 +838,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
           </svg>
         </button>
       </div>
-    </div>
   </header>
 
   <main class="wrap">
@@ -1461,6 +1457,12 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   window.switchTab = function(tabName, event) {
     if (event) event.preventDefault();
     
+    // Redirect to the landing page if 'home' is clicked
+    if (tabName === 'home') {
+      window.location.href = '/';
+      return;
+    }
+
     document.getElementById('nav-overview').classList.remove('active');
     document.getElementById('nav-excoms').classList.remove('active');
     document.getElementById('view-overview').style.display = 'none';
@@ -1475,7 +1477,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-
   // ==========================================
   // 2. AUTH & USER DATA
   // ==========================================
