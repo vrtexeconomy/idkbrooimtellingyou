@@ -120,6 +120,8 @@ header, main, footer { position: relative; z-index: 1; }
 .nav-links a:hover, .nav-links a.active { color:#fff; }
 .nav-links a.active::after { transform: scaleX(1); }
 
+.nav-actions { display: flex; align-items: center; gap: 8px; margin-left: 6px; }
+
 /* ============================================================
    BUTTONS & FORMS
    ============================================================ */
@@ -136,13 +138,14 @@ header, main, footer { position: relative; z-index: 1; }
 .btn:hover{transform:translate3d(0,-2px,0)}
 .btn:active{transform:translate3d(0,0,0) scale(.97);transition-duration:.15s}
 
-.btn-logout{
+.btn-nav{
   background:rgba(255,255,255,.1);
   border:1px solid rgba(255,255,255,.2);
   color:#fff;
-  margin-left:6px;
+  padding: 8px 16px;
+  font-size: 0.8rem;
 }
-.btn-logout:hover{background:rgba(255,255,255,.2);box-shadow:0 6px 16px -8px rgba(0,0,0,.4);}
+.btn-nav:hover{background:rgba(255,255,255,.2);box-shadow:0 6px 16px -8px rgba(0,0,0,.4);}
 
 .btn-schedule {
   background: linear-gradient(180deg, #ffffff 0%, #ddf1fa 100%);
@@ -215,6 +218,47 @@ header, main, footer { position: relative; z-index: 1; }
 .form-group label {
   font-size: 0.8rem; text-transform: uppercase;
   letter-spacing: 0.1em; color: var(--muted);
+}
+
+/* Dynamic Image Inputs */
+.image-input-group {
+  display: flex; gap: 8px; margin-bottom: 8px;
+  animation: slideDown 0.3s var(--ease-out-expo) both;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.image-input-group input {
+  flex: 1; padding: 10px 14px; border-radius: 8px; background: #023a56;
+  border: 1px solid rgba(255,255,255,.14); color: #fff; outline: none;
+  font-size: 0.85rem; transition: border-color 0.3s;
+}
+.image-input-group input:focus { border-color: rgba(140,235,255,.55); }
+.remove-img-btn {
+  background: rgba(255,100,100,0.15); color: #ff8a8a; border: 1px solid rgba(255,100,100,0.3);
+  border-radius: 8px; padding: 0 12px; cursor: pointer; transition: all 0.2s;
+}
+.remove-img-btn:hover { background: rgba(255,100,100,0.25); }
+.add-btn {
+  background: rgba(255,255,255,.08); color: #fff; border: 1px dashed rgba(255,255,255,.2);
+  border-radius: 8px; padding: 8px 16px; font-size: 0.8rem; font-weight: 500;
+  cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 6px;
+}
+.add-btn:hover { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.4); }
+
+/* Image Galleries */
+.image-gallery {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px; margin-top: 8px;
+}
+.image-gallery img {
+  width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
+  transition: transform 0.3s var(--ease-out-expo), box-shadow 0.3s;
+}
+.image-gallery img:hover {
+  transform: scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.4);
 }
 
 /* Rich Text Editor Styles */
@@ -749,6 +793,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   .attendance-card { padding: 20px; }
   .dashboard-grid > .dash-card { grid-column: auto !important; }
   .support-modal .modal-card { height: 80vh; padding: 20px; }
+  .nav-actions { flex-wrap: wrap; }
 }
 </style>
 </head>
@@ -784,12 +829,18 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         <a href="#" id="nav-excoms" style="display:none;" onclick="switchTab('excoms', event)">ExComs</a>
       </nav>
 
-      <button class="btn btn-logout" id="logoutBtn">
-        Log out
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
-        </svg>
-      </button>
+      <div class="nav-actions">
+        <a href="https://pearlgavelclub.onrender.com/" class="btn btn-nav" target="_blank">
+          Home
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </a>
+        <button class="btn btn-nav" id="logoutBtn">
+          Log out
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -876,7 +927,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
           <p style="font-size:0.85rem; margin-top:8px;">Click here to open the scheduling form.</p>
         </div>
 
-        <!-- Manage Meetings Card (NEW) -->
+        <!-- Manage Meetings Card -->
         <div class="dash-card action-card manage-card" onclick="openManageModal()">
           <div class="action-icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
@@ -913,7 +964,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 </div>
 
 <!-- ========================================== -->
-<!-- MANAGE MEETINGS MODAL (NEW)                -->
+<!-- MANAGE MEETINGS MODAL                      -->
 <!-- ========================================== -->
 <div class="modal" id="manageMeetingsModal">
   <div class="modal-backdrop" onclick="closeManageModal()"></div>
@@ -943,15 +994,15 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     <form id="scheduleForm" class="admin-form">
       <div class="form-group">
         <label>Date</label>
-        <input type="date" id="meetingDate" required>
+        <input type="date" id="meetingDate" required style="padding: 14px 16px; border-radius: 12px; background: #023a56; border: 1px solid rgba(255,255,255,.14); color: #fff; outline: none;">
       </div>
       <div class="form-group">
         <label>Start Time</label>
-        <input type="time" id="meetingTime" required>
+        <input type="time" id="meetingTime" required style="padding: 14px 16px; border-radius: 12px; background: #023a56; border: 1px solid rgba(255,255,255,.14); color: #fff; outline: none;">
       </div>
       <div class="form-group">
         <label>End Time</label>
-        <input type="time" id="meetingEndTime" required>
+        <input type="time" id="meetingEndTime" required style="padding: 14px 16px; border-radius: 12px; background: #023a56; border: 1px solid rgba(255,255,255,.14); color: #fff; outline: none;">
       </div>
       
       <div class="form-group full-width">
@@ -1004,6 +1055,28 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
           <div class="rich-input" id="meetingRules" contenteditable="true" data-placeholder="e.g., Speeches must be under 5 minutes. No phones allowed."></div>
         </div>
       </div>
+
+      <!-- Dynamic Flyers -->
+      <div class="form-group full-width">
+        <label>Flyer Image URLs</label>
+        <div id="flyerContainer">
+          <div class="image-input-group">
+            <input type="url" class="flyer-input" placeholder="https://example.com/flyer.jpg">
+          </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addFlyerInput()">+ Add Flyer</button>
+      </div>
+
+      <!-- Dynamic Agendas -->
+      <div class="form-group full-width">
+        <label>Agenda Image URLs</label>
+        <div id="agendaContainer">
+          <div class="image-input-group">
+            <input type="url" class="agenda-input" placeholder="https://example.com/agenda.jpg">
+          </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addAgendaInput()">+ Add Agenda</button>
+      </div>
       
       <div style="grid-column: 1 / -1; display: flex; gap: 10px; margin-top: 10px;">
         <button type="submit" class="btn btn-schedule" id="submitBtn" style="margin-top: 0;">Publish Meeting</button>
@@ -1016,7 +1089,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 <!-- ========================================== -->
 <!-- CLOSE TICKET MODAL (NEW)                   -->
 <!-- ========================================== -->
-<div class="modal" id="closeTicketModal">
+<div class="modal" id="closeTicketModal" style="z-index: 300;">
   <div class="modal-backdrop" onclick="closeCloseTicketModal()"></div>
   <div class="modal-card">
     <button class="modal-close" onclick="closeCloseTicketModal()">
@@ -1275,6 +1348,16 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
           <h4>Rules</h4>
           <div id="detailRules"></div>
         </div>
+
+        <div class="streak-detail-section" id="detailFlyersSection">
+          <h4>Flyers</h4>
+          <div class="image-gallery" id="detailFlyers"></div>
+        </div>
+
+        <div class="streak-detail-section" id="detailAgendasSection">
+          <h4>Agenda</h4>
+          <div class="image-gallery" id="detailAgendas"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1313,7 +1396,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   let editingMeetingId = null;
   let activeTicketId = null;
   let unsubscribeMessages = null;
-  let currentTicketFilter = 'active'; // 'active' or 'past'
+  let currentTicketFilter = 'active';
 
   // ==========================================
   // HELPERS — Formatting
@@ -1348,6 +1431,29 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   document.getElementById('meetingTheme').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') e.preventDefault();
   });
+
+  // Dynamic Image Inputs
+  window.addFlyerInput = function() {
+    const container = document.getElementById('flyerContainer');
+    const div = document.createElement('div');
+    div.className = 'image-input-group';
+    div.innerHTML = `
+      <input type="url" class="flyer-input" placeholder="https://example.com/flyer.jpg">
+      <button type="button" class="remove-img-btn" onclick="this.parentElement.remove()">✕</button>
+    `;
+    container.appendChild(div);
+  }
+
+  window.addAgendaInput = function() {
+    const container = document.getElementById('agendaContainer');
+    const div = document.createElement('div');
+    div.className = 'image-input-group';
+    div.innerHTML = `
+      <input type="url" class="agenda-input" placeholder="https://example.com/agenda.jpg">
+      <button type="button" class="remove-img-btn" onclick="this.parentElement.remove()">✕</button>
+    `;
+    container.appendChild(div);
+  }
 
   // ==========================================
   // 1. TAB SWITCHING
@@ -1396,11 +1502,9 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
             document.getElementById('nav-excoms').style.display = 'inline-block';
             document.getElementById('studentSupportCard').style.display = 'none';
             
-            // ExComs need all members for attendance
             const allSnap = await getDocs(collection(db, "gaveliers"));
             allSnap.forEach(d => allGaveliers.push(d.data()));
           } else {
-            // Student view: Show Support Card
             document.getElementById('studentSupportCard').style.display = 'flex';
           }
         }
@@ -1451,6 +1555,16 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
         const timeRange = formatTimeRange(data.time, data.endTime);
         
+        // Build flyers and agendas HTML
+        let flyerHtml = '';
+        if (data.flyers && data.flyers.length > 0) {
+          flyerHtml = `<div class="meeting-info-block"><span class="meeting-info-label">Flyers</span><div class="image-gallery">${data.flyers.map(url => `<img src="${url}" onclick="window.open('${url}', '_blank')">`).join('')}</div></div>`;
+        }
+        let agendaHtml = '';
+        if (data.agendas && data.agendas.length > 0) {
+          agendaHtml = `<div class="meeting-info-block"><span class="meeting-info-label">Agenda</span><div class="image-gallery">${data.agendas.map(url => `<img src="${url}" onclick="window.open('${url}', '_blank')">`).join('')}</div></div>`;
+        }
+
         const overviewHtml = `
           <div class="meeting-item" onclick="openRsvpModal('${docId}')">
             <div class="meeting-header">
@@ -1468,6 +1582,8 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
                 <span class="meeting-info-label">Rules</span>
                 <div class="meeting-info-text">${data.rules}</div>
               </div>
+              ${flyerHtml}
+              ${agendaHtml}
               <div class="rsvp-hint">👉 Click to RSVP</div>
             </div>
           </div>
@@ -1838,6 +1954,9 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       const theme = document.getElementById('meetingTheme').innerHTML;
       const about = document.getElementById('meetingAbout').innerHTML;
       const rules = document.getElementById('meetingRules').innerHTML;
+      
+      const flyers = Array.from(document.querySelectorAll('.flyer-input')).map(i => i.value.trim()).filter(v => v);
+      const agendas = Array.from(document.querySelectorAll('.agenda-input')).map(i => i.value.trim()).filter(v => v);
 
       if (!endTime || endTime <= time) {
         alert("End time must be after the start time.");
@@ -1849,7 +1968,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       }
 
       try {
-        const meetingData = { date, time, endTime, theme, about, rules };
+        const meetingData = { date, time, endTime, theme, about, rules, flyers, agendas };
 
         if (editingMeetingId) {
           await updateDoc(doc(db, "meetings", editingMeetingId), meetingData);
@@ -1884,11 +2003,45 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     document.getElementById('meetingAbout').innerHTML = meeting.about;
     document.getElementById('meetingRules').innerHTML = meeting.rules;
 
+    // Reset and populate flyers
+    const flyerContainer = document.getElementById('flyerContainer');
+    flyerContainer.innerHTML = '';
+    if (meeting.flyers && meeting.flyers.length > 0) {
+      meeting.flyers.forEach((url, index) => {
+        const div = document.createElement('div');
+        div.className = 'image-input-group';
+        div.innerHTML = `
+          <input type="url" class="flyer-input" value="${url}" placeholder="https://example.com/flyer.jpg">
+          <button type="button" class="remove-img-btn" onclick="this.parentElement.remove()">✕</button>
+        `;
+        flyerContainer.appendChild(div);
+      });
+    } else {
+      addFlyerInput(); // Add one empty one if none exist
+    }
+
+    // Reset and populate agendas
+    const agendaContainer = document.getElementById('agendaContainer');
+    agendaContainer.innerHTML = '';
+    if (meeting.agendas && meeting.agendas.length > 0) {
+      meeting.agendas.forEach((url, index) => {
+        const div = document.createElement('div');
+        div.className = 'image-input-group';
+        div.innerHTML = `
+          <input type="url" class="agenda-input" value="${url}" placeholder="https://example.com/agenda.jpg">
+          <button type="button" class="remove-img-btn" onclick="this.parentElement.remove()">✕</button>
+        `;
+        agendaContainer.appendChild(div);
+      });
+    } else {
+      addAgendaInput(); // Add one empty one if none exist
+    }
+
     document.getElementById('formTitle').textContent = "Edit Meeting";
     document.getElementById('submitBtn').textContent = "Save Changes";
     document.getElementById('cancelEditBtn').style.display = "block";
     
-    closeManageModal(); // Close the manage modal before opening the edit modal
+    closeManageModal();
     meetingModal.classList.add('open');
   };
 
@@ -1903,6 +2056,18 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     document.getElementById('meetingTheme').innerHTML = '';
     document.getElementById('meetingAbout').innerHTML = '';
     document.getElementById('meetingRules').innerHTML = '';
+    
+    // Reset dynamic inputs to one blank field
+    document.getElementById('flyerContainer').innerHTML = `
+      <div class="image-input-group">
+        <input type="url" class="flyer-input" placeholder="https://example.com/flyer.jpg">
+      </div>
+    `;
+    document.getElementById('agendaContainer').innerHTML = `
+      <div class="image-input-group">
+        <input type="url" class="agenda-input" placeholder="https://example.com/agenda.jpg">
+      </div>
+    `;
   }
 
   window.cancelMeeting = async (docId) => {
@@ -1931,7 +2096,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   ];
   const profanityRegex = new RegExp(`\\b(${swearWords.join('|')})\\b`, 'i');
 
-  // Load Tickets
   function loadTickets() {
     let q;
     if (currentUserIsExCom) {
@@ -2101,7 +2265,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     document.getElementById('chatStatus').textContent = 
       currentUserIsExCom ? `From: ${ticket.studentName} (${ticket.studentAdmissionNo})` : `Status: ${ticket.status}`;
     
-    // Show Close button only for ExComs and if ticket is Open
     const closeBtn = document.getElementById('closeTicketBtn');
     if (currentUserIsExCom && ticket.status === 'Open') {
       closeBtn.style.display = 'block';
@@ -2192,7 +2355,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     }
   }
 
-  // Close Ticket Logic
   window.openCloseTicketModal = function() {
     document.getElementById('resolutionText').value = '';
     closeTicketModal.classList.add('open');
@@ -2232,7 +2394,6 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     }
   }
 
-  // Profanity Flash Logic
   function triggerProfanityAlert() {
     const flash = document.getElementById('redFlash');
     flash.classList.remove('active');
@@ -2419,6 +2580,26 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     
     document.getElementById('detailAbout').innerHTML = m.about || 'No description provided.';
     document.getElementById('detailRules').innerHTML = m.rules || 'No rules listed.';
+    
+    // Render Gallery for Detail View
+    const flyersSection = document.getElementById('detailFlyersSection');
+    const agendasSection = document.getElementById('detailAgendasSection');
+    const flyersDiv = document.getElementById('detailFlyers');
+    const agendasDiv = document.getElementById('detailAgendas');
+    
+    if (m.flyers && m.flyers.length > 0) {
+      flyersSection.style.display = 'block';
+      flyersDiv.innerHTML = m.flyers.map(url => `<img src="${url}" onclick="window.open('${url}', '_blank')">`).join('');
+    } else {
+      flyersSection.style.display = 'none';
+    }
+    
+    if (m.agendas && m.agendas.length > 0) {
+      agendasSection.style.display = 'block';
+      agendasDiv.innerHTML = m.agendas.map(url => `<img src="${url}" onclick="window.open('${url}', '_blank')">`).join('');
+    } else {
+      agendasSection.style.display = 'none';
+    }
     
     document.getElementById('streakCalView').classList.add('hidden');
     const detail = document.getElementById('streakDetailView');
