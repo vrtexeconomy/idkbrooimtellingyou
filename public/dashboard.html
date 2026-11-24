@@ -1825,14 +1825,27 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   
   // Load Tickets (Filtered for Students)
   function loadTickets() {
-    let q = query(collection(db, "tickets"), orderBy("lastUpdated", "desc"));
-    if (!currentUserIsExCom) {
-      q = query(collection(db, "tickets"), where("studentAdmissionNo", "==", currentUserAdmission), orderBy("lastUpdated", "desc"));
+    let q;
+    if (currentUserIsExCom) {
+      q = query(collection(db, "tickets"), orderBy("lastUpdated", "desc"));
+    } else {
+      // Students query WITHOUT orderBy to avoid requiring a Firestore index.
+      // We will sort them locally in JavaScript instead.
+      q = query(collection(db, "tickets"), where("studentAdmissionNo", "==", currentUserAdmission));
     }
     
     onSnapshot(q, (snapshot) => {
       allTickets = [];
       snapshot.forEach(d => allTickets.push({ id: d.id, ...d.data() }));
+      
+      // Sort locally for students
+      if (!currentUserIsExCom) {
+        allTickets.sort((a, b) => {
+          const timeA = a.lastUpdated?.toMillis() || 0;
+          const timeB = b.lastUpdated?.toMillis() || 0;
+          return timeB - timeA;
+        });
+      }
       
       // If the modal is open on the list view, re-render it
       if (supportModal.classList.contains('open') && !document.getElementById('supportListView').classList.contains('hidden')) {
