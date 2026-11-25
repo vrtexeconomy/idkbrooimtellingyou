@@ -199,13 +199,13 @@ header, main, footer { position: relative; z-index: 1; }
 }
 .action-card:hover .action-icon { transform: scale(1.1) rotate(5deg); }
 
-.schedule-card:hover { border-color: rgba(127, 232, 207, 0.6) !important; background: rgba(127, 232, 207, 0.05) !important; box-shadow: 0 16px 40px -20px rgba(127, 232, 207, 0.4); }
+.schedule-card:hover { border-color: rgba(127, 232, 207, 0.6) !important; background: rgba(127, 232, 207, 0.05) !important; box-shadow: 0 16px 40px -20px rgba(127, 232, 207, 0.4); transform: translateY(-3px); }
 .schedule-card .action-icon { background: rgba(127, 232, 207, 0.1); color: #7fe8cf; }
 
-.support-card:hover { border-color: rgba(255, 150, 150, 0.6) !important; background: rgba(255, 150, 150, 0.05) !important; box-shadow: 0 16px 40px -20px rgba(255, 150, 150, 0.4); }
+.support-card:hover { border-color: rgba(255, 150, 150, 0.6) !important; background: rgba(255, 150, 150, 0.05) !important; box-shadow: 0 16px 40px -20px rgba(255, 150, 150, 0.4); transform: translateY(-3px); }
 .support-card .action-icon { background: rgba(255, 150, 150, 0.1); color: #ff9a9a; }
 
-.manage-card:hover { border-color: rgba(120, 220, 255, 0.6) !important; background: rgba(120, 220, 255, 0.05) !important; box-shadow: 0 16px 40px -20px rgba(120, 220, 255, 0.4); }
+.manage-card:hover { border-color: rgba(120, 220, 255, 0.6) !important; background: rgba(120, 220, 255, 0.05) !important; box-shadow: 0 16px 40px -20px rgba(120, 220, 255, 0.4); transform: translateY(-3px); }
 .manage-card .action-icon { background: rgba(120, 220, 255, 0.1); color: #7fe0f5; }
 
 /* Admin Form */
@@ -987,7 +987,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 </div>
 
 <!-- ========================================== -->
-<!-- IMAGE VIEWER MODAL (NEW)                   -->
+<!-- IMAGE VIEWER MODAL                         -->
 <!-- ========================================== -->
 <div class="modal image-viewer-modal" id="imageModal">
   <div class="modal-backdrop" onclick="closeImageModal()"></div>
@@ -1123,7 +1123,7 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
 </div>
 
 <!-- ========================================== -->
-<!-- CLOSE TICKET MODAL (NEW)                   -->
+<!-- CLOSE TICKET MODAL                         -->
 <!-- ========================================== -->
 <div class="modal" id="closeTicketModal" style="z-index: 300;">
   <div class="modal-backdrop" onclick="closeCloseTicketModal()"></div>
@@ -1990,11 +1990,13 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   }
 
   window.openManageModal = function() {
-    manageMeetingsModal.classList.add('open');
+    const modal = document.getElementById('manageMeetingsModal');
+    if (modal) modal.classList.add('open');
   }
 
   window.closeManageModal = function() {
-    manageMeetingsModal.classList.remove('open');
+    const modal = document.getElementById('manageMeetingsModal');
+    if (modal) modal.classList.remove('open');
   }
 
   if(scheduleForm) {
