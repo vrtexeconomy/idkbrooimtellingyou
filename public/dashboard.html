@@ -457,6 +457,32 @@ header, main, footer { position: relative; z-index: 1; }
 .manage-modal-card::-webkit-scrollbar-track { background: transparent; }
 .manage-modal-card::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 8px; }
 
+/* Image Viewer Specific */
+.image-viewer-modal .modal-backdrop { background: rgba(0,0,0,0.95); }
+.image-viewer-card {
+  position: relative;
+  max-width: 95vw; max-height: 95vh;
+  display: flex; justify-content: center; align-items: center;
+  transform: scale(0.9);
+  transition: transform 0.5s var(--ease-out-expo);
+  pointer-events: none;
+  z-index: 10;
+}
+.modal.open .image-viewer-card { transform: scale(1); }
+.image-viewer-card img {
+  max-width: 100%; max-height: 90vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 0 60px rgba(0,0,0,0.8);
+  border: 2px solid rgba(255,255,255,0.1);
+  pointer-events: auto;
+}
+.image-viewer-card .modal-close {
+  top: -40px; right: 0;
+  background: rgba(255,255,255,0.1);
+  width: 40px; height: 40px;
+}
+
 .modal-close {
   position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-radius: 50%;
   background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
@@ -958,6 +984,19 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
       </div>
     </div>
   </footer>
+</div>
+
+<!-- ========================================== -->
+<!-- IMAGE VIEWER MODAL (NEW)                   -->
+<!-- ========================================== -->
+<div class="modal image-viewer-modal" id="imageModal">
+  <div class="modal-backdrop" onclick="closeImageModal()"></div>
+  <div class="image-viewer-card">
+    <button class="modal-close" onclick="closeImageModal()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <img id="fullSizeImage" src="" alt="Full size image">
+  </div>
 </div>
 
 <!-- ========================================== -->
@@ -1480,6 +1519,18 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
   }
 
   // ==========================================
+  // IMAGE VIEWER LOGIC
+  // ==========================================
+  window.openImageModal = function(url) {
+    document.getElementById('fullSizeImage').src = url;
+    document.getElementById('imageModal').classList.add('open');
+  }
+
+  window.closeImageModal = function() {
+    document.getElementById('imageModal').classList.remove('open');
+  }
+
+  // ==========================================
   // 2. AUTH & USER DATA
   // ==========================================
   onAuthStateChanged(auth, async (user) => {
@@ -1561,11 +1612,11 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
         // Build flyers and agendas HTML
         let flyerHtml = '';
         if (data.flyers && data.flyers.length > 0) {
-          flyerHtml = `<div class="meeting-info-block"><span class="meeting-info-label">Flyers</span><div class="image-gallery">${data.flyers.map(url => `<img src="${url}" onclick="window.open('${url}', '_blank')">`).join('')}</div></div>`;
+          flyerHtml = `<div class="meeting-info-block"><span class="meeting-info-label">Flyers</span><div class="image-gallery">${data.flyers.map(url => `<img src="${url}" onclick="event.stopPropagation(); openImageModal('${url}')">`).join('')}</div></div>`;
         }
         let agendaHtml = '';
         if (data.agendas && data.agendas.length > 0) {
-          agendaHtml = `<div class="meeting-info-block"><span class="meeting-info-label">Agenda</span><div class="image-gallery">${data.agendas.map(url => `<img src="${url}" onclick="window.open('${url}', '_blank')">`).join('')}</div></div>`;
+          agendaHtml = `<div class="meeting-info-block"><span class="meeting-info-label">Agenda</span><div class="image-gallery">${data.agendas.map(url => `<img src="${url}" onclick="event.stopPropagation(); openImageModal('${url}')">`).join('')}</div></div>`;
         }
 
         const overviewHtml = `
@@ -2592,14 +2643,14 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     
     if (m.flyers && m.flyers.length > 0) {
       flyersSection.style.display = 'block';
-      flyersDiv.innerHTML = m.flyers.map(url => `<img src="${url}" onclick="window.open('${url}', '_blank')">`).join('');
+      flyersDiv.innerHTML = m.flyers.map(url => `<img src="${url}" onclick="event.stopPropagation(); openImageModal('${url}')">`).join('');
     } else {
       flyersSection.style.display = 'none';
     }
     
     if (m.agendas && m.agendas.length > 0) {
       agendasSection.style.display = 'block';
-      agendasDiv.innerHTML = m.agendas.map(url => `<img src="${url}" onclick="window.open('${url}', '_blank')">`).join('');
+      agendasDiv.innerHTML = m.agendas.map(url => `<img src="${url}" onclick="event.stopPropagation(); openImageModal('${url}')">`).join('');
     } else {
       agendasSection.style.display = 'none';
     }
@@ -2636,6 +2687,9 @@ footer { border-top: 1px solid rgba(255,255,255,.07); padding: 38px clamp(16px,4
     }
     if (e.key === 'Escape' && closeTicketModal.classList.contains('open')) {
       closeCloseTicketModal();
+    }
+    if (e.key === 'Escape' && document.getElementById('imageModal').classList.contains('open')) {
+      closeImageModal();
     }
   });
 
